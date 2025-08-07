@@ -1,3 +1,7 @@
+# プロジェクト概要
+大学のチーム実習のための演習用Webアプリケーションです。
+詳細は: [OVERVIEW.md](./.docs/00_OVERVIEW.md)を参照してください。
+
 # 開発環境のセットアップ手順 (Getting Started)
 
 ## 1. 前提条件 (Prerequisites)
@@ -53,3 +57,4 @@ pnpm test
 
 # APIのテストのみ実行
 pnpm --filter api test
+```
