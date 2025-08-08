@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: "[プロジェクト名] API"
+  description: "AI旅行プラン提案サービスのAPI仕様"
+  version: "1.0.0"
+servers:
+  - url: "https://api.example.com/v1"
+    description: "本番環境"
+  - url: "http://localhost:3000/v1"
+    description: "開発環境"
+
+paths:
+  /spots:
+    post:
+      summary: "新しい観光施設を登録する"
+      description: "事業者ユーザーが新しい観光施設の情報をシステムに登録します。"
+      tags:
+        - Spots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SpotInput"
+      responses:
+        "201":
+          description: "登録成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Spot"
+        "400":
+          description: "リクエストが不正"
+        "401":
+          description: "認証エラー"
+
+components:
+  schemas:
+    Spot:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: "観光施設の一意なID"
+        name:
+          type: string
+          description: "観光施設名"
+        description:
+          type: string
+          description: "観光施設の説明"
+        address:
+          type: string
+          description: "住所"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - createdAt
+
+    SpotInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "観光施設名"
+          example: "隠れ家カフェ「森のささやき」"
+        description:
+          type: string
+          description: "AIに伝える施設の特徴や魅力"
+          example: "静かな森の中に佇む、こだわりのコーヒーと手作りケーキが自慢のカフェです。都会の喧騒を忘れ、ゆったりとした時間を過ごしたい方に最適。"
+        address:
+          type: string
+          description: "住所"
+          example: "東京都秘境市森の中1-2-3"
+      required:
+        - name
+        - description
