@@ -5,31 +5,16 @@
 
 ```mermaid
 graph TD
-    A[ユーザー] -->|HTTPS| B(Next.js / Vercel);
-    B -->|API Request| C(Express API / AWS ECS);
-    C -->|CRUD| D[PostgreSQL / AWS RDS];
-    C -->|Generate Answer| E(OpenAI API);
 ```
 図の説明
-  - ユーザーはNext.jsで構築されたフロントエンドにアクセスします。
-  - フロントエンドはAWS ECS上で動作するExpress APIサーバーにリクエストを送信します。
-  - APIサーバーは、データの永続化にRDS上のPostgreSQLを、回答文生成にOpenAI APIを利用します。
-
+  - 
 ## 2. 設計原則 (Design Principles)
-  - 原則1: シンプルさを保つ (Keep It Simple)
-    - 過剰な抽象化や複雑な設計を避け、シンプルで理解しやすいコードを維持します。
-  - 原則2: サーバーレスファースト
-    - 可能な限りマネージドサービスを利用し、サーバー管理のオーバーヘッドを削減します。
-  - 原則3: （このプロジェクトで重視する他の設計原則を記述します...）
+  - 原則1: （このプロジェクトで重視する設計原則を記述します...）
 
 ## 3. 主要コンポーネントの責務
 
 | コンポーネント名 | 責務・役割 |
 | --- | --- |
-|frontend | ユーザーインターフェースの提供。状態管理、APIとの通信。
-|api-server | ビジネスロジックの実行。DB操作、外部API連携。
-|database | ユーザー情報、問い合わせデータなどの永続化。
-|ci-cd-pipeline | GitHub Actionsによるテスト、ビルド、デプロイの自動化。
 
 ## 4. ディレクトリ構造
 ```

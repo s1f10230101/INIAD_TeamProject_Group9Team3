@@ -6,7 +6,6 @@
 | 用語 | 意味・定義 | 備考 |
 | :--- | :--- | :--- |
 | **レビュー** | 本サイト内の旅行客の書いたコメント、いいねのことを指す | サイト外のレビューをいうときはそれを明言する|
-| **　** |  |  |
 | *（その他、プロジェクト固有の用語を追記）* |  |  |
 
 ## 2. 主要なビジネスロジック
@@ -31,12 +30,6 @@
 4. 数値化された評価をもとにソート
 
 ### 2.3. バックエンドのAPIエンドポイント仕様
-- `GET /api/inquiries`: すべての問い合わせを取得
-  - request body: `{ page: number, limit: number }`
-  - response body: `{ inquiries: Inquiry[], total: number }`
-- `POST /api/inquiries`: 新規問い合わせを作成
-  - request body: `{ title: string, content: string, userId: number }`
-  - response body: `{ inquiry: Inquiry }`
 
 ## 3. ユーザーペルソナ
 
