@@ -1,3 +1,6 @@
+![アプリアイコン](/img/appli-icon.png)
+![Dockerアイコン](https://img.shields.io/badge/docker-28.0.0-blue.svg?logo=docker&style=flat)
+
 # プロジェクト概要
 大学のチーム実習のための演習用Webアプリケーションです。  
 詳細は: [OVERVIEW.md](/docs/00_OVERVIEW.md)を参照してください。  
