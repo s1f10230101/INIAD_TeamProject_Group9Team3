@@ -20,9 +20,5 @@ graph TD
 ```
 .
 ├── docs/               # このドキュメント群
-├── packages/
-│   ├── api/           # Express APIサーバーのソースコード
-│   └── web/           # Next.js フロントエンドのソースコード
 ├── .github/            # CI/CD (GitHub Actions) の設定
-└── docker-compose.yml  # ローカル開発環境の定義
 ```
