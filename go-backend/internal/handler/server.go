@@ -6,10 +6,11 @@ import (
 )
 
 type server struct {
-	// Add server fields here
+	// ユースケースのインターフェースをフィールドとして持つ
 	postUC usecase.PostUseCaseInterface
 }
 
+// NewServer は server 構造体のポインタを返すコンストラクタ関数
 func NewServer(postuc usecase.PostUseCaseInterface) api.StrictServerInterface {
 	return &server{postUC: postuc}
 }

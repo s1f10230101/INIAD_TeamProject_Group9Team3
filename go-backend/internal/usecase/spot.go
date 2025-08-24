@@ -6,6 +6,7 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
 )
 
+// handler から呼び出されるビジネスロジックのインターフェース
 type PostUseCaseInterface interface {
 	GetAllSpots() ([]api.Spot, error)
 	CreateSpot(spot *api.SpotInput) error
