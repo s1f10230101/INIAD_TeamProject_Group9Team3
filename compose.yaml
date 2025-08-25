@@ -1,5 +1,5 @@
 services:
-  backend-apigate:
+  backend-dev:
     build:
       context: ./go-backend
       dockerfile: Dockerfile

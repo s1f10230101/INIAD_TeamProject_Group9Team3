@@ -11,16 +11,24 @@
   - 上位層が下位層に依存しない(下位層を入れ替え可能)ように設計
   - 具体的な実装はmain.goで組み立てる
 
+## 使用ライブラリ
+- [oapi-codegen]
+  - OpenAPI仕様書からGoコードを自動生成するツール
+  - 自動生成コードの更新`oapi-codegen --config=api/oapi-coifig.yaml ../openapi.yaml`
+- [air]
+  - Go製のホットリロードツール
+  - `air -c .air.toml`で起動
+
 ## ディレクトリ構成
 ```plaintext
 .
 ├── api/
-│   └── server.gen.go   # 👈 OpenAPI Generatorで自動生成されたコード
+│   └── server.gen.go   # 👈 OpenAPI Codegenで自動生成されたコード
 ├── main.go         # 👈 各パーツを組み立てて起動する役目に特化
 ├── internal/
 │   ├── handler/        # 📦 HTTPリクエスト・レスポンスを扱う層
 │   │   └── post.go
-│   │   └── post.test.go
+│   │   └── post_test.go
 │   ├── usecase/        # 🧠 アプリケーションのビジネスロジック層
 │   └── repository/     # 🗄️ データの永続化（保存・取得）を担う層
 ├── go.mod
@@ -31,5 +39,4 @@
 * **Usecase層** 
   - アプリケーションの本体です。HTTPのことは何も知りません。「投稿を作成する」といった純粋なビジネスロジックを担当します。
 * **Repository層**
-  - データの保存場所です。Usecaseから依頼を受けて、メモリやデータベースにデータを保存・取得します。
-各層はInterfaceを介して疎結合に設計されており、他の層の実装に依存しないようになっています。
+  - データの保存場所です。Usecaseから依頼を受けて、メモリやデータベースにデータを保存・取得します。  

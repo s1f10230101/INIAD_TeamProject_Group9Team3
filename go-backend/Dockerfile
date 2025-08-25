@@ -19,10 +19,10 @@ RUN --mount=type=cache,target=/go/pkg/mod go mod download
 COPY . .
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/server/main.go
+    CGO_ENABLED=0 GOOS=linux go build -o /server ./main.go
 
 # distrolessイメージ デバックsh不要なら`:nonroot`を使う
-FROM gcr.io/distroless/static-debian12:debug-nonroot AS prod
+FROM gcr.io/distroless/static-debian12:nonroot AS prod
 WORKDIR /app
 
 COPY --from=builder --chown=nonroot:nonroot /app/server ./server
