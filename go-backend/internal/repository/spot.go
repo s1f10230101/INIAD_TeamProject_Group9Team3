@@ -19,7 +19,7 @@ type postRepositoryInmemory struct {
 	postsDB map[uuid.UUID]api.Spot
 }
 
-func NewPostRepositoryInmemory() PostRepositoryInterface {
+func NewPostRepositoryInmemory() *postRepositoryInmemory {
 	return &postRepositoryInmemory{}
 }
 
