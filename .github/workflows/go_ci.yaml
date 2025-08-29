@@ -1,0 +1,34 @@
+name: Go Ci
+# もしmainブランチのgo-backendディレクトリ内のファイル、またはこのワークフローファイル自体が変更された場合にトリガーされます。
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "go-backend/**"
+      - ".github/workflows/go_ci.yaml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "go-backend/**"
+      - ".github/workflows/go_ci.yaml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./go-backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.25'
+      - name: Install dependencies
+        run: |
+          go mod download
+      - name: Run tests
+        run: |
+          go test ./...
