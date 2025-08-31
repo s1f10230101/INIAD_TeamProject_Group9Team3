@@ -37,10 +37,10 @@ func TestCreateSpot(t *testing.T) {
 		t.Errorf("Expected spot name to be '%s', but got '%s'", inputSpot.Name, savedSpot.Name)
 	}
 	if savedSpot.Description != &inputSpot.Description {
-		t.Errorf("Expected spot description to be '%s', but got '%s'", inputSpot.Description, savedSpot.Description)
+		t.Errorf("Expected spot description to be '%s', but got '%v'", inputSpot.Description, savedSpot.Description)
 	}
 	if savedSpot.Address != &inputSpot.Address {
-		t.Errorf("Expected spot address to be '%s', but got '%s'", inputSpot.Address, savedSpot.Address)
+		t.Errorf("Expected spot address to be '%s', but got '%v'", inputSpot.Address, savedSpot.Address)
 	}
 
 	// IDが自動生成されているか（空でないか）を確認
@@ -170,7 +170,7 @@ func TestUpdateSpotByID(t *testing.T) {
 			t.Errorf("expected name to be '%s', but got '%s'", updateInput.Name, updatedSpot.Name)
 		}
 		if updatedSpot.Description != &updateInput.Description {
-			t.Errorf("expected description to be '%s', but got '%s'", updateInput.Description, updatedSpot.Description)
+			t.Errorf("expected description to be '%s', but got '%v'", updateInput.Description, updatedSpot.Description)
 		}
 		// IDとCreatedAtが変更されていないことを確認
 		if updatedSpot.Id != initialSpot.Id {
