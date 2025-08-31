@@ -24,10 +24,18 @@ func NewPostUseCase(repo repository.PostRepositoryInterface) *postUseCase {
 	}
 }
 
-func (u *postUseCase) GetAllSpots() ([]api.Spot, error)
+func (u *postUseCase) GetAllSpots() ([]api.Spot, error) {
+	return u.repository.GetAllSpots()
+}
 
-func (u *postUseCase) CreateSpot(spot *api.SpotInput) error
+func (u *postUseCase) CreateSpot(spot *api.SpotInput) error {
+	return u.repository.CreateSpot(spot)
+}
 
-func (u *postUseCase) GetSpotByID(spotId uuid.UUID) (api.Spot, error)
+func (u *postUseCase) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
+	return u.repository.GetSpotByID(spotId)
+}
 
-func (u *postUseCase) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
+func (u *postUseCase) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+	return u.repository.UpdateSpotByID(spotId, spot)
+}
