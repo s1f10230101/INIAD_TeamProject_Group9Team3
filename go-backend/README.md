@@ -14,7 +14,7 @@
 ## 使用ライブラリ
 - [oapi-codegen]
   - OpenAPI仕様書からGoコードを自動生成するツール
-  - 自動生成コードの更新`oapi-codegen --config=api/oapi-coifig.yaml ../openapi.yaml`
+  - 自動生成コードの更新`oapi-codegen --config=api/oapi_config.yaml ../openapi.yaml`
 - [air]
   - Go製のホットリロードツール
   - `air -c .air.toml`で起動
