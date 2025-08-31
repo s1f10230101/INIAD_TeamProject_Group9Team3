@@ -1,0 +1,16 @@
+services:
+  backend-dev:
+    build:
+      context: ./go-backend
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "8080:8080"
+    tty: true
+    develop:
+      watch:
+        - action: sync
+          path: ./go-backend
+          target: /app/
+          ignore:
+            - .git/

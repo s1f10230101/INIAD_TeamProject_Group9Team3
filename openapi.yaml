@@ -370,6 +370,7 @@ components:
       required:
         - name
         - description
+        - address
     Review:
       type: object
       properties:

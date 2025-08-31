@@ -33,3 +33,15 @@
 
 * **ブランチ名:** `feature/issue-123-add-login-page` のように、`[type]/[issue番号]-[概要]` の形式で作成します。
 * **PRのタイトル:** `feat: ログイン機能を追加 (#123)` のように、Conventional Commits の形式に沿って記述します。
+
+| Type | descrition |
+|feat |	新機能|
+|fix	| bug修正|
+|refactor	| 外部からの振る舞いを変更せずに内部のコードを整理する|
+|docs |	ドキュメントの修正， 例えば、README|
+|style	| コードスタイルを変える、機能は変更なし|
+|test	|テストを追加したり、修正したりする|
+|chore	|小さな変更， 例えば、.gitgnoreの変更|
+|perf	|性能を良くする際に|
+|ci	|CI/CD に関するもの|
+|bulid	|システムの依存関係を変更した際に使うもの|

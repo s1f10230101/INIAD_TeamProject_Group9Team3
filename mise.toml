@@ -1,0 +1,4 @@
+[tools]
+go = "latest"
+lazygit = "latest"
+"npm:@typespec/compiler" = "latest"
