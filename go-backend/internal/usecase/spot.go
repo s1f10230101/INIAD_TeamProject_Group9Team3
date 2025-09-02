@@ -9,7 +9,7 @@ import (
 // handler から呼び出されるビジネスロジックのインターフェース
 type PostUseCaseInterface interface {
 	GetAllSpots() ([]api.Spot, error)
-	CreateSpot(spot *api.SpotInput) error
+	CreateSpot(spot *api.SpotInput) (api.Spot, error)
 	GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
 }
@@ -28,7 +28,7 @@ func (u *postUseCase) GetAllSpots() ([]api.Spot, error) {
 	return u.repository.GetAllSpots()
 }
 
-func (u *postUseCase) CreateSpot(spot *api.SpotInput) error {
+func (u *postUseCase) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
 	return u.repository.CreateSpot(spot)
 }
 

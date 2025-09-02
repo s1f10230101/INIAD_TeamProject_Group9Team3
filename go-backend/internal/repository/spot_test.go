@@ -17,7 +17,7 @@ func TestCreateSpot(t *testing.T) {
 		Address:     "東京都テスト区1-2-3",
 	}
 
-	err := repo.CreateSpot(inputSpot)
+	_, err := repo.CreateSpot(inputSpot)
 
 	if err != nil {
 		t.Fatalf("CreateSpot failed, expected no error, but got: %v", err)
