@@ -20,5 +20,7 @@ graph TD
 ```
 .
 ├── docs/               # このドキュメント群
+├── go-backend/        # Goバックエンドのソースコード
 ├── .github/            # CI/CD (GitHub Actions) の設定
+├── openapi.1.0.yaml  # OpenAPI仕様書
 ```

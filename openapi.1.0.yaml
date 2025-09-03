@@ -1,0 +1,582 @@
+openapi: 3.0.0
+info:
+  title: AI Travel Planner API
+  summary: AI旅行プラン提案サービスのAPI仕様
+  description: AI旅行プラン提案サービスのAPI仕様
+  version: '1.0'
+tags:
+  - name: Spots
+    description: 観光スポットに関するAPI
+  - name: Reviews
+    description: 観光スポットのレビュー関連のAPI
+  - name: Plans
+    description: 旅行プラン関連のAPI
+  - name: Auth
+    description: 認証関連のAPI
+paths:
+  /auth/login:
+    post:
+      operationId: loginUser
+      summary: ユーザーログイン
+      description: 既存のユーザーがログインし、JWTトークンを取得します。
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTAuth'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+  /auth/me:
+    get:
+      operationId: getUserInfo
+      summary: ユーザー情報取得
+      description: JWTトークンを使用して認証されたユーザーの情報を取得します。
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Access is unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Auth
+      security:
+        - BearerAuth: []
+  /auth/register:
+    post:
+      operationId: registerUser
+      summary: ユーザー登録
+      description: 新しいユーザーを登録し、JWTトークンを発行します。
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTAuth'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+  /plans:
+    post:
+      operationId: generatePlan
+      summary: 旅行プランの生成
+      description: ユーザーの希望に基づいて新しい旅行プランを生成します。
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Plans
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+              required:
+                - prompt
+  /reviews:
+    get:
+      operationId: getReviewsBySpotId
+      summary: 観光スポットのレビュー一覧の取得
+      description: 指定した観光スポットのレビュー一覧を取得します。
+      parameters:
+        - name: spotId
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Reviews
+    post:
+      operationId: createReview
+      summary: レビューの投稿
+      description: 新しいレビューを投稿します。
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Reviews
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+  /spots:
+    get:
+      operationId: getAllSpots
+      summary: 観光スポット一覧の取得
+      description: 登録されている観光スポットの一覧を取得します。
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Spot'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Spots
+    post:
+      operationId: createSpot
+      summary: 観光スポットの登録
+      description: 新しい観光スポットを登録します。
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Spots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spot'
+  /spots/{id}:
+    get:
+      operationId: getSpotById
+      summary: 観光スポットの詳細取得
+      description: 指定したIDの観光スポットの詳細情報を取得します。
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spot'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Spots
+    put:
+      operationId: updateSpot
+      summary: 観光スポットの更新
+      description: 指定したIDの観光スポットの情報を更新します。
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spot'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+      tags:
+        - Spots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spot'
+components:
+  schemas:
+    JWTAuth:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWTトークン
+    Plan:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - spots
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: プランの一意の識別子
+          readOnly: true
+        name:
+          type: string
+          description: プランの名称
+        description:
+          type: string
+          description: プランの詳細説明
+        spots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Spot'
+          description: プランに含まれる観光スポットのリスト
+        createdAt:
+          type: string
+          description: 作成日時
+          readOnly: true
+    Review:
+      type: object
+      required:
+        - id
+        - userId
+        - spotId
+        - rating
+        - comment
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: レビューの一意の識別子
+          readOnly: true
+        userId:
+          type: string
+          description: レビューを投稿したユーザーの識別子
+        spotId:
+          type: string
+          description: レビュー対象の観光スポットの識別子
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: レビューの評価（1から5までの整数）
+        comment:
+          type: string
+          description: レビューのコメント
+        createdAt:
+          type: string
+          description: 作成日時
+          readOnly: true
+    Spot:
+      type: object
+      required:
+        - id
+        - name
+        - discription
+        - address
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: 観光スポットの一意の識別子
+          readOnly: true
+        name:
+          type: string
+          description: 観光スポットの名称
+        discription:
+          type: string
+          description: 観光スポットの説明
+        address:
+          type: string
+          description: 観光スポットの所在地
+        createdAt:
+          type: string
+          description: 作成日時
+          readOnly: true
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - createdAt
+      properties:
+        id:
+          type: string
+          description: ユーザーの一意の識別子
+          readOnly: true
+        username:
+          type: string
+          description: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+        createdAt:
+          type: string
+          description: 作成日時
+          readOnly: true
+    UserCreate:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          description: ユーザー名
+        email:
+          type: string
+          description: メールアドレス
+        password:
+          type: string
+          description: パスワード（登録時のみ使用、読み取り不可）
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: Bearer
+servers:
+  - url: https://localhost:8080/v1
+    description: ローカル開発用サーバー
+    variables: {}
