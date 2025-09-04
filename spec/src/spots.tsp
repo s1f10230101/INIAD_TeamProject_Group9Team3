@@ -20,7 +20,7 @@ model Spot {
   name: string;
 
   @doc("観光スポットの説明")
-  discription: string;
+  description: string;
 
   @doc("観光スポットの所在地")
   address: string;
