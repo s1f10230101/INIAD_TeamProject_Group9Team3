@@ -9,6 +9,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Review struct {
+	ID        uuid.UUID          `json:"id"`
+	SpotID    uuid.UUID          `json:"spot_id"`
+	UserID    uuid.UUID          `json:"user_id"`
+	Rating    int32              `json:"rating"`
+	Comment   string             `json:"comment"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
 type Spot struct {
 	ID          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
