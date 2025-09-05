@@ -31,7 +31,7 @@ func main() {
 
 	// 1. レポジトリの初期化 (Postgres版を使用)
 	postRepository := repository.NewPostgresPostRepository(pool)
-	reviewRepository := repository.NewReviewRepositoryInmemory() // reviewはまだインメモリのまま
+	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
 	postUsecase := usecase.NewPostUseCase(postRepository)
