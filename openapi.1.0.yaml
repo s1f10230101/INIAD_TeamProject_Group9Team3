@@ -162,7 +162,7 @@ paths:
         '200':
           description: The request has succeeded.
           content:
-            application/json:
+            text/event-stream:
               schema:
                 $ref: '#/components/schemas/Plan'
         '400':
@@ -513,7 +513,7 @@ components:
       required:
         - id
         - name
-        - discription
+        - description
         - address
         - createdAt
       properties:
@@ -524,7 +524,7 @@ components:
         name:
           type: string
           description: 観光スポットの名称
-        discription:
+        description:
           type: string
           description: 観光スポットの説明
         address:

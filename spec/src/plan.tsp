@@ -10,6 +10,7 @@ using OpenAPI;
 @tagMetadata("Plans", #{ description: "旅行プラン関連のAPI" })
 namespace Trip_Canvas;
 
+@mediaTypeHint("text/event-stream")
 model Plan {
     @doc("プランの一意の識別子")
     @visibility(Lifecycle.Read)
