@@ -7,9 +7,17 @@ import (
 )
 
 func (s *server) GetSpotsSpotIdReviews(ctx context.Context, request api.GetSpotsSpotIdReviewsRequestObject) (api.GetSpotsSpotIdReviewsResponseObject, error) {
-	return api.GetSpotsSpotIdReviews200JSONResponse{}, nil
+	reviews, err := s.reviewUC.GetReviewsBySpotID(request.SpotId)
+	if err != nil {
+		return nil, err
+	}
+	return api.GetSpotsSpotIdReviews200JSONResponse(reviews), nil
 }
 
 func (s *server) PostSpotsSpotIdReviews(ctx context.Context, request api.PostSpotsSpotIdReviewsRequestObject) (api.PostSpotsSpotIdReviewsResponseObject, error) {
-	return api.PostSpotsSpotIdReviews201JSONResponse{}, nil
+	createdReview, err := s.reviewUC.CreateReview(request.SpotId, request.Body)
+	if err != nil {
+		return nil, err
+	}
+	return api.PostSpotsSpotIdReviews201JSONResponse(*createdReview), nil
 }

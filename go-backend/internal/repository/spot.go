@@ -11,7 +11,7 @@ import (
 
 type PostRepositoryInterface interface {
 	GetAllSpots() ([]api.Spot, error)
-	CreateSpot(spot *api.SpotInput) error
+	CreateSpot(spot *api.SpotInput) (api.Spot, error)
 	GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
 }
@@ -41,7 +41,7 @@ func (r *postRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
 	return AllSavedSpot, nil
 }
 
-func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) error {
+func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -57,7 +57,7 @@ func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) error {
 	}
 
 	r.postsDB[newID] = newSpot
-	return nil
+	return newSpot, nil
 }
 
 func (r *postRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {

@@ -12,8 +12,11 @@ func (s *server) GetSpots(ctx context.Context, request api.GetSpotsRequestObject
 }
 
 func (s *server) PostSpots(ctx context.Context, request api.PostSpotsRequestObject) (api.PostSpotsResponseObject, error) {
-	err := s.postUC.CreateSpot(request.Body)
-	return api.PostSpots201JSONResponse{}, err
+	createdSpot, err := s.postUC.CreateSpot(request.Body)
+	if err != nil {
+		return nil, err
+	}
+	return api.PostSpots201JSONResponse(createdSpot), err
 }
 
 func (s *server) GetSpotsSpotId(ctx context.Context, request api.GetSpotsSpotIdRequestObject) (api.GetSpotsSpotIdResponseObject, error) {

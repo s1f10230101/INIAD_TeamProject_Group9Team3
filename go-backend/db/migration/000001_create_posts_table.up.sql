@@ -1,0 +1,7 @@
+CREATE TABLE Spot (
+    Id UUID PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Description TEXT NOT NULL,
+    Address TEXT NOT NULL,
+    Created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
