@@ -11,61 +11,6 @@
   - 上位層が下位層に依存しない(下位層を入れ替え可能)ように設計
   - 具体的な実装はmain.goで組み立てる
 
-## 開発手順
-
-### 1. ツールのインストール
-
-このプロジェクトでは `sqlc` と `golang-migrate` を使用します。以下のコマンドでインストールしてください。
-
-```bash
-go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-```
-
-### 2. データベースの起動
-
-開発にはDockerが必要です。以下のコマンドでデータベースを起動します。
-
-```bash
-docker compose up -d
-```
-
-作業が完了したら、以下のコマンドで停止してください。
-
-```bash
-docker compose down
-```
-
-### 3. データベースマイグレーション
-
-テーブルスキーマの変更はマイグレーションファイルで行います。
-
-**新しいマイグレーションファイルの作成:**
-```bash
-# <name> の部分を `create_users_table` のように命名します
-migrate create -ext sql -dir db/migration -seq <name>
-```
-
-**マイグレーションの適用:**
-```bash
-# DBを最新の状態にします
-migrate -database "postgres://app_user:password@localhost:5432/app_db?sslmode=disable" -path db/migration up
-```
-
-**マイグレーションを1つ戻す:**
-```bash
-migrate -database "postgres://app_user:password@localhost:5432/app_db?sslmode=disable" -path db/migration down 1
-```
-
-### 4. SQLCによるコード生成
-
-`db/query/` ディレクトリのSQLファイルを変更した後は、以下のコマンドでGoのコードを再生成する必要があります。
-
-```bash
-sqlc generate
-```
-(このコマンドは `go-backend` ディレクトリで実行してください)
-
 ## 使用ライブラリ
 - [oapi-codegen]
   - OpenAPI仕様書からGoコードを自動生成するツール
@@ -73,6 +18,19 @@ sqlc generate
 - [air]
   - Go製のホットリロードツール
   - `air -c .air.toml`で起動
+- [sqlc]
+  - SQLからGoのコードを自動生成するツール
+  - `go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest` でインストール
+  - `sqlc generate` でコードを生成
+- [golang-migrate]
+  - データベースのマイグレーション管理ツール
+  - `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest` でインストール
+  - `migrate create -ext sql -dir db/migration -seq <name>` でマイグレーションファイルを作成
+  - `migrate -database "postgres://..." -path db/migration up` でマイグレーションを適用
+- [Docker]
+  - 開発用データベースの起動・停止に使用
+  - `docker compose up -d` で起動
+  - `docker compose down` で停止
 
 ## ディレクトリ構成
 ```plaintext
