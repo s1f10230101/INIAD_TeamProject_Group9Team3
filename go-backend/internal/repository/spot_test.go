@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -10,14 +11,14 @@ import (
 )
 
 func TestCreateSpot(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 	inputSpot := &api.SpotInput{
 		Name:        "テスト用観光",
 		Description: "これはテスト用の説明です。",
 		Address:     "東京都テスト区1-2-3",
 	}
 
-	err := repo.CreateSpot(inputSpot)
+	_, err := repo.CreateSpot(context.Background(), inputSpot)
 
 	if err != nil {
 		t.Fatalf("CreateSpot failed, expected no error, but got: %v", err)
@@ -57,10 +58,10 @@ func TestCreateSpot(t *testing.T) {
 func TestGetAllSpots(t *testing.T) {
 	t.Run("Success: Empty slice for empty repository", func(t *testing.T) {
 		// 準備
-		repo := NewPostRepositoryInmemory()
+		repo := NewSpotRepositoryInmemory()
 
 		// 実行
-		spots, err := repo.GetAllSpots()
+		spots, err := repo.GetAllSpots(context.Background())
 
 		// 検証
 		if err != nil {
@@ -76,14 +77,14 @@ func TestGetAllSpots(t *testing.T) {
 
 	t.Run("Success: Returns all spots", func(t *testing.T) {
 		// 準備
-		repo := NewPostRepositoryInmemory()
+		repo := NewSpotRepositoryInmemory()
 		spot1 := api.Spot{Id: uuid.New(), Name: "観光地1", CreatedAt: time.Now()}
 		spot2 := api.Spot{Id: uuid.New(), Name: "観光地2", CreatedAt: time.Now()}
 		repo.postsDB[spot1.Id] = spot1
 		repo.postsDB[spot2.Id] = spot2
 
 		// 実行
-		spots, err := repo.GetAllSpots()
+		spots, err := repo.GetAllSpots(context.Background())
 
 		// 検証
 		if err != nil {
@@ -96,7 +97,7 @@ func TestGetAllSpots(t *testing.T) {
 }
 
 func TestNewPostRepositoryInmemory(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 
 	if repo == nil {
 		t.Fatal("NewPostRepositoryInmemory() returned nil")
@@ -107,7 +108,7 @@ func TestNewPostRepositoryInmemory(t *testing.T) {
 }
 
 func TestGetSpotByID(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 	preloadedSpot := api.Spot{
 		Id:        uuid.New(),
 		Name:      "既存の観光地",
@@ -117,7 +118,7 @@ func TestGetSpotByID(t *testing.T) {
 	repo.postsDB[preloadedSpot.Id] = preloadedSpot
 
 	t.Run("Success: Spot found", func(t *testing.T) {
-		gotSpot, err := repo.GetSpotByID(preloadedSpot.Id)
+		gotSpot, err := repo.GetSpotByID(context.Background(), preloadedSpot.Id)
 		if err != nil {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
@@ -129,7 +130,7 @@ func TestGetSpotByID(t *testing.T) {
 	t.Run("Failure: Spot not found", func(t *testing.T) {
 		// 実行 & 検証
 		nonExistentID := uuid.New()
-		_, err := repo.GetSpotByID(nonExistentID)
+		_, err := repo.GetSpotByID(context.Background(), nonExistentID)
 		if err == nil {
 			t.Fatal("expected an error for non-existent ID, but got nil")
 		}
@@ -137,7 +138,7 @@ func TestGetSpotByID(t *testing.T) {
 }
 
 func TestUpdateSpotByID(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 
 	description := "更新前の説明"
 	address := "更新前の住所"
@@ -160,7 +161,7 @@ func TestUpdateSpotByID(t *testing.T) {
 
 	t.Run("Success: Spot updated", func(t *testing.T) {
 		// 実行
-		updatedSpot, err := repo.UpdateSpotByID(initialSpot.Id, updateInput)
+		updatedSpot, err := repo.UpdateSpotByID(context.Background(), initialSpot.Id, updateInput)
 		if err != nil {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
@@ -184,7 +185,7 @@ func TestUpdateSpotByID(t *testing.T) {
 	t.Run("Failure: Spot not found", func(t *testing.T) {
 		// 実行 & 検証
 		nonExistentID := uuid.New()
-		_, err := repo.UpdateSpotByID(nonExistentID, updateInput)
+		_, err := repo.UpdateSpotByID(context.Background(), nonExistentID, updateInput)
 		if err == nil {
 			t.Fatal("expected an error for non-existent ID, but got nil")
 		}

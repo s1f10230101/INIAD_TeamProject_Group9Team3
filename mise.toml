@@ -1,6 +1,7 @@
 [tools]
 go = "latest"
 lazygit = "latest"
+"npm:@google/gemini-cli" = "latest"
 "npm:@typespec/compiler" = "latest"
 
 [tasks.run]

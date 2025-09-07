@@ -18,6 +18,19 @@
 - [air]
   - Go製のホットリロードツール
   - `air -c .air.toml`で起動
+- [sqlc]
+  - SQLからGoのコードを自動生成するツール
+  - `go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest` でインストール
+  - `sqlc generate` でコードを生成
+- [golang-migrate]
+  - データベースのマイグレーション管理ツール
+  - `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest` でインストール
+  - `migrate create -ext sql -dir db/migration -seq <name>` でマイグレーションファイルを作成
+  - `migrate -database "postgres://..." -path db/migration up` でマイグレーションを適用
+- [Docker]
+  - 開発用データベースの起動・停止に使用
+  - `docker compose up -d` で起動
+  - `docker compose down` で停止
 
 ## ディレクトリ構成
 ```plaintext

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -9,26 +10,26 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
 )
 
-type PostRepositoryInterface interface {
-	GetAllSpots() ([]api.Spot, error)
-	CreateSpot(spot *api.SpotInput) error
-	GetSpotByID(spotId uuid.UUID) (api.Spot, error)
-	UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
+type SpotRepositoryInterface interface {
+	GetAllSpots(ctx context.Context) ([]api.Spot, error)
+	CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error)
+	GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error)
+	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
 }
 
-type postRepositoryInmemory struct {
+type spotRepositoryInmemory struct {
 	mu      sync.RWMutex
 	postsDB map[uuid.UUID]api.Spot
 }
 
-func NewPostRepositoryInmemory() *postRepositoryInmemory {
-	return &postRepositoryInmemory{
+func NewSpotRepositoryInmemory() *spotRepositoryInmemory {
+	return &spotRepositoryInmemory{
 		// マップを初期化
 		postsDB: make(map[uuid.UUID]api.Spot),
 	}
 }
 
-func (r *postRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
+func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -41,7 +42,7 @@ func (r *postRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
 	return AllSavedSpot, nil
 }
 
-func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) error {
+func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -57,10 +58,10 @@ func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) error {
 	}
 
 	r.postsDB[newID] = newSpot
-	return nil
+	return newSpot, nil
 }
 
-func (r *postRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
+func (r *spotRepositoryInmemory) GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	//return r.postsDB[spotId], nil
@@ -72,7 +73,7 @@ func (r *postRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	return spot, nil
 }
 
-func (r *postRepositoryInmemory) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
