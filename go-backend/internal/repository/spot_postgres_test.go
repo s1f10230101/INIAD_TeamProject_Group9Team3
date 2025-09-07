@@ -1,4 +1,4 @@
-package repository_test
+package repository
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository/sqlc"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,7 +40,8 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 	defer tx.Rollback(context.Background())
 
 	// トランザクションを使ってリポジトリを初期化
-	repo := repository.NewPostgresPostRepositoryForTest(tx)
+	q := sqlc.New(tx)
+	repo := &postgresSpotRepository{q: q}
 
 	// --- Test: CreateSpot ---
 	input := &api.SpotInput{
@@ -68,3 +69,4 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 	assert.Equal(t, createdSpot.Name, fetchedSpot.Name)
 	assert.Equal(t, *createdSpot.Description, *fetchedSpot.Description)
 }
+

@@ -85,9 +85,4 @@ func (r *PostgresReviewRepository) GetReviewsBySpotID(spotId uuid.UUID) ([]api.R
 	return apiReviews, nil
 }
 
-// NewPostgresReviewRepositoryForTest はテスト用にトランザクションを受け取るコンストラクタです。
-func NewPostgresReviewRepositoryForTest(tx sqlc.DBTX) ReviewRepositoryInterface {
-	return &PostgresReviewRepository{
-		db: sqlc.New(tx),
-	}
-}
+

@@ -1,11 +1,11 @@
-package repository_test
+package repository
 
 import (
 	"context"
 	"testing"
 
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository/sqlc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -17,8 +17,9 @@ func TestPostgresReviewRepository_CreateAndGetReviews(t *testing.T) {
 	defer tx.Rollback(context.Background())
 
 	// --- Setup: 同じトランザクションでリポジトリを初期化 ---
-	spotRepo := repository.NewPostgresPostRepositoryForTest(tx)
-	reviewRepo := repository.NewPostgresReviewRepositoryForTest(tx)
+	q := sqlc.New(tx)
+	spotRepo := &postgresSpotRepository{q: q}
+	reviewRepo := &PostgresReviewRepository{db: q}
 
 	// --- Setup: レビュー対象のSpotを作成 ---
 	spotInput := &api.SpotInput{

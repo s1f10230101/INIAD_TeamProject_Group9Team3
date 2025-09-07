@@ -97,11 +97,4 @@ func (r *postgresSpotRepository) UpdateSpotByID(spotId uuid.UUID, spot *api.Spot
 	}, nil
 }
 
-// NewPostgresPostRepositoryForTest はテスト用にトランザクションを受け取るコンストラクタです。
-// この関数は repository パッケージのテストでのみ使用されることを想定しています。
-func NewPostgresPostRepositoryForTest(tx sqlc.DBTX) SpotRepositoryInterface {
-	return &postgresSpotRepository{
-		db: nil,
-		q:  sqlc.New(tx),
-	}
-}
+
