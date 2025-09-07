@@ -24,9 +24,7 @@ func NewPostgresReviewRepository(pool *pgxpool.Pool) ReviewRepositoryInterface {
 }
 
 // CreateReview は新しいレビューをDBに作成します。
-func (r *PostgresReviewRepository) CreateReview(spotId uuid.UUID, reviewInput *api.ReviewInput) (*api.Review, error) {
-	ctx := context.Background()
-
+func (r *PostgresReviewRepository) CreateReview(ctx context.Context, spotId uuid.UUID, reviewInput *api.ReviewInput) (*api.Review, error) {
 	// TODO: 本来は認証情報から取得したユーザーIDを使います
 	userID := uuid.New()
 
@@ -61,9 +59,7 @@ func (r *PostgresReviewRepository) CreateReview(spotId uuid.UUID, reviewInput *a
 }
 
 // GetReviewsBySpotID は指定された観光施設のすべてのレビューをDBから取得します。
-func (r *PostgresReviewRepository) GetReviewsBySpotID(spotId uuid.UUID) ([]api.Review, error) {
-	ctx := context.Background()
-
+func (r *PostgresReviewRepository) GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID) ([]api.Review, error) {
 	sqlcReviews, err := r.db.GetReviewsBySpotID(ctx, spotId)
 	if err != nil {
 		return nil, err

@@ -7,7 +7,7 @@ import (
 )
 
 func (s *server) GetSpotsSpotIdReviews(ctx context.Context, request api.GetSpotsSpotIdReviewsRequestObject) (api.GetSpotsSpotIdReviewsResponseObject, error) {
-	reviews, err := s.reviewUC.GetReviewsBySpotID(request.SpotId)
+	reviews, err := s.reviewUC.GetReviewsBySpotID(ctx, request.SpotId)
 	if err != nil {
 		return nil, err
 	}
@@ -15,7 +15,7 @@ func (s *server) GetSpotsSpotIdReviews(ctx context.Context, request api.GetSpots
 }
 
 func (s *server) PostSpotsSpotIdReviews(ctx context.Context, request api.PostSpotsSpotIdReviewsRequestObject) (api.PostSpotsSpotIdReviewsResponseObject, error) {
-	createdReview, err := s.reviewUC.CreateReview(request.SpotId, request.Body)
+	createdReview, err := s.reviewUC.CreateReview(ctx, request.SpotId, request.Body)
 	if err != nil {
 		return nil, err
 	}

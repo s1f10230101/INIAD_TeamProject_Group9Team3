@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
@@ -8,8 +10,8 @@ import (
 
 // ReviewUseCaseInterface はレビューに関するビジネスロジックのインターフェースです。
 type ReviewUseCaseInterface interface {
-	GetReviewsBySpotID(spotId uuid.UUID) ([]api.Review, error)
-	CreateReview(spotId uuid.UUID, review *api.ReviewInput) (*api.Review, error)
+	GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID) ([]api.Review, error)
+	CreateReview(ctx context.Context, spotId uuid.UUID, review *api.ReviewInput) (*api.Review, error)
 }
 
 type reviewUseCase struct {
@@ -23,10 +25,10 @@ func NewReviewUseCase(repo repository.ReviewRepositoryInterface) ReviewUseCaseIn
 	}
 }
 
-func (u *reviewUseCase) GetReviewsBySpotID(spotId uuid.UUID) ([]api.Review, error) {
-	return u.reviewRepo.GetReviewsBySpotID(spotId)
+func (u *reviewUseCase) GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID) ([]api.Review, error) {
+	return u.reviewRepo.GetReviewsBySpotID(ctx, spotId)
 }
 
-func (u *reviewUseCase) CreateReview(spotId uuid.UUID, review *api.ReviewInput) (*api.Review, error) {
-	return u.reviewRepo.CreateReview(spotId, review)
+func (u *reviewUseCase) CreateReview(ctx context.Context, spotId uuid.UUID, review *api.ReviewInput) (*api.Review, error) {
+	return u.reviewRepo.CreateReview(ctx, spotId, review)
 }

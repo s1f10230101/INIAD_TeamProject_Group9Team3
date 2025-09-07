@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -10,8 +11,8 @@ import (
 
 // ReviewRepositoryInterface はレビューデータの永続化を担うインターフェースです。
 type ReviewRepositoryInterface interface {
-	GetReviewsBySpotID(spotId uuid.UUID) ([]api.Review, error)
-	CreateReview(spotId uuid.UUID, review *api.ReviewInput) (*api.Review, error)
+	CreateReview(ctx context.Context, spotId uuid.UUID, reviewInput *api.ReviewInput) (*api.Review, error)
+	GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID) ([]api.Review, error)
 }
 
 type reviewRepositoryInmemory struct {
@@ -27,7 +28,7 @@ func NewReviewRepositoryInmemory() ReviewRepositoryInterface {
 }
 
 // GetReviewsBySpotID は指定された観光施設のすべてのレビューを取得します。
-func (r *reviewRepositoryInmemory) GetReviewsBySpotID(spotId uuid.UUID) ([]api.Review, error) {
+func (r *reviewRepositoryInmemory) GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID) ([]api.Review, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -42,7 +43,7 @@ func (r *reviewRepositoryInmemory) GetReviewsBySpotID(spotId uuid.UUID) ([]api.R
 }
 
 // CreateReview は新しいレビューを作成します。
-func (r *reviewRepositoryInmemory) CreateReview(spotId uuid.UUID, reviewInput *api.ReviewInput) (*api.Review, error) {
+func (r *reviewRepositoryInmemory) CreateReview(ctx context.Context, spotId uuid.UUID, reviewInput *api.ReviewInput) (*api.Review, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

@@ -50,7 +50,7 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 		Address:     "東京都テスト区",
 	}
 
-	createdSpot, err := repo.CreateSpot(input)
+	createdSpot, err := repo.CreateSpot(context.Background(), input)
 	assert.NoError(t, err)
 
 	// --- Assert: CreateSpotの結果を検証 ---
@@ -61,7 +61,7 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 	assert.NotZero(t, createdSpot.CreatedAt)
 
 	// --- Test: GetSpotByID (同じトランザクション内で取得) ---
-	fetchedSpot, err := repo.GetSpotByID(createdSpot.Id)
+	fetchedSpot, err := repo.GetSpotByID(context.Background(), createdSpot.Id)
 	assert.NoError(t, err)
 
 	// --- Assert: GetSpotByIDの結果を検証 ---

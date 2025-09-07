@@ -7,12 +7,12 @@ import (
 )
 
 func (s *server) GetSpots(ctx context.Context, request api.GetSpotsRequestObject) (api.GetSpotsResponseObject, error) {
-	spots, err := s.postUC.GetAllSpots()
+	spots, err := s.postUC.GetAllSpots(ctx)
 	return api.GetSpots200JSONResponse(spots), err
 }
 
 func (s *server) PostSpots(ctx context.Context, request api.PostSpotsRequestObject) (api.PostSpotsResponseObject, error) {
-	createdSpot, err := s.postUC.CreateSpot(request.Body)
+	createdSpot, err := s.postUC.CreateSpot(ctx, request.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func (s *server) PostSpots(ctx context.Context, request api.PostSpotsRequestObje
 
 func (s *server) GetSpotsSpotId(ctx context.Context, request api.GetSpotsSpotIdRequestObject) (api.GetSpotsSpotIdResponseObject, error) {
 	spotId := request.SpotId
-	spot, err := s.postUC.GetSpotByID(spotId)
+	spot, err := s.postUC.GetSpotByID(ctx, spotId)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s *server) GetSpotsSpotId(ctx context.Context, request api.GetSpotsSpotIdR
 
 func (s *server) PutSpotsSpotId(ctx context.Context, request api.PutSpotsSpotIdRequestObject) (api.PutSpotsSpotIdResponseObject, error) {
 	spotId := request.SpotId
-	spot, err := s.postUC.UpdateSpotByID(spotId, request.Body)
+	spot, err := s.postUC.UpdateSpotByID(ctx, spotId, request.Body)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -10,10 +11,10 @@ import (
 )
 
 type SpotRepositoryInterface interface {
-	GetAllSpots() ([]api.Spot, error)
-	CreateSpot(spot *api.SpotInput) (api.Spot, error)
-	GetSpotByID(spotId uuid.UUID) (api.Spot, error)
-	UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
+	GetAllSpots(ctx context.Context) ([]api.Spot, error)
+	CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error)
+	GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error)
+	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
 }
 
 type spotRepositoryInmemory struct {
@@ -28,7 +29,7 @@ func NewSpotRepositoryInmemory() *spotRepositoryInmemory {
 	}
 }
 
-func (r *spotRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
+func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -41,7 +42,7 @@ func (r *spotRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
 	return AllSavedSpot, nil
 }
 
-func (r *spotRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -60,7 +61,7 @@ func (r *spotRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, erro
 	return newSpot, nil
 }
 
-func (r *spotRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
+func (r *spotRepositoryInmemory) GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	//return r.postsDB[spotId], nil
@@ -72,7 +73,7 @@ func (r *spotRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	return spot, nil
 }
 
-func (r *spotRepositoryInmemory) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

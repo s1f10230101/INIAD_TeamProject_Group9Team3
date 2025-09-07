@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -17,7 +18,7 @@ func TestCreateSpot(t *testing.T) {
 		Address:     "東京都テスト区1-2-3",
 	}
 
-	_, err := repo.CreateSpot(inputSpot)
+	_, err := repo.CreateSpot(context.Background(), inputSpot)
 
 	if err != nil {
 		t.Fatalf("CreateSpot failed, expected no error, but got: %v", err)
@@ -60,7 +61,7 @@ func TestGetAllSpots(t *testing.T) {
 		repo := NewSpotRepositoryInmemory()
 
 		// 実行
-		spots, err := repo.GetAllSpots()
+		spots, err := repo.GetAllSpots(context.Background())
 
 		// 検証
 		if err != nil {
@@ -83,7 +84,7 @@ func TestGetAllSpots(t *testing.T) {
 		repo.postsDB[spot2.Id] = spot2
 
 		// 実行
-		spots, err := repo.GetAllSpots()
+		spots, err := repo.GetAllSpots(context.Background())
 
 		// 検証
 		if err != nil {
@@ -117,7 +118,7 @@ func TestGetSpotByID(t *testing.T) {
 	repo.postsDB[preloadedSpot.Id] = preloadedSpot
 
 	t.Run("Success: Spot found", func(t *testing.T) {
-		gotSpot, err := repo.GetSpotByID(preloadedSpot.Id)
+		gotSpot, err := repo.GetSpotByID(context.Background(), preloadedSpot.Id)
 		if err != nil {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
@@ -129,7 +130,7 @@ func TestGetSpotByID(t *testing.T) {
 	t.Run("Failure: Spot not found", func(t *testing.T) {
 		// 実行 & 検証
 		nonExistentID := uuid.New()
-		_, err := repo.GetSpotByID(nonExistentID)
+		_, err := repo.GetSpotByID(context.Background(), nonExistentID)
 		if err == nil {
 			t.Fatal("expected an error for non-existent ID, but got nil")
 		}
@@ -160,7 +161,7 @@ func TestUpdateSpotByID(t *testing.T) {
 
 	t.Run("Success: Spot updated", func(t *testing.T) {
 		// 実行
-		updatedSpot, err := repo.UpdateSpotByID(initialSpot.Id, updateInput)
+		updatedSpot, err := repo.UpdateSpotByID(context.Background(), initialSpot.Id, updateInput)
 		if err != nil {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
@@ -184,7 +185,7 @@ func TestUpdateSpotByID(t *testing.T) {
 	t.Run("Failure: Spot not found", func(t *testing.T) {
 		// 実行 & 検証
 		nonExistentID := uuid.New()
-		_, err := repo.UpdateSpotByID(nonExistentID, updateInput)
+		_, err := repo.UpdateSpotByID(context.Background(), nonExistentID, updateInput)
 		if err == nil {
 			t.Fatal("expected an error for non-existent ID, but got nil")
 		}

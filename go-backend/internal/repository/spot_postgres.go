@@ -22,8 +22,8 @@ func NewPostgresPostRepository(db *pgxpool.Pool) SpotRepositoryInterface {
 	}
 }
 
-func (r *postgresSpotRepository) GetAllSpots() ([]api.Spot, error) {
-	rows, err := r.q.ListSpots(context.Background())
+func (r *postgresSpotRepository) GetAllSpots(ctx context.Context) ([]api.Spot, error) {
+	rows, err := r.q.ListSpots(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (r *postgresSpotRepository) GetAllSpots() ([]api.Spot, error) {
 	return spots, nil
 }
 
-func (r *postgresSpotRepository) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
+func (r *postgresSpotRepository) CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error) {
 	newID := uuid.New()
 	params := sqlc.CreateSpotParams{
 		ID:          newID,
@@ -49,7 +49,7 @@ func (r *postgresSpotRepository) CreateSpot(spot *api.SpotInput) (api.Spot, erro
 		Description: spot.Description,
 		Address:     spot.Address,
 	}
-	created, err := r.q.CreateSpot(context.Background(), params)
+	created, err := r.q.CreateSpot(ctx, params)
 	if err != nil {
 		return api.Spot{}, err
 	}
@@ -63,8 +63,8 @@ func (r *postgresSpotRepository) CreateSpot(spot *api.SpotInput) (api.Spot, erro
 	}, nil
 }
 
-func (r *postgresSpotRepository) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
-	row, err := r.q.GetSpot(context.Background(), spotId)
+func (r *postgresSpotRepository) GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error) {
+	row, err := r.q.GetSpot(ctx, spotId)
 	if err != nil {
 		return api.Spot{}, err
 	}
@@ -77,14 +77,14 @@ func (r *postgresSpotRepository) GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	}, nil
 }
 
-func (r *postgresSpotRepository) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
 	params := sqlc.UpdateSpotParams{
 		ID:          spotId,
 		Name:        spot.Name,
 		Description: spot.Description,
 		Address:     spot.Address,
 	}
-	updated, err := r.q.UpdateSpot(context.Background(), params)
+	updated, err := r.q.UpdateSpot(ctx, params)
 	if err != nil {
 		return api.Spot{}, err
 	}

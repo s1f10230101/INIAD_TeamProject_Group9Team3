@@ -27,7 +27,7 @@ func TestPostgresReviewRepository_CreateAndGetReviews(t *testing.T) {
 		Description: "レビューのインテグレーションテスト",
 		Address:     "東京都",
 	}
-	createdSpot, err := spotRepo.CreateSpot(spotInput)
+	createdSpot, err := spotRepo.CreateSpot(context.Background(), spotInput)
 	require.NoError(t, err)
 
 	// --- Test: CreateReview ---
@@ -37,7 +37,7 @@ func TestPostgresReviewRepository_CreateAndGetReviews(t *testing.T) {
 		Comment: &comment,
 	}
 
-	createdReview, err := reviewRepo.CreateReview(createdSpot.Id, reviewInput)
+	createdReview, err := reviewRepo.CreateReview(context.Background(), createdSpot.Id, reviewInput)
 	require.NoError(t, err)
 
 	// --- Assert: CreateReviewの結果を検証 ---
@@ -49,7 +49,7 @@ func TestPostgresReviewRepository_CreateAndGetReviews(t *testing.T) {
 	assert.NotZero(t, createdReview.CreatedAt)
 
 	// --- Test: GetReviewsBySpotID ---
-	reviews, err := reviewRepo.GetReviewsBySpotID(createdSpot.Id)
+	reviews, err := reviewRepo.GetReviewsBySpotID(context.Background(), createdSpot.Id)
 	require.NoError(t, err)
 
 	// --- Assert: GetReviewsBySpotIDの結果を検証 ---
