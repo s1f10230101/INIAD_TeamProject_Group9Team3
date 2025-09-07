@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreateSpot(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 	inputSpot := &api.SpotInput{
 		Name:        "テスト用観光",
 		Description: "これはテスト用の説明です。",
@@ -57,7 +57,7 @@ func TestCreateSpot(t *testing.T) {
 func TestGetAllSpots(t *testing.T) {
 	t.Run("Success: Empty slice for empty repository", func(t *testing.T) {
 		// 準備
-		repo := NewPostRepositoryInmemory()
+		repo := NewSpotRepositoryInmemory()
 
 		// 実行
 		spots, err := repo.GetAllSpots()
@@ -76,7 +76,7 @@ func TestGetAllSpots(t *testing.T) {
 
 	t.Run("Success: Returns all spots", func(t *testing.T) {
 		// 準備
-		repo := NewPostRepositoryInmemory()
+		repo := NewSpotRepositoryInmemory()
 		spot1 := api.Spot{Id: uuid.New(), Name: "観光地1", CreatedAt: time.Now()}
 		spot2 := api.Spot{Id: uuid.New(), Name: "観光地2", CreatedAt: time.Now()}
 		repo.postsDB[spot1.Id] = spot1
@@ -96,7 +96,7 @@ func TestGetAllSpots(t *testing.T) {
 }
 
 func TestNewPostRepositoryInmemory(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 
 	if repo == nil {
 		t.Fatal("NewPostRepositoryInmemory() returned nil")
@@ -107,7 +107,7 @@ func TestNewPostRepositoryInmemory(t *testing.T) {
 }
 
 func TestGetSpotByID(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 	preloadedSpot := api.Spot{
 		Id:        uuid.New(),
 		Name:      "既存の観光地",
@@ -137,7 +137,7 @@ func TestGetSpotByID(t *testing.T) {
 }
 
 func TestUpdateSpotByID(t *testing.T) {
-	repo := NewPostRepositoryInmemory()
+	repo := NewSpotRepositoryInmemory()
 
 	description := "更新前の説明"
 	address := "更新前の住所"

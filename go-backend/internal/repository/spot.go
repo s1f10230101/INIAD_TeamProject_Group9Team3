@@ -16,19 +16,19 @@ type SpotRepositoryInterface interface {
 	UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
 }
 
-type postRepositoryInmemory struct {
+type spotRepositoryInmemory struct {
 	mu      sync.RWMutex
 	postsDB map[uuid.UUID]api.Spot
 }
 
-func NewPostRepositoryInmemory() *postRepositoryInmemory {
-	return &postRepositoryInmemory{
+func NewSpotRepositoryInmemory() *spotRepositoryInmemory {
+	return &spotRepositoryInmemory{
 		// マップを初期化
 		postsDB: make(map[uuid.UUID]api.Spot),
 	}
 }
 
-func (r *postRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
+func (r *spotRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
@@ -41,7 +41,7 @@ func (r *postRepositoryInmemory) GetAllSpots() ([]api.Spot, error) {
 	return AllSavedSpot, nil
 }
 
-func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -60,7 +60,7 @@ func (r *postRepositoryInmemory) CreateSpot(spot *api.SpotInput) (api.Spot, erro
 	return newSpot, nil
 }
 
-func (r *postRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
+func (r *spotRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	//return r.postsDB[spotId], nil
@@ -72,7 +72,7 @@ func (r *postRepositoryInmemory) GetSpotByID(spotId uuid.UUID) (api.Spot, error)
 	return spot, nil
 }
 
-func (r *postRepositoryInmemory) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

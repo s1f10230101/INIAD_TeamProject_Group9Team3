@@ -11,11 +11,11 @@ import (
 
 func setupTestRouter() http.Handler {
 	// 1. レポジトリの初期化
-	postRepositoryInmemory := repository.NewPostRepositoryInmemory()
-	reviewRepository := repository.NewReviewRepositoryInmemory()
+	spotRepositoryInmemory := repository.NewSpotRepositoryInmemory()
+	reviewRepositoryInmemory := repository.NewReviewRepositoryInmemory()
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepositoryInmemory)
-	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
+	postUsecase := usecase.NewPostUseCase(spotRepositoryInmemory)
+	reviewUsecase := usecase.NewReviewUseCase(reviewRepositoryInmemory)
 	// 3. ハンドラを作成し、ユースケースを注入
 	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
 	handler := api.NewStrictHandler(serverMethods, nil)
