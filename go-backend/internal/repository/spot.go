@@ -9,7 +9,7 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
 )
 
-type PostRepositoryInterface interface {
+type SpotRepositoryInterface interface {
 	GetAllSpots() ([]api.Spot, error)
 	CreateSpot(spot *api.SpotInput) (api.Spot, error)
 	GetSpotByID(spotId uuid.UUID) (api.Spot, error)

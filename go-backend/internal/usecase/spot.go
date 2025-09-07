@@ -15,10 +15,10 @@ type PostUseCaseInterface interface {
 }
 
 type postUseCase struct {
-	repository repository.PostRepositoryInterface
+	repository repository.SpotRepositoryInterface
 }
 
-func NewPostUseCase(repo repository.PostRepositoryInterface) *postUseCase {
+func NewPostUseCase(repo repository.SpotRepositoryInterface) *postUseCase {
 	return &postUseCase{
 		repository: repo,
 	}

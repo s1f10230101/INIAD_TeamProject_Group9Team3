@@ -9,20 +9,20 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository/sqlc"
 )
 
-type postgresSpostRepository struct {
+type postgresSpotRepository struct {
 	db *pgxpool.Pool
 	q  *sqlc.Queries
 }
 
 // NewPostgresPostRepository は新しいpostgresPostRepositoryのインスタンスを生成
-func NewPostgresPostRepository(db *pgxpool.Pool) PostRepositoryInterface {
-	return &postgresSpostRepository{
+func NewPostgresPostRepository(db *pgxpool.Pool) SpotRepositoryInterface {
+	return &postgresSpotRepository{
 		db: db,
 		q:  sqlc.New(db),
 	}
 }
 
-func (r *postgresSpostRepository) GetAllSpots() ([]api.Spot, error) {
+func (r *postgresSpotRepository) GetAllSpots() ([]api.Spot, error) {
 	rows, err := r.q.ListSpots(context.Background())
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (r *postgresSpostRepository) GetAllSpots() ([]api.Spot, error) {
 	return spots, nil
 }
 
-func (r *postgresSpostRepository) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
+func (r *postgresSpotRepository) CreateSpot(spot *api.SpotInput) (api.Spot, error) {
 	newID := uuid.New()
 	params := sqlc.CreateSpotParams{
 		ID:          newID,
@@ -63,7 +63,7 @@ func (r *postgresSpostRepository) CreateSpot(spot *api.SpotInput) (api.Spot, err
 	}, nil
 }
 
-func (r *postgresSpostRepository) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
+func (r *postgresSpotRepository) GetSpotByID(spotId uuid.UUID) (api.Spot, error) {
 	row, err := r.q.GetSpot(context.Background(), spotId)
 	if err != nil {
 		return api.Spot{}, err
@@ -77,7 +77,7 @@ func (r *postgresSpostRepository) GetSpotByID(spotId uuid.UUID) (api.Spot, error
 	}, nil
 }
 
-func (r *postgresSpostRepository) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *postgresSpotRepository) UpdateSpotByID(spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
 	params := sqlc.UpdateSpotParams{
 		ID:          spotId,
 		Name:        spot.Name,
@@ -99,8 +99,8 @@ func (r *postgresSpostRepository) UpdateSpotByID(spotId uuid.UUID, spot *api.Spo
 
 // NewPostgresPostRepositoryForTest はテスト用にトランザクションを受け取るコンストラクタです。
 // この関数は repository パッケージのテストでのみ使用されることを想定しています。
-func NewPostgresPostRepositoryForTest(tx sqlc.DBTX) PostRepositoryInterface {
-	return &postgresSpostRepository{
+func NewPostgresPostRepositoryForTest(tx sqlc.DBTX) SpotRepositoryInterface {
+	return &postgresSpotRepository{
 		db: nil,
 		q:  sqlc.New(tx),
 	}
