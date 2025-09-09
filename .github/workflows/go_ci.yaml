@@ -53,6 +53,6 @@ jobs:
 
       - name: Run tests
         run: |
-          go test ./...
+          go test -tags="integration" ./... -v
         env:
           DB_HOST: 127.0.0.1

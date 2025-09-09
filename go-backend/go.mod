@@ -6,8 +6,8 @@ require (
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.5.4
+	github.com/lib/pq v1.10.9
 	github.com/oapi-codegen/runtime v1.1.2
-	github.com/stretchr/testify v1.10.0
 )
 
 require (
@@ -65,7 +65,6 @@ require (
 	github.com/creack/pty v1.1.24 // indirect
 	github.com/cznic/mathutil v0.0.0-20180504122225-ca4c9f2c1369 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
 	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
 	github.com/edsrzf/mmap-go v0.0.0-20170320065105-0bce6a688712 // indirect
@@ -122,7 +121,6 @@ require (
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/ktrysmt/go-bitbucket v0.6.4 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -146,7 +144,6 @@ require (
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rqlite/gorqlite v0.0.0-20230708021416-2acd02b70b79 // indirect
 	github.com/shopspring/decimal v1.2.0 // indirect

@@ -7,91 +7,128 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
 type SpotRepositoryInterface interface {
-	GetAllSpots(ctx context.Context) ([]api.Spot, error)
-	CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error)
-	GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error)
-	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error)
+	GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error)
+	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
+	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
+	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
 }
 
 type spotRepositoryInmemory struct {
 	mu      sync.RWMutex
-	postsDB map[uuid.UUID]api.Spot
+	postsDB map[uuid.UUID]spotModel
 }
+
+type spotModel struct {
+	Id          uuid.UUID `db:"id"`
+	Name        string    `db:"name"`
+	Description string    `db:"description"`
+	Address     string    `db:"address"`
+	CreatedAt   time.Time `db:"created_at"`
+}
+
+var _ SpotRepositoryInterface = (*spotRepositoryInmemory)(nil)
 
 func NewSpotRepositoryInmemory() *spotRepositoryInmemory {
 	return &spotRepositoryInmemory{
 		// マップを初期化
-		postsDB: make(map[uuid.UUID]api.Spot),
+		postsDB: make(map[uuid.UUID]spotModel),
 	}
 }
 
-func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]api.Spot, error) {
+func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	AllSavedSpot := make([]api.Spot, 0, len(r.postsDB))
+	AllSavedSpot := make([]oapi.SpotResponse, 0, len(r.postsDB))
 
 	for _, spot := range r.postsDB {
-		AllSavedSpot = append(AllSavedSpot, spot)
+		AllSavedSpot = append(AllSavedSpot, oapi.SpotResponse{
+			Id:          spot.Id,
+			Name:        spot.Name,
+			Description: spot.Description,
+			Address:     spot.Address,
+			CreatedAt:   spot.CreatedAt.UTC(),
+		})
 	}
 
 	return AllSavedSpot, nil
 }
 
-func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	newID := uuid.New()
 	now := time.Now()
 
-	newSpot := api.Spot{
+	newSpot := spotModel{
 		Id:          newID,
 		Name:        spot.Name,
-		Description: &spot.Description,
-		Address:     &spot.Address,
-		CreatedAt:   now,
+		Description: spot.Description,
+		Address:     spot.Address,
+		CreatedAt:   now.UTC(),
 	}
 
 	r.postsDB[newID] = newSpot
-	return newSpot, nil
+	return oapi.SpotResponse{
+		Id:          newSpot.Id,
+		Name:        newSpot.Name,
+		Description: newSpot.Description,
+		Address:     newSpot.Address,
+		CreatedAt:   newSpot.CreatedAt.UTC(),
+	}, nil
 }
 
-func (r *spotRepositoryInmemory) GetSpotByID(ctx context.Context, spotId uuid.UUID) (api.Spot, error) {
+func (r *spotRepositoryInmemory) GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
-	//return r.postsDB[spotId], nil
 	spot, ok := r.postsDB[spotId]
 	if !ok {
-		return api.Spot{}, fmt.Errorf("spot with ID %v not found", spotId)
+		return oapi.SpotResponse{}, fmt.Errorf("spot with ID %v not found", spotId)
 	}
 
-	return spot, nil
+	return oapi.SpotResponse{
+		Id:          spot.Id,
+		Name:        spot.Name,
+		Description: spot.Description,
+		Address:     spot.Address,
+		CreatedAt:   spot.CreatedAt.UTC(),
+	}, nil
 }
 
-func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *api.SpotInput) (api.Spot, error) {
+func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	// 更新対象のデータが存在するか確認
 	existingSpot, ok := r.postsDB[spotId]
 	if !ok {
-		return api.Spot{}, fmt.Errorf("spot with ID %v not found", spotId)
+		return oapi.SpotResponse{}, fmt.Errorf("spot with ID %v not found", spotId)
 	}
 
-	// 既存のデータのフィールドを新しい情報で上書きする
-	existingSpot.Name = spot.Name
-	existingSpot.Description = &spot.Description
-	existingSpot.Address = &spot.Address
-	// IDとCreatedAtは変更しない
+	// データを更新
+	if spot.Name != nil {
+		existingSpot.Name = *spot.Name
+	}
+	if spot.Description != nil {
+		existingSpot.Description = *spot.Description
+	}
+	if spot.Address != nil {
+		existingSpot.Address = *spot.Address
+	}
 
-	// 更新したデータをマップに再保存する
+	// マップに更新後のデータを保存
 	r.postsDB[spotId] = existingSpot
 
-	// 更新後のデータを返す
-	return existingSpot, nil
+	return oapi.SpotResponse{
+		Id:          existingSpot.Id,
+		Name:        existingSpot.Name,
+		Description: existingSpot.Description,
+		Address:     existingSpot.Address,
+		CreatedAt:   existingSpot.CreatedAt.UTC(),
+	}, nil
 }

@@ -14,9 +14,11 @@
 ## 使用ライブラリ
 - [oapi-codegen]
   - OpenAPI仕様書からGoコードを自動生成するツール
-  - 自動生成コードの更新`oapi-codegen --config=api/oapi_config.yaml ../openapi.yaml`
+  - `go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest` でインストール
+  - `oapi-codegen --config=oapi/oapi_config.yaml ../openapi.1.0.yaml` でコードを生成
 - [air]
   - Go製のホットリロードツール
+  - `go install github.com/cosmtrek/air@latest` でインストール
   - `air -c .air.toml`で起動
 - [sqlc]
   - SQLからGoのコードを自動生成するツール
@@ -53,3 +55,13 @@
   - アプリケーションの本体です。HTTPのことは何も知りません。「投稿を作成する」といった純粋なビジネスロジックを担当します。
 * **Repository層**
   - データの保存場所です。Usecaseから依頼を受けて、メモリやデータベースにデータを保存・取得します。  
+
+## テスト
+- 各層ごとにユニットテストを実装
+- 統合テストについて
+  - dbなどの外部依存関係を含むテストは`//go:build integration`でビルドタグを付与して分離
+  - `go test ./... -v` で統合テスト以外のテストを実行
+  - `go test -tags="integration" ./... -v` で統合テスト含む全てのテストを実行
+    - `docker compose up db -d`で依存関係の起動が必要
+- テストコードのエラーメッセージにはなるべく日本語を使用するようにします。
+  - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つ
