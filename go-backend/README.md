@@ -63,5 +63,6 @@
   - `go test ./... -v` で統合テスト以外のテストを実行
   - `go test -tags="integration" ./... -v` で統合テスト含む全てのテストを実行
     - `docker compose up db -d`で依存関係の起動が必要
+    - 考えてみれば`docker compose run --rm backend-dev go test -tags="integration" ./... -v`1コマンドで良いかも
 - テストコードのエラーメッセージにはなるべく日本語を使用するようにします。
-  - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つ
+  - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つて見やすい

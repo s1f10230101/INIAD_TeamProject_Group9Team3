@@ -31,16 +31,18 @@ jobs:
         # サービスが準備完了したことを確認するためのヘルスチェック
         options: >-
           --health-cmd pg_isready
-          --health-interval 10s
+          --health-interval 4s
           --health-timeout 5s
           --health-retries 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v6
         with:
           go-version: '1.25'
+          cache-dependency-path: |
+            go-backend/go.sum
       - name: Install dependencies
         run: |
           go mod download
