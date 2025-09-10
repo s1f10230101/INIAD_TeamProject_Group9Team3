@@ -16,8 +16,10 @@ model Prompt {
 }
 
 @mediaTypeHint("text/event-stream")
-@encodedName("text/event-stream", "txt")
 model PlanResponse {
+    // @header `Cache-Control`: "no-cache",
+    // @header `Connection`: "keep-alive",
+
     @doc("プランの名称")
     name: string;
     @doc("プランの詳細説明")

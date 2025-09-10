@@ -39,14 +39,15 @@ func main() {
 
 	// 3. ハンドラを作成し、ユースケースを注入
 	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
-	handler := oapi.NewStrictHandler(serverMethods, nil)
+	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
-	server := http.NewServeMux()
+	server := oapi.HandlerWithOptions(handlerFuncs, oapi.StdHTTPServerOptions{
+		BaseURL:    "/v1",
+		BaseRouter: http.NewServeMux(),
+	})
 
 	// 5. ハンドラをサーバーに登録
-	oapi.HandlerFromMuxWithBaseURL(handler, server, "/v1")
-
 	log.Println("Server is running on http://localhost:8080/v1")
 	if err := http.ListenAndServe(":8080", server); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

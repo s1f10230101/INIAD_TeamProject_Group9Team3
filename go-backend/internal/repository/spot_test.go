@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/oapi-codegen/nullable"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
@@ -157,9 +158,9 @@ func TestUpdateSpotByID(t *testing.T) {
 	addressUpdated := "更新後の住所"
 
 	updateInput := oapi.SpotUpdate{
-		Name:        &name,
-		Description: &descriptionUpdated,
-		Address:     &addressUpdated,
+		Name:        nullable.NewNullableWithValue(name),
+		Description: nullable.NewNullableWithValue(descriptionUpdated),
+		Address:     nullable.NewNullableWithValue(addressUpdated),
 	}
 
 	t.Run("Success: Spot updated", func(t *testing.T) {
@@ -170,11 +171,11 @@ func TestUpdateSpotByID(t *testing.T) {
 		}
 
 		// 検証
-		if updatedSpot.Name != *updateInput.Name {
-			t.Errorf("expected name to be '%s', but got '%s'", *updateInput.Name, updatedSpot.Name)
+		if updateInputName := updateInput.Name.MustGet(); updatedSpot.Name != updateInputName {
+			t.Errorf("期待される名前は '%s' ですが、実際の名前は '%v' です", updateInputName, updatedSpot.Name)
 		}
-		if updatedSpot.Description != *updateInput.Description {
-			t.Errorf("expected description to be '%s', but got '%v'", *updateInput.Description, updatedSpot.Description)
+		if updateInputDescription := updateInput.Description.MustGet(); updatedSpot.Description != updateInputDescription {
+			t.Errorf("期待される説明は '%s' ですが、実際の説明は '%v' です", updateInputDescription, updatedSpot.Description)
 		}
 		// IDとCreatedAtが変更されていないことを確認
 		if updatedSpot.Id != initialSpot.Id {

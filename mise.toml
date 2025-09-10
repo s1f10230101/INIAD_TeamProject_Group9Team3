@@ -28,3 +28,10 @@ depends = "test:*"
 description = "Goバックエンドのテストを実行します"
 dir = "go-backend"
 run = "mise run run:python-ai & go test ./... -v"
+
+
+[tasks.genoapi]
+description = "TypeSpecからOpenAPI仕様からスタブコードを生成します"
+run = [
+    "cd spec && tsp compile ./src/main.tsp",
+    "cd go-backend && oapi-codegen --config=oapi/oapi_config.yaml ../openapi.1.0.yaml"]

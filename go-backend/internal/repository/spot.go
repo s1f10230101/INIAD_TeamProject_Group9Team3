@@ -111,14 +111,14 @@ func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid
 	}
 
 	// データを更新
-	if spot.Name != nil {
-		existingSpot.Name = *spot.Name
+	if newName, err := spot.Name.Get(); err == nil {
+		existingSpot.Name = newName
 	}
-	if spot.Description != nil {
-		existingSpot.Description = *spot.Description
+	if newDescription, err := spot.Description.Get(); err == nil {
+		existingSpot.Description = newDescription
 	}
-	if spot.Address != nil {
-		existingSpot.Address = *spot.Address
+	if newAddress, err := spot.Address.Get(); err == nil {
+		existingSpot.Address = newAddress
 	}
 
 	// マップに更新後のデータを保存

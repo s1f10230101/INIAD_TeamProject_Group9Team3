@@ -18,10 +18,16 @@ func setupTestRouter() http.Handler {
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepositoryInmemory)
 	// 3. ハンドラを作成し、ユースケースを注入
 	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
-	handler := oapi.NewStrictHandler(serverMethods, nil)
+	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
-	server := http.NewServeMux()
 	// 5. ハンドラをサーバーに登録
-	oapi.HandlerFromMuxWithBaseURL(handler, server, "/v1")
+	server := oapi.HandlerWithOptions(handlerFuncs, oapi.StdHTTPServerOptions{
+		BaseURL:    "/v1",
+		BaseRouter: http.NewServeMux(),
+		Middlewares: []oapi.MiddlewareFunc{
+			handler.LoggingMiddleware,
+			handler.CorsMiddleware,
+		},
+	})
 	return server
 }

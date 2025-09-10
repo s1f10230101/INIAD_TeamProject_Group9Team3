@@ -24,13 +24,13 @@ model SpotResister {
 
 model SpotUpdate {
   @doc("観光スポットの名称")
-  name?: string;
+  name: string | null;
 
   @doc("観光スポットの説明")
-  description?: string;
+  description: string | null;
 
   @doc("観光スポットの所在地")
-  address?: string;
+  address: string | null;
 }
 
 model SpotResponse {

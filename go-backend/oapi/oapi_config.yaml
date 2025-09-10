@@ -6,6 +6,8 @@ generate:
   models: true
   embedded-spec: true
   # client: true
+output-options:
+  nullable-type: true
 additional-imports:
   - package: github.com/google/uuid
     alias: uuid

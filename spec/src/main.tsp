@@ -40,3 +40,10 @@ model Error<StatusCode extends integer> {
   @statusCode _: StatusCode;
   message: string;
 }
+
+
+@route("/")
+interface HealthCheck {
+  @doc("APIの起動確認用エンドポイント")
+  @get OpenAPI(): string | Error<500>;
+}

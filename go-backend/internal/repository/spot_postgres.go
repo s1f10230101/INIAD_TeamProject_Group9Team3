@@ -84,14 +84,14 @@ func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid
 		return oapi.SpotResponse{}, err
 	}
 
-	if spot.Name != nil {
-		newSpot.Name = *spot.Name
+	if newName, err := spot.Name.Get(); err == nil {
+		newSpot.Name = newName
 	}
-	if spot.Description != nil {
-		newSpot.Description = *spot.Description
+	if newDescription, err := spot.Description.Get(); err == nil {
+		newSpot.Description = newDescription
 	}
-	if spot.Address != nil {
-		newSpot.Address = *spot.Address
+	if newAddress, err := spot.Address.Get(); err == nil {
+		newSpot.Address = newAddress
 	}
 	params := sqlc.UpdateSpotParams{
 		ID:          spotId,
