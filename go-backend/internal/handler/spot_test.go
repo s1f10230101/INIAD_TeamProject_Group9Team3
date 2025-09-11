@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
-	"github.com/stretchr/testify/assert"
+	"github.com/google/uuid"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
 func TestPostAndGetSpot(t *testing.T) {
@@ -17,7 +17,7 @@ func TestPostAndGetSpot(t *testing.T) {
 
 	// --- execute POST ---
 	// 1. 新しい観光施設を登録する
-	spotInput := api.SpotInput{
+	spotInput := oapi.SpotResister{
 		Name:        "テスト用観光地",
 		Description: "これはハンドラテスト用の素晴らしい観光地です。",
 		Address:     "東京都テスト区テスト1-1-1",
@@ -29,19 +29,31 @@ func TestPostAndGetSpot(t *testing.T) {
 
 	router.ServeHTTP(recPost, reqPost)
 
-	// --- assert POST ---
-	assert.Equal(t, http.StatusCreated, recPost.Code)
-
+	if recPost.Code != http.StatusCreated {
+		t.Fatalf("ステータスコードが%vではありません: got %v", http.StatusCreated, recPost.Code)
+	}
 	// レスポンスボディを検証
-	var createdSpot api.Spot
+	var createdSpot oapi.SpotResponse
 	err := json.Unmarshal(recPost.Body.Bytes(), &createdSpot)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("レスポンスのパースに失敗しました: %v", err)
+	}
 
-	assert.Equal(t, spotInput.Name, createdSpot.Name)
-	assert.Equal(t, spotInput.Description, *createdSpot.Description)
-	assert.Equal(t, spotInput.Address, *createdSpot.Address)
-	assert.NotEmpty(t, createdSpot.Id, "ID should be generated")
-	assert.False(t, createdSpot.CreatedAt.IsZero(), "CreatedAt should be set")
+	if createdSpot.Name != spotInput.Name {
+		t.Errorf("施設名が一致しません: got %v, want %v", createdSpot.Name, spotInput.Name)
+	}
+	if createdSpot.Description != spotInput.Description {
+		t.Errorf("説明が一致しません: got %v, want %v", createdSpot.Description, spotInput.Description)
+	}
+	if createdSpot.Address != spotInput.Address {
+		t.Errorf("住所が一致しません: got %v, want %v", createdSpot.Address, spotInput.Address)
+	}
+	if createdSpot.Id == uuid.Nil {
+		t.Error("IDが生成されていません")
+	}
+	if createdSpot.CreatedAt.IsZero() {
+		t.Error("CreatedAtが設定されていません")
+	}
 
 	// --- execute GET by ID ---
 	// 2. IDを指定して施設を一件取得できるか確認
@@ -51,13 +63,23 @@ func TestPostAndGetSpot(t *testing.T) {
 
 	router.ServeHTTP(recGet, reqGet)
 
-	// --- assert GET by ID ---
-	assert.Equal(t, http.StatusOK, recGet.Code)
+	if recGet.Code != http.StatusOK {
+		t.Fatalf("ステータスコードが200ではありません: got %v", recGet.Code)
+	}
 
-	var fetchedSpot api.Spot
+	// レスポンスボディを検証
+	var fetchedSpot oapi.SpotResponse
 	err = json.Unmarshal(recGet.Body.Bytes(), &fetchedSpot)
-	assert.NoError(t, err)
-	assert.Equal(t, createdSpot.Id, fetchedSpot.Id)
-	assert.Equal(t, createdSpot.Name, fetchedSpot.Name)
-	assert.Equal(t, *createdSpot.Description, *fetchedSpot.Description)
+	if err != nil {
+		t.Fatalf("レスポンスのパースに失敗しました: %v", err)
+	}
+	if createdSpot.Id != fetchedSpot.Id {
+		t.Errorf("IDが一致しません: got %v, want %v", fetchedSpot.Id, createdSpot.Id)
+	}
+	if createdSpot.Name != fetchedSpot.Name {
+		t.Errorf("施設名が一致しません: got %v, want %v", fetchedSpot.Name, createdSpot.Name)
+	}
+	if createdSpot.Description != fetchedSpot.Description {
+		t.Errorf("説明が一致しません: got %v, want %v", fetchedSpot.Description, createdSpot.Description)
+	}
 }

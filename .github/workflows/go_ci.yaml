@@ -31,28 +31,25 @@ jobs:
         # サービスが準備完了したことを確認するためのヘルスチェック
         options: >-
           --health-cmd pg_isready
-          --health-interval 10s
+          --health-interval 4s
           --health-timeout 5s
           --health-retries 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v6
         with:
           go-version: '1.25'
+          cache-dependency-path: |
+            go-backend/go.sum
+
       - name: Install dependencies
         run: |
           go mod download
 
-      - name: Install migrate
-        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-
-      - name: Run migrations
-        run: migrate -database "postgres://app_user:password@127.0.0.1:5432/app_db?sslmode=disable" -path db/migration up
-
       - name: Run tests
         run: |
-          go test ./...
+          go test -tags="integration" ./... -v
         env:
           DB_HOST: 127.0.0.1

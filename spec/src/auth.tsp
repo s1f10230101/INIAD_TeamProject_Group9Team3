@@ -16,9 +16,20 @@ model JWTAuth {
     token: string;
 }
 
-model User {
+model UserResister {
+    @doc("ユーザー名")
+    username: string;
+
+    @doc("メールアドレス")
+    email: string;
+
+    @doc("パスワード")
+    @secret
+    password: string;
+}
+
+model UserResponse {
     @doc("ユーザーの一意の識別子")
-    @visibility(Lifecycle.Read)
     id: string;
 
     @doc("ユーザー名")
@@ -26,14 +37,6 @@ model User {
 
     @doc("メールアドレス")
     email: string;
-
-    @doc("パスワード（登録時のみ使用、読み取り不可）")
-    @visibility(Lifecycle.Create)
-    password: string;
-
-    @doc("作成日時")
-    @visibility(Lifecycle.Read)
-    createdAt: string;
 }
 
 @tag("Auth")
@@ -44,7 +47,7 @@ interface AuthAPI {
     @operationId("registerUser")
     @route("/register")
     @post
-    registerUser(@body newUser: User): JWTAuth | Error<400 | 500>;
+    registerUser(@body newUser: UserResister): JWTAuth | Error<400 | 500>;
 
     @summary("ユーザーログイン")
     @doc("既存のユーザーがログインし、JWTトークンを取得します。")
@@ -59,5 +62,5 @@ interface AuthAPI {
     @operationId("getUserInfo")
     @route("/me")
     @get
-    getUserInfo(@header("Authorization") token: string): User | Error<401 | 500>;
+    getUserInfo(@header("Authorization") token: string): UserResponse | Error<401 | 500>;
 }

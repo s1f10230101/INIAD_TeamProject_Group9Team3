@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
-	//"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
+	"github.com/oapi-codegen/nullable"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
 func TestCreateSpot(t *testing.T) {
 	repo := NewSpotRepositoryInmemory()
-	inputSpot := &api.SpotInput{
+	inputSpot := &oapi.SpotResister{
 		Name:        "テスト用観光",
 		Description: "これはテスト用の説明です。",
 		Address:     "東京都テスト区1-2-3",
@@ -28,7 +28,7 @@ func TestCreateSpot(t *testing.T) {
 		t.Fatalf("Expected postsDB to have 1 spot, but got: %d", len(repo.postsDB))
 	}
 
-	var savedSpot api.Spot
+	var savedSpot spotModel
 	for _, spot := range repo.postsDB {
 		savedSpot = spot
 		break
@@ -37,10 +37,10 @@ func TestCreateSpot(t *testing.T) {
 	if savedSpot.Name != inputSpot.Name {
 		t.Errorf("Expected spot name to be '%s', but got '%s'", inputSpot.Name, savedSpot.Name)
 	}
-	if savedSpot.Description != &inputSpot.Description {
+	if savedSpot.Description != inputSpot.Description {
 		t.Errorf("Expected spot description to be '%s', but got '%v'", inputSpot.Description, savedSpot.Description)
 	}
-	if savedSpot.Address != &inputSpot.Address {
+	if savedSpot.Address != inputSpot.Address {
 		t.Errorf("Expected spot address to be '%s', but got '%v'", inputSpot.Address, savedSpot.Address)
 	}
 
@@ -78,8 +78,8 @@ func TestGetAllSpots(t *testing.T) {
 	t.Run("Success: Returns all spots", func(t *testing.T) {
 		// 準備
 		repo := NewSpotRepositoryInmemory()
-		spot1 := api.Spot{Id: uuid.New(), Name: "観光地1", CreatedAt: time.Now()}
-		spot2 := api.Spot{Id: uuid.New(), Name: "観光地2", CreatedAt: time.Now()}
+		spot1 := spotModel{Id: uuid.New(), Name: "観光地1", CreatedAt: time.Now()}
+		spot2 := spotModel{Id: uuid.New(), Name: "観光地2", CreatedAt: time.Now()}
 		repo.postsDB[spot1.Id] = spot1
 		repo.postsDB[spot2.Id] = spot2
 
@@ -109,7 +109,7 @@ func TestNewPostRepositoryInmemory(t *testing.T) {
 
 func TestGetSpotByID(t *testing.T) {
 	repo := NewSpotRepositoryInmemory()
-	preloadedSpot := api.Spot{
+	preloadedSpot := spotModel{
 		Id:        uuid.New(),
 		Name:      "既存の観光地",
 		CreatedAt: time.Now(),
@@ -143,35 +143,39 @@ func TestUpdateSpotByID(t *testing.T) {
 	description := "更新前の説明"
 	address := "更新前の住所"
 
-	initialSpot := api.Spot{
+	initialSpot := spotModel{
 		Id:          uuid.New(),
 		Name:        "更新前の名前",
-		Description: &description,
-		Address:     &address,
+		Description: description,
+		Address:     address,
 		CreatedAt:   time.Now(),
 	}
 
 	repo.postsDB[initialSpot.Id] = initialSpot
 
-	updateInput := &api.SpotInput{
-		Name:        "更新後の名前",
-		Description: "更新後の説明",
-		Address:     "更新後の住所",
+	name := "更新後の名前"
+	descriptionUpdated := "更新後の説明"
+	addressUpdated := "更新後の住所"
+
+	updateInput := oapi.SpotUpdate{
+		Name:        nullable.NewNullableWithValue(name),
+		Description: nullable.NewNullableWithValue(descriptionUpdated),
+		Address:     nullable.NewNullableWithValue(addressUpdated),
 	}
 
 	t.Run("Success: Spot updated", func(t *testing.T) {
 		// 実行
-		updatedSpot, err := repo.UpdateSpotByID(context.Background(), initialSpot.Id, updateInput)
+		updatedSpot, err := repo.UpdateSpotByID(context.Background(), initialSpot.Id, &updateInput)
 		if err != nil {
 			t.Fatalf("expected no error, but got: %v", err)
 		}
 
 		// 検証
-		if updatedSpot.Name != updateInput.Name {
-			t.Errorf("expected name to be '%s', but got '%s'", updateInput.Name, updatedSpot.Name)
+		if updateInputName := updateInput.Name.MustGet(); updatedSpot.Name != updateInputName {
+			t.Errorf("期待される名前は '%s' ですが、実際の名前は '%v' です", updateInputName, updatedSpot.Name)
 		}
-		if updatedSpot.Description != &updateInput.Description {
-			t.Errorf("expected description to be '%s', but got '%v'", updateInput.Description, updatedSpot.Description)
+		if updateInputDescription := updateInput.Description.MustGet(); updatedSpot.Description != updateInputDescription {
+			t.Errorf("期待される説明は '%s' ですが、実際の説明は '%v' です", updateInputDescription, updatedSpot.Description)
 		}
 		// IDとCreatedAtが変更されていないことを確認
 		if updatedSpot.Id != initialSpot.Id {
@@ -185,7 +189,7 @@ func TestUpdateSpotByID(t *testing.T) {
 	t.Run("Failure: Spot not found", func(t *testing.T) {
 		// 実行 & 検証
 		nonExistentID := uuid.New()
-		_, err := repo.UpdateSpotByID(context.Background(), nonExistentID, updateInput)
+		_, err := repo.UpdateSpotByID(context.Background(), nonExistentID, &updateInput)
 		if err == nil {
 			t.Fatal("expected an error for non-existent ID, but got nil")
 		}

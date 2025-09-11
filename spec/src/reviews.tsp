@@ -11,16 +11,25 @@ using OpenAPI;
 
 namespace Trip_Canvas;
 
-model Review {
-    @doc("レビューの一意の識別子")
-    @visibility(Lifecycle.Read)
-    id: string;
-
+model ReviewResister {
     @doc("レビューを投稿したユーザーの識別子")
     userId: string;
 
+    @doc("レビューの評価（1から5までの整数）")
+    @maxValue(5)
+    @minValue(1)
+    rating: integer;
+
+    @doc("レビューのコメント")
+    comment: string;
+}
+
+model ReviewResponse {
+    @doc("レビューを投稿したユーザーの識別子")
+    userId: Uuid;
+
     @doc("レビュー対象の観光スポットの識別子")
-    spotId: string;
+    spotId: Uuid;
 
     @doc("レビューの評価（1から5までの整数）")
     @maxValue(5)
@@ -30,23 +39,26 @@ model Review {
     @doc("レビューのコメント")
     comment: string;
 
-    @doc("作成日時")
-    @visibility(Lifecycle.Read)
-    createdAt: string;
+    @doc("レビューの作成日時")
+    createdAt: utcDateTime;
 }
 
+
+@tag("Spots")
 @tag("Reviews")
-@route("/reviews")
+@route("/spots")
 interface ReviewsAPI {
     @summary("観光スポットのレビュー一覧の取得")
     @doc("指定した観光スポットのレビュー一覧を取得します。")
     @operationId("getReviewsBySpotId")
+    @route("{spotId}/reviews")
     @get
-    getReviewsBySpotId(@query spotId: string): Review[] | Error<500>;
+    getReviewsBySpotId(@path spotId: Uuid): ReviewResponse[] | Error<500>;
 
     @summary("レビューの投稿")
     @doc("新しいレビューを投稿します。")
     @operationId("createReview")
+    @route("{spotId}/reviews")
     @post
-    createReview(@body newReview: Review): Http.CreatedResponse | Error<400 | 500>;
+    createReview(@path spotId: Uuid, @body newReview: ReviewResister): Success<201, ReviewResponse> | Error<400 | 500>;
 }

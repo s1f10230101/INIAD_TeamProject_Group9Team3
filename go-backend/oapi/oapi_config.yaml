@@ -1,13 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
-package: api
+package: oapi
 generate:
   strict-server: true
   std-http-server: true
   models: true
   embedded-spec: true
-  client: true
+  # client: true
+output-options:
+  nullable-type: true
 additional-imports:
   - package: github.com/google/uuid
     alias: uuid
 
-output: ./api/server.gen.go
+
+output: ./oapi/server.gen.go

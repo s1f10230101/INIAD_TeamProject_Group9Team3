@@ -3,21 +3,25 @@ package handler
 import (
 	"context"
 
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
-func (s *server) GetSpotsSpotIdReviews(ctx context.Context, request api.GetSpotsSpotIdReviewsRequestObject) (api.GetSpotsSpotIdReviewsResponseObject, error) {
+// 観光スポットのレビュー一覧の取得
+// (GET /reviews)
+func (s *server) GetReviewsBySpotId(ctx context.Context, request oapi.GetReviewsBySpotIdRequestObject) (oapi.GetReviewsBySpotIdResponseObject, error) {
 	reviews, err := s.reviewUC.GetReviewsBySpotID(ctx, request.SpotId)
 	if err != nil {
 		return nil, err
 	}
-	return api.GetSpotsSpotIdReviews200JSONResponse(reviews), nil
+	return oapi.GetReviewsBySpotId200JSONResponse(reviews), nil
 }
 
-func (s *server) PostSpotsSpotIdReviews(ctx context.Context, request api.PostSpotsSpotIdReviewsRequestObject) (api.PostSpotsSpotIdReviewsResponseObject, error) {
-	createdReview, err := s.reviewUC.CreateReview(ctx, request.SpotId, request.Body)
+// レビューの投稿
+// (POST /reviews)
+func (s *server) CreateReview(ctx context.Context, request oapi.CreateReviewRequestObject) (oapi.CreateReviewResponseObject, error) {
+	res, err := s.reviewUC.CreateReview(ctx, request.SpotId, request.Body)
 	if err != nil {
 		return nil, err
 	}
-	return api.PostSpotsSpotIdReviews201JSONResponse(*createdReview), nil
+	return oapi.CreateReview201JSONResponse(*res), nil
 }

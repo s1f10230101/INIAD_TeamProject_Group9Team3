@@ -3,36 +3,42 @@ package handler
 import (
 	"context"
 
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
-func (s *server) GetSpots(ctx context.Context, request api.GetSpotsRequestObject) (api.GetSpotsResponseObject, error) {
+// 観光スポット一覧の取得
+// (GET /spots)
+func (s *server) GetAllSpots(ctx context.Context, request oapi.GetAllSpotsRequestObject) (oapi.GetAllSpotsResponseObject, error) {
 	spots, err := s.postUC.GetAllSpots(ctx)
-	return api.GetSpots200JSONResponse(spots), err
+	return oapi.GetAllSpots200JSONResponse(spots), err
 }
 
-func (s *server) PostSpots(ctx context.Context, request api.PostSpotsRequestObject) (api.PostSpotsResponseObject, error) {
+// 観光スポットの登録
+// (POST /spots)
+func (s *server) CreateSpot(ctx context.Context, request oapi.CreateSpotRequestObject) (oapi.CreateSpotResponseObject, error) {
 	createdSpot, err := s.postUC.CreateSpot(ctx, request.Body)
 	if err != nil {
 		return nil, err
 	}
-	return api.PostSpots201JSONResponse(createdSpot), err
+	return oapi.CreateSpot201JSONResponse(createdSpot), nil
 }
 
-func (s *server) GetSpotsSpotId(ctx context.Context, request api.GetSpotsSpotIdRequestObject) (api.GetSpotsSpotIdResponseObject, error) {
-	spotId := request.SpotId
-	spot, err := s.postUC.GetSpotByID(ctx, spotId)
+// 観光スポットの詳細取得
+// (GET /spots/{spotId})
+func (s *server) GetSpotById(ctx context.Context, request oapi.GetSpotByIdRequestObject) (oapi.GetSpotByIdResponseObject, error) {
+	spot, err := s.postUC.GetSpotByID(ctx, request.SpotId)
 	if err != nil {
 		return nil, err
 	}
-	return api.GetSpotsSpotId200JSONResponse(spot), nil
+	return oapi.GetSpotById200JSONResponse(spot), nil
 }
 
-func (s *server) PutSpotsSpotId(ctx context.Context, request api.PutSpotsSpotIdRequestObject) (api.PutSpotsSpotIdResponseObject, error) {
-	spotId := request.SpotId
-	spot, err := s.postUC.UpdateSpotByID(ctx, spotId, request.Body)
+// 観光スポットの更新
+// (PUT /spots/{spotId})
+func (s *server) UpdateSpot(ctx context.Context, request oapi.UpdateSpotRequestObject) (oapi.UpdateSpotResponseObject, error) {
+	spot, err := s.postUC.UpdateSpotByID(ctx, request.SpotId, request.Body)
 	if err != nil {
 		return nil, err
 	}
-	return api.PutSpotsSpotId200JSONResponse(spot), nil
+	return oapi.UpdateSpot200JSONResponse(spot), nil
 }
