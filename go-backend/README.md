@@ -18,7 +18,7 @@
   - `oapi-codegen --config=oapi/oapi_config.yaml ../openapi.1.0.yaml` でコードを生成
 - [air]
   - Go製のホットリロードツール
-  - `go install github.com/cosmtrek/air@latest` でインストール
+  - `go install github.com/air-verse/air` でインストール
   - `air -c .air.toml`で起動
 - [sqlc]
   - SQLからGoのコードを自動生成するツール
