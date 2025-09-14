@@ -19,7 +19,8 @@
 - [air]
   - Go製のホットリロードツール
   - `go install github.com/air-verse/air` でインストール
-  - `air -c .air.toml`で起動
+  - `air -c ./cmd/server/.air.toml` で本番環境用のホットリロード起動
+  - `air -c ./cmd/inmemoryserver/.air.toml` でインメモリDBのホットリロード起動
 - [sqlc]
   - SQLからGoのコードを自動生成するツール
   - `go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest` でインストール
@@ -29,6 +30,7 @@
   - `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest` でインストール
   - `migrate create -ext sql -dir db/migration -seq <name>` でマイグレーションファイルを作成
   - `migrate -database "postgres://..." -path db/migration up` でマイグレーションを適用
+  - ただし、現在はmain.goでmigrateを実行しているため、手動で実行する必要はない
 ## ディレクトリ構成
 ```plaintext
 .
@@ -61,3 +63,7 @@
     - 考えてみれば`docker compose run --rm --build backend-dev go test -tags="integration" ./... -v`1コマンドで良いかも
 - テストコードのエラーメッセージにはなるべく日本語を使用するようにします。
   - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つて見やすい
+
+## その他
+- 外部サービス依存
+  - OpanAI ChatGPT API

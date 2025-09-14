@@ -1,4 +1,4 @@
-![アプリアイコン](./img/appli-icon.png)
+![アプリアイコン](./img/appli-icon.png)<br />
 ![Dockerアイコン](https://img.shields.io/badge/docker-28.0.0-blue.svg?logo=docker&style=flat)
 ![Golangアイコン](https://img.shields.io/badge/golang-1.25-blue.svg?logo=go&style=flat)
 [![Go Ci](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/go_ci.yaml/badge.svg)](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/go_ci.yaml)

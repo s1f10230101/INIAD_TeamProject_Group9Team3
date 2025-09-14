@@ -1,16 +1,11 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
@@ -19,36 +14,17 @@ import (
 )
 
 func main() {
-	// 環境変数からDBホストを取得、なければlocalhostをデフォルト値とする
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "localhost"
-	}
-	dbURL := fmt.Sprintf("postgres://app_user:password@%s:5432/app_db?sslmode=disable", dbHost)
-
-	pool, err := pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
-	}
-	defer pool.Close()
-
-	// マイグレーションの実行
-	if m, err := migrate.New("file:///db/migration", dbURL); err == nil {
-		m.Up()
-	} else {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
-
-	// 1. レポジトリの初期化 (Postgres版を使用)
-	postRepository := repository.NewPostgresPostRepository(pool)
-	reviewRepository := repository.NewPostgresReviewRepository(pool)
+	// 1. レポジトリの初期化 (インメモリ版を使用)
+	spotRepository := repository.NewSpotRepositoryInmemory()
+	reviewRepository := repository.NewReviewRepositoryInmemory()
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepository)
+	postUsecase := usecase.NewPostUseCase(spotRepository)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
+	fakeAiCase := usecase.NewAIGenerateFake()
 
 	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
+	serverMethods := handler.NewServer(postUsecase, reviewUsecase, fakeAiCase)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
