@@ -8,6 +8,11 @@ lazygit = "latest"
 "go:github.com/air-verse/air" = "latest"
 "go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "latest"
 
+[tasks.dockerComposeUp]
+alias = "dcup"
+description = "Docker Composeでサービスを起動します`mise run dcup`"
+run = "docker compose up --build --watch"
+
 [tasks.run]
 description = "すべてのサービスをローカルで起動します"
 depends = "run:*"
@@ -17,13 +22,17 @@ dir = "go-backend"
 run = [ "go run ./main.go" ]
 
 
-[tasks.test]
+[tasks.allTest]
 description = "すべてのサービスのテストを実行します"
 depends = "test:*"
 [tasks."test:backend"]
 description = "Goバックエンドのテストを実行します"
 dir = "go-backend"
 run = "go test ./... -v"
+[tasks."test:backend-integration"]
+description = "Goバックエンドの統合テストを実行します"
+dir = "go-backend"
+run = "go test -tags=integration ./... -v"
 
 
 [tasks.genoapi]

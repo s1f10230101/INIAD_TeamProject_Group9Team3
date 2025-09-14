@@ -179,15 +179,33 @@ paths:
     post:
       operationId: generatePlan
       summary: 旅行プランの生成
-      description: ユーザーの希望に基づいて新しい旅行プランを生成します。
+      description: |-
+        ユーザーの希望に基づいて新しい旅行プランを生成します。"
+        AIが生成する旅行プラン
+        形式: data: {text: "生成されたテキスト"}\n\n
+        SSEの形式の末尾が\n\nである都合上、もし例えば"data: 生成されたテキスト\n\n"のようにしてしまうと、生成されたテキストに\n\nが含まれる場合に正しくパースできなくなってしまう。
+        そのため、SSE形式の文字列にはJSONエスケープを施すこととし、上記の例では"data: {text: "生成されたテキスト"}\n\n"のようにする。
       parameters: []
       responses:
         '200':
           description: The request has succeeded.
+          headers:
+            cache-control:
+              required: true
+              schema:
+                type: string
+                enum:
+                  - no-cache
+            connection:
+              required: true
+              schema:
+                type: string
+                enum:
+                  - keep-alive
           content:
             text/event-stream:
               schema:
-                $ref: '#/components/schemas/PlanResponse'
+                type: string
         '400':
           description: The server could not understand the request due to invalid syntax.
           content:
@@ -480,24 +498,6 @@ components:
         token:
           type: string
           description: JWTトークン
-    PlanResponse:
-      type: object
-      required:
-        - name
-        - description
-        - spots
-      properties:
-        name:
-          type: string
-          description: プランの名称
-        description:
-          type: string
-          description: プランの詳細説明
-        spots:
-          type: array
-          items:
-            $ref: '#/components/schemas/SpotResponse'
-          description: プランに含まれる観光スポットのリスト
     Prompt:
       type: object
       required:

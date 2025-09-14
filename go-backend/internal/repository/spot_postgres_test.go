@@ -30,11 +30,6 @@ func TestMain(m *testing.M) {
 	}
 	defer testPool.Close()
 
-	pool, err := pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
-	}
-	defer pool.Close()
 	mg, err := migrate.New(
 		"file://../../db/migration",
 		dbURL,
