@@ -7,8 +7,7 @@ sql:
       go:
         package: "sqlc"
         out: "./internal/repository/sqlc"
-        # Postgresドライバはpgx/v5を使うことも可能
-        sql_package: "pgx/v5" 
+        sql_package: "pgx/v5"
         emit_pointers_for_null_types: true
         emit_json_tags: true
 

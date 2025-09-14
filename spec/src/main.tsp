@@ -23,6 +23,14 @@ enum Versions {
   v1: "1.0",
 }
 
+@encode("uuid")
+scalar Uuid extends string;
+
+model Success<StatusCode extends integer, T> {
+  @statusCode _: StatusCode;
+  @bodyRoot body: T;
+}
+
 // 400: 不正なリクエスト
 // 401: 認証エラー
 // 403: 権限エラー
@@ -31,4 +39,11 @@ enum Versions {
 model Error<StatusCode extends integer> {
   @statusCode _: StatusCode;
   message: string;
+}
+
+
+@route("/")
+interface HealthCheck {
+  @doc("APIの起動確認用エンドポイント")
+  @get OpenAPI(): string | Error<500>;
 }

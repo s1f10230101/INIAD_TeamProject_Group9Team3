@@ -6,7 +6,7 @@
 # プロジェクト概要
 大学のチーム実習のための演習用Webアプリケーションです。  
 詳細は: [OVERVIEW.md](/docs/00_OVERVIEW.md)を参照してください。  
-コントリビューションは大歓迎です！コーディング規約は
+コーディング規約は
 [CONTRIBUTING.md](/docs/CONTRIBUTING.md)に記載されています。  
 他ドキュメントはすべて`docs`ディレクトリにあります。
 - [README.md](/docs/README.md)
@@ -41,5 +41,5 @@
 ## 3. テストの実行方法
 
 ```bash
-cd go-backend && go test ./...
+docker compose run --rm backend-dev go test -tags="integration" ./... -v
 ```

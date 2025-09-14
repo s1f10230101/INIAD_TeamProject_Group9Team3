@@ -3,17 +3,23 @@ package handler
 import (
 	"context"
 
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/api"
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
-func (s *server) PostAuthLogin(ctx context.Context, request api.PostAuthLoginRequestObject) (api.PostAuthLoginResponseObject, error) {
-	return api.PostAuthLogin401JSONResponse{}, nil
+// ユーザーログイン
+// (POST /auth/login)
+func (s *server) LoginUser(ctx context.Context, request oapi.LoginUserRequestObject) (oapi.LoginUserResponseObject, error) {
+	return oapi.LoginUser401JSONResponse{Message: "Not Implemented"}, nil
 }
 
-func (s *server) GetAuthMe(ctx context.Context, request api.GetAuthMeRequestObject) (api.GetAuthMeResponseObject, error) {
-	return api.GetAuthMe401JSONResponse{}, nil
+// ユーザー情報取得
+// (GET /auth/me)
+func (s *server) GetUserInfo(ctx context.Context, request oapi.GetUserInfoRequestObject) (oapi.GetUserInfoResponseObject, error) {
+	return oapi.GetUserInfo401JSONResponse{Message: "Not Implemented"}, nil
 }
 
-func (s *server) PostAuthRegister(ctx context.Context, request api.PostAuthRegisterRequestObject) (api.PostAuthRegisterResponseObject, error) {
-	return api.PostAuthRegister201JSONResponse{}, nil
+// ユーザー登録
+// (POST /auth/register)
+func (s *server) RegisterUser(ctx context.Context, request oapi.RegisterUserRequestObject) (oapi.RegisterUserResponseObject, error) {
+	return oapi.RegisterUser500JSONResponse{Message: "Not Implemented"}, nil
 }

@@ -3,28 +3,31 @@ go = "latest"
 lazygit = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@typespec/compiler" = "latest"
+"go:github.com/golang-migrate/migrate/v4/cmd/migrate" = {version = "latest", tags = "postgres"}
+"go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "latest"
+"go:github.com/air-verse/air" = "latest"
+"go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "latest"
 
 [tasks.run]
 description = "すべてのサービスをローカルで起動します"
 depends = "run:*"
-
 [tasks."run:backend"]
 description = "Goバックエンドを起動します"
 dir = "go-backend"
 run = [ "go run ./main.go" ]
-depends = "run:python-ai"
-[tasks."run:python-ai"]
-description = "Goバックエンドが依存するPython AIサービスを起動します"
-dir = "python-ai-service"
-run = "uv run ./server.py"
-
 
 
 [tasks.test]
 description = "すべてのサービスのテストを実行します"
 depends = "test:*"
-
 [tasks."test:backend"]
 description = "Goバックエンドのテストを実行します"
 dir = "go-backend"
-run = "mise run run:python-ai & go test ./... -v"
+run = "go test ./... -v"
+
+
+[tasks.genoapi]
+description = "TypeSpecからOpenAPI仕様からスタブコードを生成します"
+run = [
+    "cd spec && tsp compile ./src/main.tsp",
+    "cd go-backend && oapi-codegen --config=oapi/oapi_config.yaml ../openapi.1.0.yaml"]
