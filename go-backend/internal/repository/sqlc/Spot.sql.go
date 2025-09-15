@@ -18,18 +18,18 @@ INSERT INTO Spot (
     Name,
     Description,
     Address,
-    embedding
+    embedding_openai
 ) VALUES (
     $1, $2, $3, $4, $5
-) RETURNING id, name, description, address, created_at, embedding
+) RETURNING id, name, description, address, created_at, embedding_openai
 `
 
 type CreateSpotParams struct {
-	ID          uuid.UUID        `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Address     string           `json:"address"`
-	Embedding   *pgvector.Vector `json:"embedding"`
+	ID              uuid.UUID        `json:"id"`
+	Name            string           `json:"name"`
+	Description     string           `json:"description"`
+	Address         string           `json:"address"`
+	EmbeddingOpenai *pgvector.Vector `json:"embedding_openai"`
 }
 
 func (q *Queries) CreateSpot(ctx context.Context, arg CreateSpotParams) (Spot, error) {
@@ -38,7 +38,7 @@ func (q *Queries) CreateSpot(ctx context.Context, arg CreateSpotParams) (Spot, e
 		arg.Name,
 		arg.Description,
 		arg.Address,
-		arg.Embedding,
+		arg.EmbeddingOpenai,
 	)
 	var i Spot
 	err := row.Scan(
@@ -47,7 +47,7 @@ func (q *Queries) CreateSpot(ctx context.Context, arg CreateSpotParams) (Spot, e
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
-		&i.Embedding,
+		&i.EmbeddingOpenai,
 	)
 	return i, err
 }
@@ -63,7 +63,7 @@ func (q *Queries) DeleteSpot(ctx context.Context, id uuid.UUID) error {
 }
 
 const getSpot = `-- name: GetSpot :one
-SELECT id, name, description, address, created_at, embedding FROM Spot
+SELECT id, name, description, address, created_at, embedding_openai FROM Spot
 WHERE Id = $1
 `
 
@@ -76,13 +76,13 @@ func (q *Queries) GetSpot(ctx context.Context, id uuid.UUID) (Spot, error) {
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
-		&i.Embedding,
+		&i.EmbeddingOpenai,
 	)
 	return i, err
 }
 
 const listSpots = `-- name: ListSpots :many
-SELECT id, name, description, address, created_at, embedding FROM Spot
+SELECT id, name, description, address, created_at, embedding_openai FROM Spot
 ORDER BY Created_at DESC
 `
 
@@ -101,7 +101,7 @@ func (q *Queries) ListSpots(ctx context.Context) ([]Spot, error) {
 			&i.Description,
 			&i.Address,
 			&i.CreatedAt,
-			&i.Embedding,
+			&i.EmbeddingOpenai,
 		); err != nil {
 			return nil, err
 		}
@@ -114,7 +114,7 @@ func (q *Queries) ListSpots(ctx context.Context) ([]Spot, error) {
 }
 
 const searchSpots = `-- name: SearchSpots :many
-SELECT id, name, description, address, created_at, embedding FROM Spot
+SELECT id, name, description, address, created_at, embedding_openai FROM Spot
 WHERE name LIKE $1 OR description LIKE $1
 ORDER BY created_at DESC
 `
@@ -134,7 +134,7 @@ func (q *Queries) SearchSpots(ctx context.Context, name string) ([]Spot, error) 
 			&i.Description,
 			&i.Address,
 			&i.CreatedAt,
-			&i.Embedding,
+			&i.EmbeddingOpenai,
 		); err != nil {
 			return nil, err
 		}
@@ -147,13 +147,13 @@ func (q *Queries) SearchSpots(ctx context.Context, name string) ([]Spot, error) 
 }
 
 const searchSpotsByEmbedding = `-- name: SearchSpotsByEmbedding :many
-SELECT id, name, description, address, created_at, embedding FROM Spot
-ORDER BY embedding <=> $1
+SELECT id, name, description, address, created_at, embedding_openai FROM Spot
+ORDER BY embedding_openai <=> $1
 LIMIT 5
 `
 
-func (q *Queries) SearchSpotsByEmbedding(ctx context.Context, embedding *pgvector.Vector) ([]Spot, error) {
-	rows, err := q.db.Query(ctx, searchSpotsByEmbedding, embedding)
+func (q *Queries) SearchSpotsByEmbedding(ctx context.Context, embeddingOpenai *pgvector.Vector) ([]Spot, error) {
+	rows, err := q.db.Query(ctx, searchSpotsByEmbedding, embeddingOpenai)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (q *Queries) SearchSpotsByEmbedding(ctx context.Context, embedding *pgvecto
 			&i.Description,
 			&i.Address,
 			&i.CreatedAt,
-			&i.Embedding,
+			&i.EmbeddingOpenai,
 		); err != nil {
 			return nil, err
 		}
@@ -185,17 +185,17 @@ SET
     Name = $2,
     Description = $3,
     Address = $4,
-    embedding = $5
+    embedding_openai = $5
 WHERE Id = $1
-RETURNING id, name, description, address, created_at, embedding
+RETURNING id, name, description, address, created_at, embedding_openai
 `
 
 type UpdateSpotParams struct {
-	ID          uuid.UUID        `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Address     string           `json:"address"`
-	Embedding   *pgvector.Vector `json:"embedding"`
+	ID              uuid.UUID        `json:"id"`
+	Name            string           `json:"name"`
+	Description     string           `json:"description"`
+	Address         string           `json:"address"`
+	EmbeddingOpenai *pgvector.Vector `json:"embedding_openai"`
 }
 
 func (q *Queries) UpdateSpot(ctx context.Context, arg UpdateSpotParams) (Spot, error) {
@@ -204,7 +204,7 @@ func (q *Queries) UpdateSpot(ctx context.Context, arg UpdateSpotParams) (Spot, e
 		arg.Name,
 		arg.Description,
 		arg.Address,
-		arg.Embedding,
+		arg.EmbeddingOpenai,
 	)
 	var i Spot
 	err := row.Scan(
@@ -213,7 +213,7 @@ func (q *Queries) UpdateSpot(ctx context.Context, arg UpdateSpotParams) (Spot, e
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
-		&i.Embedding,
+		&i.EmbeddingOpenai,
 	)
 	return i, err
 }

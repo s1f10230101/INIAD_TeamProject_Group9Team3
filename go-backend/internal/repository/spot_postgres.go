@@ -50,11 +50,11 @@ func (r *postgresSpotRepository) CreateSpot(ctx context.Context, spot *oapi.Spot
 	pgvecEmbedding := pgvector.NewVector(vector)
 
 	params := sqlc.CreateSpotParams{
-		ID:          newID,
-		Name:        spot.Name,
-		Description: spot.Description,
-		Address:     spot.Address,
-		Embedding:   &pgvecEmbedding,
+		ID:              newID,
+		Name:            spot.Name,
+		Description:     spot.Description,
+		Address:         spot.Address,
+		EmbeddingOpenai: &pgvecEmbedding,
 	}
 	createdSpot, err := r.q.CreateSpot(ctx, params)
 	if err != nil {
@@ -100,11 +100,11 @@ func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid
 		newSpot.Address = newAddress
 	}
 	params := sqlc.UpdateSpotParams{
-		ID:          spotId,
-		Name:        newSpot.Name,
-		Description: newSpot.Description,
-		Address:     newSpot.Address,
-		Embedding:   newSpot.Embedding,
+		ID:              spotId,
+		Name:            newSpot.Name,
+		Description:     newSpot.Description,
+		Address:         newSpot.Address,
+		EmbeddingOpenai: newSpot.EmbeddingOpenai, // 変更なし（サボり？）
 	}
 	updated, err := r.q.UpdateSpot(ctx, params)
 	if err != nil {

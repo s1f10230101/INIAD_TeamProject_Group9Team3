@@ -4,7 +4,7 @@ INSERT INTO Spot (
     Name,
     Description,
     Address,
-    embedding
+    embedding_openai
 ) VALUES (
     $1, $2, $3, $4, $5
 ) RETURNING *;
@@ -23,7 +23,7 @@ SET
     Name = $2,
     Description = $3,
     Address = $4,
-    embedding = $5
+    embedding_openai = $5
 WHERE Id = $1
 RETURNING *;
 
@@ -38,5 +38,5 @@ ORDER BY created_at DESC;
 
 -- name: SearchSpotsByEmbedding :many
 SELECT * FROM Spot
-ORDER BY embedding <=> $1
+ORDER BY embedding_openai <=> $1
 LIMIT 5;

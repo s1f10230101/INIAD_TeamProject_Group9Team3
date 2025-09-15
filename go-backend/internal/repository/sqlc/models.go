@@ -20,10 +20,10 @@ type Review struct {
 }
 
 type Spot struct {
-	ID          uuid.UUID          `json:"id"`
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Address     string             `json:"address"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
-	Embedding   *pgvector.Vector   `json:"embedding"`
+	ID              uuid.UUID          `json:"id"`
+	Name            string             `json:"name"`
+	Description     string             `json:"description"`
+	Address         string             `json:"address"`
+	CreatedAt       pgtype.Timestamptz `json:"created_at"`
+	EmbeddingOpenai *pgvector.Vector   `json:"embedding_openai"`
 }
