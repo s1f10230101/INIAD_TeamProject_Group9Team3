@@ -21,7 +21,7 @@ jobs:
         working-directory: ./go-backend
     services:
       db:
-        image: postgres:16-alpine
+        image: ankane/pgvector
         ports:
           - 5432:5432
         env:

@@ -104,6 +104,7 @@ func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid
 		Name:        newSpot.Name,
 		Description: newSpot.Description,
 		Address:     newSpot.Address,
+		Embedding:   newSpot.Embedding,
 	}
 	updated, err := r.q.UpdateSpot(ctx, params)
 	if err != nil {

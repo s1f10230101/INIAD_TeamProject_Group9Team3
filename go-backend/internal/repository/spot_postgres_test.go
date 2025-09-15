@@ -62,7 +62,8 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 		Address:     "東京都テスト区",
 	}
 
-	createdSpot, err := repo.CreateSpot(context.Background(), input, nil)
+	vector1536 := make([]float32, 1536) // 1536次元のベクトルをゼロで初期化
+	createdSpot, err := repo.CreateSpot(context.Background(), input, vector1536)
 	if err != nil {
 		t.Fatalf("CreateSpot失敗: %v", err)
 	}
