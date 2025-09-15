@@ -5,84 +5,77 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"strings"
-	"text/template"
 
 	"github.com/openai/openai-go/v2"
 	"github.com/openai/openai-go/v2/option"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
-	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
-type AIGPTUsecase struct {
+type aiGPTUsecase struct {
 	repo         repository.SpotRepositoryInterface
 	openaiClient openai.Client
 }
 
-var _ AIGenerateStreamInterface = (*AIGPTUsecase)(nil)
+var _ AIGenerateStreamInterface = (*aiGPTUsecase)(nil)
+var _ embeddingGeneratorInterface = (*aiGPTUsecase)(nil)
 
 // NewAIGPTUsecase は AIGPTUsecase の新しいインスタンスを作成します。
 // baseUrl は OpenAI API のベースURLを指定します。
 // APIキーは環境変数 OPENAI_API_KEY から取得されます。
-func NewAIGPTUsecase(repo repository.SpotRepositoryInterface, baseUrl string) *AIGPTUsecase {
+func NewAIGPTUsecase(spotRepo repository.SpotRepositoryInterface, baseUrl string, apiKey string) *aiGPTUsecase {
 	openaiClient := openai.NewClient(
 		option.WithBaseURL(baseUrl),
+		option.WithAPIKey(apiKey),
 	)
-	return &AIGPTUsecase{
-		repo:         repo,
+	return &aiGPTUsecase{
 		openaiClient: openaiClient,
+		repo:         spotRepo,
 	}
 }
 
-func buildPrompt(spots []oapi.SpotResponse, userPromptInput string) (string, string, error) {
-	var systemPrompt strings.Builder
-	var userPrompt strings.Builder
-	// 取得した情報をプロンプトに組み込む
-	systemPromptText := `
-あなたは旅行プランのプロです。以下の参考情報とユーザーの要望を元に、魅力的な旅行プランを提案してください。
-参考情報:
-{{- range .Spots }}
-- 名前: {{ .Name }}
-  説明: {{ .Description }}
-  住所: {{ .Address }}
-{{- end }}
-`
-	dataMap := map[string]interface{}{
-		"Spots": spots,
-	}
-	ts := template.Must(template.New("systemPrompt").Parse(systemPromptText))
-	if err := ts.Execute(&systemPrompt, dataMap); err != nil {
-		return "", "", fmt.Errorf("failed to execute system prompt template: %w", err)
+func (u *aiGPTUsecase) createEmbedding(ctx context.Context, text string) ([]float32, error) {
+	resp, err := u.openaiClient.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbeddingAda002,
+		Input: openai.EmbeddingNewParamsInputUnion{OfArrayOfStrings: []string{text}},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create embedding: %w", err)
 	}
 
-	userPromptText := `
-{{ .UserPrompt }}
- `
-
-	tu := template.Must(template.New("userPrompt").Parse(userPromptText))
-	if err := tu.Execute(&userPrompt, map[string]interface{}{
-		"UserPrompt": userPromptInput,
-	}); err != nil {
-		return "", "", fmt.Errorf("failed to execute user prompt template: %w", err)
+	if len(resp.Data) == 0 {
+		return nil, fmt.Errorf("no embedding data returned")
 	}
-	return systemPrompt.String(), userPrompt.String(), nil
+
+	// float64 -> float32 変換
+	result := make([]float32, len(resp.Data[0].Embedding))
+	for i, v := range resp.Data[0].Embedding {
+		result[i] = float32(v)
+	}
+	return result, nil
 }
 
-func (u *AIGPTUsecase) Event(ctx context.Context, prompt string) (io.ReadCloser, error) {
+func (u *aiGPTUsecase) Event(ctx context.Context, prompt string) (io.ReadCloser, error) {
 	pr, pw := io.Pipe()
 
 	go func() {
 		defer pw.Close()
 
-		// RAG: 関連情報をDBから取得
-		spots, err := u.repo.SearchSpots(ctx, prompt)
+		// RAG: 関連情報をDBから取得するために、まずプロンプトをベクトル化
+		embedding, err := u.createEmbedding(ctx, prompt)
 		if err != nil {
-			pw.CloseWithError(fmt.Errorf("failed to search spots: %w", err))
+			pw.CloseWithError(fmt.Errorf("failed to create embedding for prompt: %w", err))
+			return
+		}
+
+		// ベクトル検索で関連スポット情報を取得
+		spots, err := u.repo.SearchSpotsByEmbedding(ctx, embedding)
+		if err != nil {
+			pw.CloseWithError(fmt.Errorf("failed to search spots by embedding: %w", err))
 			return
 		}
 
 		// プロンプトの構築
-		systemPrompt, userPrompt, err := buildPrompt(spots, prompt)
+		systemPrompt, userPrompt, err := _buildPrompt(spots, prompt)
 		if err != nil {
 			pw.CloseWithError(fmt.Errorf("failed to build prompt: %w", err))
 			slog.Error("failed to build prompt", "error", err)
@@ -123,6 +116,12 @@ func (u *AIGPTUsecase) Event(ctx context.Context, prompt string) (io.ReadCloser,
 			if len(chunk.Choices) > 0 {
 				fmt.Printf("Chunks: %+v\n", chunk.Choices[0].Delta)
 			}
+		}
+
+		if err := stream.Err(); err != nil {
+			pw.CloseWithError(fmt.Errorf("stream error: %w", err))
+			ctx.Err()
+			return
 		}
 	}()
 

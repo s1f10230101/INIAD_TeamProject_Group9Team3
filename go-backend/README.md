@@ -53,29 +53,33 @@
 * **Repository層**
   - データの保存場所です。Usecaseから依頼を受けて、メモリやデータベースにデータを保存・取得します。  
 
-### AIプラン生成アーキテクチャ
+## 内部設計(アーキテクチャ)
+### 1. Spot, Review, Userの基本アーキテクチャ
+- 各エンティティ(Spot, Review, User)ごとにCRUD操作を提供
+- HandlerからのリクエストをUsecaseが受け取り、Repositoryに処理を依頼、PostgreSQLに永続化
+
+### 2. AIプラン生成アーキテクチャ
 AIによる旅行プラン生成は、RAG (Retrieval-Augmented Generation) のアプローチを採用しています。全体的なフローは以下の通りです。
 
+リクエスト返答のシーケンス図:
 ```mermaid
-graph TD
-    subgraph go-backend
-        A[Handler] --> B{AIGPTUsecase};
-        B --> C{SpotRepository};
-        C --> D[(Database)];
-    end
-    B --> E[(OpenAI API)];
+sequenceDiagram
+    participant User as ユーザー
+    participant Handler as Handler
+    participant Usecase as AIGPTUsecase
+    participant Repo as SpotRepository
+    participant OpenAI as OpenAI API
 
-    style E fill:#9f9,stroke:#333,stroke-width:2px
+    User->>Handler: 旅行プラン生成リクエスト (プロンプト)
+    Handler->>Usecase: プロンプトを渡す
+    Usecase->>Repo: プロンプトに一致する観光地情報を検索(RAGのRetrieval)
+    Repo-->>Usecase: 観光地情報を返す
+    Usecase->>Usecase: プロンプトと観光地情報を組み合わせて詳細プロンプトを構築
+    Usecase->>OpenAI: Chat Completion APIをストリーミングモードで呼び出し
+    OpenAI-->>Usecase: AIからのレスポンスをストリームで受け取る
+    Usecase-->>Handler: 随時書き込み返答
+    Handler-->>User: ストリームとしてレスポンスを流す
 ```
-
-1.  **Handler**: ユーザーからのリクエストを受け取り、`AIGPTUsecase`を呼び出します。
-2.  **AIGPTUsecase**:
-    a.  `SpotRepository`を呼び出し、ユーザーの入力プロンプトに部分一致する観光地情報をDBから検索・取得します（Retrieval）。
-    b.  取得した観光地情報とユーザープロンプトを組み合わせ、OpenAI APIに渡すための詳細なプロンプトを構築します。
-    c.  公式ライブラリ `github.com/openai/openai-go/v2` を使用して、OpenAIのChat Completion APIをストリーミングモードで呼び出します。
-    d.  AIからのレスポンスをHandlerにストリームとして返却します。
-3.  **SpotRepository**: `LIKE`句を用いたSQLクエリで、DB内の観光地情報を検索します。
-4.  **OpenAI API**: `AIGPTUsecase`から受け取ったプロンプトを元に、旅行プランを生成します（Generation）。
 
 ## テスト
 - 各層ごとにユニットテストを実装

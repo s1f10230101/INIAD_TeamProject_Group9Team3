@@ -13,10 +13,11 @@ import (
 
 type SpotRepositoryInterface interface {
 	GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error)
-	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
+	CreateSpot(ctx context.Context, spot *oapi.SpotResister, vector []float32) (oapi.SpotResponse, error)
 	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
 	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
 	SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error)
+	SearchSpotsByEmbedding(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error)
 }
 
 type spotRepositoryInmemory struct {
@@ -60,7 +61,7 @@ func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]oapi.SpotRe
 	return AllSavedSpot, nil
 }
 
-func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
+func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *oapi.SpotResister, vector []float32) (oapi.SpotResponse, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -154,4 +155,9 @@ func (r *spotRepositoryInmemory) SearchSpots(ctx context.Context, query string) 
 		}
 	}
 	return results, nil
+}
+
+func (r *spotRepositoryInmemory) SearchSpotsByEmbedding(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error) {
+	// In-memory repository does not support vector search. Returning empty slice.
+	return make([]oapi.SpotResponse, 0), nil
 }

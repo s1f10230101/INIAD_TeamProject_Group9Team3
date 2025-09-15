@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/pgvector/pgvector-go"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository/sqlc"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
@@ -42,13 +43,18 @@ func (r *postgresSpotRepository) GetAllSpots(ctx context.Context) ([]oapi.SpotRe
 	return spots, nil
 }
 
-func (r *postgresSpotRepository) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
+func (r *postgresSpotRepository) CreateSpot(ctx context.Context, spot *oapi.SpotResister, vector []float32) (oapi.SpotResponse, error) {
 	newID := uuid.New()
+
+	// Embeddingを生成
+	pgvecEmbedding := pgvector.NewVector(vector)
+
 	params := sqlc.CreateSpotParams{
 		ID:          newID,
 		Name:        spot.Name,
 		Description: spot.Description,
 		Address:     spot.Address,
+		Embedding:   &pgvecEmbedding,
 	}
 	createdSpot, err := r.q.CreateSpot(ctx, params)
 	if err != nil {
@@ -116,6 +122,26 @@ func (r *postgresSpotRepository) SearchSpots(ctx context.Context, query string) 
 	// LIKE句のためにワイルドカードを追加
 	searchQuery := "%" + query + "%"
 	rows, err := r.q.SearchSpots(ctx, searchQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	spots := make([]oapi.SpotResponse, len(rows))
+	for i, row := range rows {
+		spots[i] = oapi.SpotResponse{
+			Id:          row.ID,
+			Name:        row.Name,
+			Description: row.Description,
+			Address:     row.Address,
+			CreatedAt:   row.CreatedAt.Time.UTC(),
+		}
+	}
+	return spots, nil
+}
+
+func (r *postgresSpotRepository) SearchSpotsByEmbedding(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error) {
+	vec := pgvector.NewVector(embedding)
+	rows, err := r.q.SearchSpotsByEmbedding(ctx, &vec)
 	if err != nil {
 		return nil, err
 	}

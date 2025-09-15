@@ -19,13 +19,12 @@ func main() {
 	reviewRepository := repository.NewReviewRepositoryInmemory()
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(spotRepository)
+	fakeAiCase := usecase.NewAIGenerateFake()
+	postUsecase := usecase.NewPostUseCase(spotRepository, fakeAiCase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
-	// fakeAiCase := usecase.NewAIGenerateFake()
-	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, "https://api.openai.com/v1")
 
 	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase, aiUsecase)
+	serverMethods := handler.NewServer(postUsecase, reviewUsecase, fakeAiCase)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)

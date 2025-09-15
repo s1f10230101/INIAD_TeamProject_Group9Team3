@@ -3,9 +3,10 @@ INSERT INTO Spot (
     Id,
     Name,
     Description,
-    Address
+    Address,
+    embedding
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 ) RETURNING *;
 
 -- name: GetSpot :one
@@ -18,10 +19,11 @@ ORDER BY Created_at DESC;
 
 -- name: UpdateSpot :one
 UPDATE Spot
-SET 
+SET
     Name = $2,
     Description = $3,
-    Address = $4
+    Address = $4,
+    embedding = $5
 WHERE Id = $1
 RETURNING *;
 
@@ -33,3 +35,8 @@ WHERE Id = $1;
 SELECT * FROM Spot
 WHERE name LIKE $1 OR description LIKE $1
 ORDER BY created_at DESC;
+
+-- name: SearchSpotsByEmbedding :many
+SELECT * FROM Spot
+ORDER BY embedding <=> $1
+LIMIT 5;

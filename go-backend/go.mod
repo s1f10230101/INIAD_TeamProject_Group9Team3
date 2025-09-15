@@ -11,6 +11,7 @@ require (
 	github.com/oapi-codegen/nullable v1.1.0
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/openai/openai-go/v2 v2.4.2
+	github.com/pgvector/pgvector-go v0.3.0
 )
 
 require (

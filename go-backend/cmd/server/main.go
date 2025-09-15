@@ -55,11 +55,11 @@ func main() {
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
 	openaiBaseUrl := os.Getenv("OPENAI_API_BASE")
-	postUsecase := usecase.NewPostUseCase(spotRepository)
+	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, openaiBaseUrl, openaiAPIKey)
+	postUsecase := usecase.NewPostUseCase(spotRepository, aiUsecase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
-	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, openaiBaseUrl)
 
-	// 3. ハンドラを作成し、ユースケースを注入
+	// 5. ハンドラを作成し、ユースケースを注入
 	serverMethods := handler.NewServer(postUsecase, reviewUsecase, aiUsecase)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 

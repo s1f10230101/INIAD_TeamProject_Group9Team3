@@ -9,37 +9,47 @@ import (
 )
 
 // handler から呼び出されるビジネスロジックのインターフェース
-type PostUseCaseInterface interface {
+type SpotUseCaseInterface interface {
 	GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error)
 	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
 	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
 	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
 }
 
-type postUseCase struct {
-	repository repository.SpotRepositoryInterface
+type spotUseCase struct {
+	repository   repository.SpotRepositoryInterface
+	aiEmmbedding embeddingGeneratorInterface
 }
 
-var _ PostUseCaseInterface = (*postUseCase)(nil)
+var _ SpotUseCaseInterface = (*spotUseCase)(nil)
 
-func NewPostUseCase(repo repository.SpotRepositoryInterface) *postUseCase {
-	return &postUseCase{
-		repository: repo,
+func NewPostUseCase(repo repository.SpotRepositoryInterface, aiEmmbedingUC embeddingGeneratorInterface) *spotUseCase {
+	return &spotUseCase{
+		repository:   repo,
+		aiEmmbedding: aiEmmbedingUC,
 	}
 }
 
-func (u *postUseCase) GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error) {
+func (u *spotUseCase) GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error) {
 	return u.repository.GetAllSpots(ctx)
 }
 
-func (u *postUseCase) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
-	return u.repository.CreateSpot(ctx, spot)
+func (u *spotUseCase) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
+	var vector []float32
+	// ベクトル化
+	toVecText := spot.Name + "\n" + spot.Description + "\n" + spot.Address
+	vector, err := u.aiEmmbedding.createEmbedding(ctx, toVecText)
+	if err != nil {
+		return oapi.SpotResponse{}, err
+	}
+
+	return u.repository.CreateSpot(ctx, spot, vector)
 }
 
-func (u *postUseCase) GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error) {
+func (u *spotUseCase) GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error) {
 	return u.repository.GetSpotByID(ctx, spotId)
 }
 
-func (u *postUseCase) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error) {
+func (u *spotUseCase) UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error) {
 	return u.repository.UpdateSpotByID(ctx, spotId, spot)
 }

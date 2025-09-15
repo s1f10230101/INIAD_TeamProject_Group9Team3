@@ -62,7 +62,7 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 		Address:     "東京都テスト区",
 	}
 
-	createdSpot, err := repo.CreateSpot(context.Background(), input)
+	createdSpot, err := repo.CreateSpot(context.Background(), input, nil)
 	if err != nil {
 		t.Fatalf("CreateSpot失敗: %v", err)
 	}
