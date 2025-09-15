@@ -13,6 +13,8 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
+// curl コマンドでのテスト例
+// curl -X POST -H "Content-Type: application/json" -d '{"prompt": "あああ"}' http://localhost:8080/v1/plans
 func TestGeneratePlan(t *testing.T) {
 	// --- setup ---
 	router := setupTestRouter()
@@ -62,7 +64,6 @@ func TestGeneratePlan(t *testing.T) {
 			continue
 		}
 		receivedMessages = append(receivedMessages, trimmedLine)
-		println("Received message:", trimmedLine)
 	}
 
 	// AIGenerateFake が生成するメッセージの期待値

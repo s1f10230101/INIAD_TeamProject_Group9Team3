@@ -11,29 +11,8 @@ using OpenAPI;
 
 namespace Trip_Canvas;
 
-model SpotResister {
-  @doc("観光スポットの名称")
-  name: string;
 
-  @doc("観光スポットの説明")
-  description: string;
-
-  @doc("観光スポットの所在地")
-  address: string;
-}
-
-model SpotUpdate {
-  @doc("観光スポットの名称")
-  name: string | null;
-
-  @doc("観光スポットの説明")
-  description: string | null;
-
-  @doc("観光スポットの所在地")
-  address: string | null;
-}
-
-model SpotResponse {
+model SpotModel {
   @doc("観光スポットの一意の識別子")
   id: Uuid;
 
@@ -48,6 +27,16 @@ model SpotResponse {
 
   @doc("作成日時(utc unix timestamp)")
   createdAt: utcDateTime;
+}
+
+model SpotResponse is SpotModel;
+
+model SpotResister is OmitProperties<SpotModel, "id" | "createdAt">;
+
+model SpotUpdate {
+  name: string | null;
+  description: string | null;
+  address: string | null;
 }
 
 @tag("Spots")

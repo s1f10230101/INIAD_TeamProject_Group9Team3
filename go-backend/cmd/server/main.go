@@ -19,6 +19,11 @@ import (
 )
 
 func main() {
+	openaiAPIKey := os.Getenv("OPENAI_API_KEY")
+	if openaiAPIKey == "" {
+		log.Fatalf("OPENAI_API_KEY is not set")
+	}
+
 	dbHost := os.Getenv("DB_HOST")
 	if dbHost == "" {
 		dbHost = "localhost" // デフォルト値
@@ -49,12 +54,13 @@ func main() {
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
+	openaiBaseUrl := os.Getenv("OPENAI_API_BASE")
 	postUsecase := usecase.NewPostUseCase(spotRepository)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
-	fakeAiCase := usecase.NewAIGenerateFake()
+	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, openaiBaseUrl)
 
 	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase, fakeAiCase)
+	serverMethods := handler.NewServer(postUsecase, reviewUsecase, aiUsecase)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)

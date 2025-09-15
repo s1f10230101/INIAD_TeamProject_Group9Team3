@@ -111,3 +111,24 @@ func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid
 		CreatedAt:   updated.CreatedAt.Time.UTC(),
 	}, nil
 }
+
+func (r *postgresSpotRepository) SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error) {
+	// LIKE句のためにワイルドカードを追加
+	searchQuery := "%" + query + "%"
+	rows, err := r.q.SearchSpots(ctx, searchQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	spots := make([]oapi.SpotResponse, len(rows))
+	for i, row := range rows {
+		spots[i] = oapi.SpotResponse{
+			Id:          row.ID,
+			Name:        row.Name,
+			Description: row.Description,
+			Address:     row.Address,
+			CreatedAt:   row.CreatedAt.Time.UTC(),
+		}
+	}
+	return spots, nil
+}

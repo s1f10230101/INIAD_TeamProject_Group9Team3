@@ -106,6 +106,38 @@ func (q *Queries) ListSpots(ctx context.Context) ([]Spot, error) {
 	return items, nil
 }
 
+const searchSpots = `-- name: SearchSpots :many
+SELECT id, name, description, address, created_at FROM Spot
+WHERE name LIKE $1 OR description LIKE $1
+ORDER BY created_at DESC
+`
+
+func (q *Queries) SearchSpots(ctx context.Context, name string) ([]Spot, error) {
+	rows, err := q.db.Query(ctx, searchSpots, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Spot
+	for rows.Next() {
+		var i Spot
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Address,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateSpot = `-- name: UpdateSpot :one
 UPDATE Spot
 SET 

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type AIGenerateStream interface {
+type AIGenerateStreamInterface interface {
 	// 旅行プランをストリーミング形式で生成、行単位で返す
 	Event(ctx context.Context, prompt string) (io.ReadCloser, error)
 }
@@ -15,7 +15,7 @@ type AIGenerateStream interface {
 type AIGenerateFake struct {
 }
 
-var _ AIGenerateStream = (*AIGenerateFake)(nil)
+var _ AIGenerateStreamInterface = (*AIGenerateFake)(nil)
 
 func NewAIGenerateFake() *AIGenerateFake {
 	return &AIGenerateFake{}
@@ -34,6 +34,12 @@ func (a *AIGenerateFake) Event(ctx context.Context, prompt string) (io.ReadClose
 				return
 			}
 			time.Sleep(100 * time.Millisecond)
+			select {
+			case <-ctx.Done():
+				fmt.Println("Context cancelled, stopping message generation")
+				return
+			default:
+			}
 		}
 		// 最後にプロンプトを返す
 		_, err := fmt.Fprintf(pw, "prompt: %s\n", prompt)

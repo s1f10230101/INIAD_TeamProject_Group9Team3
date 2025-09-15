@@ -28,3 +28,8 @@ RETURNING *;
 -- name: DeleteSpot :exec
 DELETE FROM Spot
 WHERE Id = $1;
+
+-- name: SearchSpots :many
+SELECT * FROM Spot
+WHERE name LIKE $1 OR description LIKE $1
+ORDER BY created_at DESC;

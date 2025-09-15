@@ -11,20 +11,7 @@ using OpenAPI;
 
 namespace Trip_Canvas;
 
-model ReviewResister {
-    @doc("レビューを投稿したユーザーの識別子")
-    userId: string;
-
-    @doc("レビューの評価（1から5までの整数）")
-    @maxValue(5)
-    @minValue(1)
-    rating: integer;
-
-    @doc("レビューのコメント")
-    comment: string;
-}
-
-model ReviewResponse {
+model ReviewModel {
     @doc("レビューを投稿したユーザーの識別子")
     userId: Uuid;
 
@@ -43,6 +30,9 @@ model ReviewResponse {
     createdAt: utcDateTime;
 }
 
+model ReviewResister is OmitProperties<ReviewModel, "userId" | "createdAt">;
+
+model ReviewResponse is ReviewModel;
 
 @tag("Spots")
 @tag("Reviews")

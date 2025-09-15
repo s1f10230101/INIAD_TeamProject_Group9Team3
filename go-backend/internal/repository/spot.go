@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,6 +16,7 @@ type SpotRepositoryInterface interface {
 	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
 	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
 	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
+	SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error)
 }
 
 type spotRepositoryInmemory struct {
@@ -131,4 +133,25 @@ func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid
 		Address:     existingSpot.Address,
 		CreatedAt:   existingSpot.CreatedAt.UTC(),
 	}, nil
+}
+
+func (r *spotRepositoryInmemory) SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	var results []oapi.SpotResponse
+	for _, spot := range r.postsDB {
+		if strings.Contains(strings.ToLower(spot.Name), strings.ToLower(query)) ||
+			strings.Contains(strings.ToLower(spot.Description), strings.ToLower(query)) ||
+			strings.Contains(strings.ToLower(spot.Address), strings.ToLower(query)) {
+			results = append(results, oapi.SpotResponse{
+				Id:          spot.Id,
+				Name:        spot.Name,
+				Description: spot.Description,
+				Address:     spot.Address,
+				CreatedAt:   spot.CreatedAt.UTC(),
+			})
+		}
+	}
+	return results, nil
 }
