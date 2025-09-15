@@ -30,7 +30,9 @@ func TestPostgresReviewRepository_CreateAndGetReviews(t *testing.T) {
 		Description: "レビューのインテグレーションテスト",
 		Address:     "東京都",
 	}
-	createdSpot, err := spotRepo.CreateSpot(context.Background(), spotInput, nil)
+
+	vector1536 := make([]float32, 1536)
+	createdSpot, err := spotRepo.CreateSpot(context.Background(), spotInput, vector1536)
 	if err != nil {
 		t.Fatalf("スポットの作成に失敗: %v", err)
 	}
