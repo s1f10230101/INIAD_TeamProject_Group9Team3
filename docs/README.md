@@ -33,7 +33,12 @@
     cd INIAD_TeamProject_Group9Team3
     ```
 
-2.  **Dockerコンテナのビルドと起動**
+2. 環境変数ファイル `.env` を作成
+    ```bash
+    cp go-backend/.env.example go-backend/.env
+    ```
+
+3.  **Dockerコンテナのビルドと起動**
     ```bash
     docker compose up --build -d
     ```

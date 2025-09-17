@@ -14,7 +14,7 @@ namespace Trip_Canvas;
 
 model SpotModel {
   @doc("観光スポットの一意の識別子")
-  id: Uuid;
+  id: uuid;
 
   @doc("観光スポットの名称")
   name: string;
@@ -52,7 +52,7 @@ interface SpotsAPI {
   @doc("指定したIDの観光スポットの詳細情報を取得します。")
   @operationId("getSpotById")
   @get
-  spotById(@path spotId: Uuid): SpotResponse | Error<404 | 500>;
+  spotById(@path spotId: uuid): SpotResponse | Error<404 | 500>;
 
   @summary("観光スポットの登録")
   @doc("新しい観光スポットを登録します。")
@@ -64,5 +64,5 @@ interface SpotsAPI {
   @doc("指定したIDの観光スポットの情報を更新します。")
   @operationId("updateSpot")
   @put
-  updateSpot(@path spotId: Uuid, @body updatedSpot: SpotUpdate): SpotResponse | Error<400 | 404 | 500>;
+  updateSpot(@path spotId: uuid, @body updatedSpot: SpotUpdate): SpotResponse | Error<400 | 404 | 500>;
 }

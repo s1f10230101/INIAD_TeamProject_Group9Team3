@@ -4,12 +4,10 @@ package repository_test
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"testing"
-
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -21,23 +19,18 @@ var testPool *pgxpool.Pool
 
 // TestMain はテストのセットアップとティアダウンを行います。
 func TestMain(m *testing.M) {
-	// compose.yamlで定義したDBに接続
-	dbURL := "postgres://app_user:password@localhost:5432/app_db?sslmode=disable"
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		5432,
+		os.Getenv("POSTGRES_DB"))
 	var err error
 	testPool, err = pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("database接続失敗: %v", err)
 	}
 	defer testPool.Close()
-
-	mg, err := migrate.New(
-		"file://../../db/migration",
-		dbURL,
-	)
-	if err != nil {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
-	mg.Up()
 
 	// Run tests
 	m.Run()

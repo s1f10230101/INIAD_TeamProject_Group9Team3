@@ -86,11 +86,11 @@ sequenceDiagram
 - 統合テストについて
   - dbなどの外部依存関係を含むテストは`//go:build integration`でビルドタグを付与して分離
   - `go test ./... -v` で統合テスト以外のテストを実行
-  - `go test -tags="integration" ./... -v` で統合テスト含む全てのテストを実行
-    - `docker compose up db -d`で依存関係の起動が必要
-    - 考えてみれば`docker compose run --rm --build backend-dev go test -tags="integration" ./... -v`1コマンドで良いかも
-- テストコードのエラーメッセージにはなるべく日本語を使用するようにします。
-  - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つて見やすい
+  - 統合テスト含む全てのテストを実行
+    - `docker compose up db -d`で依存関係の起動
+    - `cp .env.example .env`で環境変数の設定(必要に応じて編集)
+    - `go run github.com/golang-migrate/migrate/v4/cmd/migrate -path db/migration -database "postgres://user:password@localhost:5432/travel_app?sslmode=disable" up`でマイグレーションの適用
+    - `go test -tags="integration" ./... -v`で統合テストの実行
 
 ## その他
 - 外部サービス依存

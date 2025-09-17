@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
@@ -25,7 +23,7 @@ func main() {
 
 	// 3. ハンドラを作成し、ユースケースを注入
 	serverMethods := handler.NewServer(postUsecase, reviewUsecase, fakeAiCase)
-	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
+	handlerFuncs := oapi.NewStrictHandler(serverMethods, []oapi.StrictMiddlewareFunc{})
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
 	server := oapi.HandlerWithOptions(handlerFuncs, oapi.StdHTTPServerOptions{

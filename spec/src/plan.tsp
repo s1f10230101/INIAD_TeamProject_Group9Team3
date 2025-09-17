@@ -16,7 +16,7 @@ model Prompt {
     prompt: string;
 }
 
-
+@example(#{body: "data: {\"text\": \"PLANPLAN\"}\\n\\n", contentType: "text/event-stream", Connection: "keep-alive", `Cache-Control`: "no-cache",})
 model PlanResponse extends TypeSpec.SSE.SSEStream<PlanResponseEvent> {
 @header `Cache-Control`: "no-cache",
 @header `Connection`: "keep-alive",
@@ -26,11 +26,11 @@ union PlanResponseEvent {
     aiGeneratedText: TexteventStream;
     done: "event: done\\n\\n";
 }
-model TexteventStream {
+alias TexteventStream = {
     @Events.contentType("text/plain")
     @Events.data
     texteventStream: string;
-}
+};
 
 @tag("Plans")
 @route("/plans")
