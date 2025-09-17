@@ -89,7 +89,7 @@ sequenceDiagram
   - 統合テスト含む全てのテストを実行
     - `docker compose up db -d`で依存関係の起動
     - `cp .env.example .env`で環境変数の設定(必要に応じて編集)
-    - `go run github.com/golang-migrate/migrate/v4/cmd/migrate -path db/migration -database "postgres://user:password@localhost:5432/travel_app?sslmode=disable" up`でマイグレーションの適用
+    - `migrate -path db/migration -database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}?sslmode=disable" up`でマイグレーションの適用
     - `go test -tags="integration" ./... -v`で統合テストの実行
 
 ## その他

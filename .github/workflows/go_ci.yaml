@@ -28,6 +28,10 @@ jobs:
     services:
       db:
         image: ankane/pgvector
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
         # サービスが準備完了したことを確認するためのヘルスチェック
