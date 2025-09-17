@@ -57,7 +57,7 @@ jobs:
 
       - name: Migrate database
         run: |
-          migrate -path ./db/migrations -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST:5432/$POSTGRES_DB?sslmode=disable" up
+          migrate -path ./db/migration -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST:5432/$POSTGRES_DB?sslmode=disable" up
 
       - name: Run tests
         run: |
