@@ -16,7 +16,10 @@ model JWTAuth {
     token: string;
 }
 
-model UserResister {
+model UserModel {
+    @doc("ユーザーの一意の識別子")
+    id: string;
+
     @doc("ユーザー名")
     username: string;
 
@@ -28,16 +31,9 @@ model UserResister {
     password: string;
 }
 
-model UserResponse {
-    @doc("ユーザーの一意の識別子")
-    id: string;
+model UserResister is OmitProperties<UserModel, "id">;
 
-    @doc("ユーザー名")
-    username: string;
-
-    @doc("メールアドレス")
-    email: string;
-}
+model UserResponse is OmitProperties<UserModel, "password">;
 
 @tag("Auth")
 @route("/auth")

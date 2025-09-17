@@ -7,9 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
@@ -19,37 +16,30 @@ import (
 )
 
 func main() {
-	// 環境変数からDBホストを取得、なければlocalhostをデフォルト値とする
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "localhost"
-	}
-	dbURL := fmt.Sprintf("postgres://app_user:password@%s:5432/app_db?sslmode=disable", dbHost)
-
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		5432,
+		os.Getenv("POSTGRES_DB"))
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
 	defer pool.Close()
 
-	// マイグレーションの実行
-	if m, err := migrate.New("file:///db/migration", dbURL); err == nil {
-		m.Up()
-	} else {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
-
 	// 1. レポジトリの初期化 (Postgres版を使用)
-	postRepository := repository.NewPostgresPostRepository(pool)
+	spotRepository := repository.NewPostgresPostRepository(pool)
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepository)
+	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, os.Getenv("OPENAI_API_BASE"), os.Getenv("OPENAI_API_KEY"))
+	postUsecase := usecase.NewPostUseCase(spotRepository, aiUsecase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
 
-	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
-	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
+	// 5. ハンドラを作成し、ユースケースを注入
+	serverMethods := handler.NewServer(postUsecase, reviewUsecase, aiUsecase)
+	handlerFuncs := oapi.NewStrictHandler(serverMethods, []oapi.StrictMiddlewareFunc{})
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
 	server := oapi.HandlerWithOptions(handlerFuncs, oapi.StdHTTPServerOptions{
