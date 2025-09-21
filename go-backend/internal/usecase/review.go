@@ -31,7 +31,7 @@ func (u *reviewUseCase) GetReviewsBySpotID(ctx context.Context, spotId uuid.UUID
 }
 
 func (u *reviewUseCase) CreateReview(ctx context.Context, spotId uuid.UUID, review *oapi.ReviewResister) (*oapi.ReviewResponse, error) {
-	if review.Rating < 1 || review.Rating > 5 {
+	if review.Rating < 1 || review.Rating > 6 {
 		return nil, fmt.Errorf("review 1~5")
 	}
 	return u.reviewRepo.CreateReview(ctx, spotId, review)
