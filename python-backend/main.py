@@ -76,7 +76,9 @@ async def stream_generator(prompt: str):
         print(content)
         if content:
             # SSE (Server-Sent Events) format
-            yield f"data: {json.dumps({'token': content})}\\n\n"
+            # Replace newlines to conform to SSE spec
+            processed_content = content.replace('\n', '\ndata: ')
+            yield f"data: {processed_content}\n\n"
 
 @app.post("/generate-plan")
 async def generate_plan(req: PlanRequest):
