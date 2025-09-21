@@ -21,7 +21,7 @@ func main() {
 	var POSTGRESPASSWORD = os.Getenv("POSTGRES_PASSWORD")
 	var POSTGRESDB = os.Getenv("POSTGRES_DB")
 	var DBHOST = os.Getenv("DB_HOST")
-	var OPENAI_API_BASE = os.Getenv("OEPNAI_API_BASE")
+	var OPENAI_API_BASE = os.Getenv("OPENAI_API_BASE")
 	var OPENAI_API_KEY = os.Getenv("OPENAI_API_KEY")
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		POSTGRESUSER,
