@@ -23,4 +23,8 @@ graph TD
 ├── go-backend/        # Goバックエンドのソースコード
 ├── .github/            # CI/CD (GitHub Actions) の設定
 ├── openapi.1.0.yaml  # OpenAPI仕様書
+├── python-backend/     # Pythonバックエンドのソースコード（主にAI機能を担当する
 ```
+
+ユーザからの旅のリクエスト："例えば、大阪で二回目の旅行で抹茶関連を楽しみたい"
+python-backendがragでpostgreデータベースにおいて、近いベクトルのものを選択して、結果をLLMに渡します。LLMがそのragの検索結果に基づいて回答を作成します。その回答をストリーム形式でgo-backendに渡す。
