@@ -88,7 +88,7 @@ func (u *aiGPTUsecase) Event(ctx context.Context, prompt string) (io.ReadCloser,
 				openai.SystemMessage(systemPrompt),
 				openai.UserMessage(userPrompt),
 			},
-			Model: openai.ChatModelGPT5Nano,
+			Model: openai.ChatModelChatgpt4oLatest,
 		})
 
 		// ストリーミング応答の処理
@@ -98,23 +98,23 @@ func (u *aiGPTUsecase) Event(ctx context.Context, prompt string) (io.ReadCloser,
 			chunk := stream.Current()
 			acc.AddChunk(chunk)
 
-			if content, ok := acc.JustFinishedContent(); ok {
-				pw.Write([]byte(content))
-				pw.Write([]byte("end\n"))
+			if _, ok := acc.JustFinishedContent(); ok {
+				slog.Debug("end event")
 			}
 
 			if tool, ok := acc.JustFinishedToolCall(); ok {
 				// ツール呼び出しの処理（必要に応じて実装）
-				fmt.Printf("Tool called: %s with arguments %v\n", tool.Name, tool.Arguments)
+				slog.Info("Tool called", "name", tool.Name, "arguments", tool.Arguments)
+				fmt.Fprintf(pw, "Tool called: %s with arguments %v\n", tool.Name, tool.Arguments)
 			}
 
 			if refusal, ok := acc.JustFinishedRefusal(); ok {
 				// 拒否応答の処理（必要に応じて実装）
-				fmt.Printf("Refusal: %s\n", refusal)
+				slog.Error("Refused", "info", refusal)
 			}
-			// JustFinishedイベントを処理した後にchunksを使う
-			if len(chunk.Choices) > 0 {
-				fmt.Printf("Chunks: %+v\n", chunk.Choices[0].Delta)
+
+			if len(chunk.Choices) > 0 && chunk.Choices[0].Delta.Content != "" {
+				pw.Write([]byte(chunk.Choices[0].Delta.Content))
 			}
 		}
 

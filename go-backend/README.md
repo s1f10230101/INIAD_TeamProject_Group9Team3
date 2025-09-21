@@ -83,7 +83,7 @@ sequenceDiagram
 
 ## テスト
 - 各層ごとにユニットテストを実装
-- 統合テストについて
+- テストについて
   - dbなどの外部依存関係を含むテストは`//go:build integration`でビルドタグを付与して分離
   - `go test ./... -v` で統合テスト以外のテストを実行
   - 統合テスト含む全てのテストを実行
@@ -91,6 +91,11 @@ sequenceDiagram
     - `cp .env.example .env`で環境変数の設定(必要に応じて編集)
     - `migrate -path db/migration -database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}?sslmode=disable" up`でマイグレーションの適用
     - `go test -tags="integration" ./... -v`で統合テストの実行
+  - 手動テスト
+    - OpenAIのAPIを使った本番テストは手動で実行し人間が結果を確認します
+    - Plan生成テスト
+      1. `docker compose up --build --watch`で起動
+      2. `curl -X POST -H "Content-Type: application/json" -d '{"prompt": "テスト投稿です"}' http://localhost:8080/v1/plans`でテスト投稿
 
 ## その他
 - 外部サービス依存

@@ -4,37 +4,12 @@ package repository_test
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"os"
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
-
-var testPool *pgxpool.Pool
-
-// TestMain はテストのセットアップとティアダウンを行います。
-func TestMain(m *testing.M) {
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		5432,
-		os.Getenv("POSTGRES_DB"))
-	var err error
-	testPool, err = pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("database接続失敗: %v", err)
-	}
-	defer testPool.Close()
-
-	// Run tests
-	m.Run()
-}
 
 func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 	// --- Setup: トランザクションを開始 ---

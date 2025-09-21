@@ -11,7 +11,7 @@ import (
 
 type server struct {
 	// ユースケースのインターフェースをフィールドとして持つ
-	postUC   usecase.SpotUseCaseInterface
+	spotUC   usecase.SpotUseCaseInterface
 	reviewUC usecase.ReviewUseCaseInterface
 	aiUC     usecase.AIGenerateStreamInterface
 }
@@ -19,9 +19,9 @@ type server struct {
 var _ oapi.StrictServerInterface = (*server)(nil)
 
 // NewServer は server 構造体のポインタを返すコンストラクタ関数
-func NewServer(postuc usecase.SpotUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface, aiuc usecase.AIGenerateStreamInterface) *server {
+func NewServer(spotuc usecase.SpotUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface, aiuc usecase.AIGenerateStreamInterface) *server {
 	return &server{
-		postUC:   postuc,
+		spotUC:   spotuc,
 		reviewUC: reviewuc,
 		aiUC:     aiuc,
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -16,12 +17,18 @@ import (
 )
 
 func main() {
+	var POSTGRESUSER = os.Getenv("POSTGRES_USER")
+	var POSTGRESPASSWORD = os.Getenv("POSTGRES_PASSWORD")
+	var POSTGRESDB = os.Getenv("POSTGRES_DB")
+	var DBHOST = os.Getenv("DB_HOST")
+	var OPENAI_API_BASE = os.Getenv("OEPNAI_API_BASE")
+	var OPENAI_API_KEY = os.Getenv("OPENAI_API_KEY")
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("DB_HOST"),
+		POSTGRESUSER,
+		POSTGRESPASSWORD,
+		DBHOST,
 		5432,
-		os.Getenv("POSTGRES_DB"))
+		POSTGRESDB)
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
@@ -33,7 +40,8 @@ func main() {
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, os.Getenv("OPENAI_API_BASE"), os.Getenv("OPENAI_API_KEY"))
+	slog.Info("ai url:", "a", OPENAI_API_BASE)
+	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, OPENAI_API_BASE, OPENAI_API_KEY)
 	postUsecase := usecase.NewPostUseCase(spotRepository, aiUsecase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
 
