@@ -21,7 +21,7 @@ func TestPostReview(t *testing.T) {
 	// 1. レビューを投稿するためのリクエストを作成
 	comment := "テストコメント: とても素晴らしい体験でした！"
 	reviewInput := oapi.ReviewResister{
-		Rating:  59,
+		Rating:  5,
 		Comment: comment,
 	}
 	body, _ := json.Marshal(reviewInput)
