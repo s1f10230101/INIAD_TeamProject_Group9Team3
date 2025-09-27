@@ -7,6 +7,7 @@ package sqlc
 import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/pgvector/pgvector-go"
 )
 
 type Review struct {
@@ -19,9 +20,10 @@ type Review struct {
 }
 
 type Spot struct {
-	ID          uuid.UUID          `json:"id"`
-	Name        string             `json:"name"`
-	Description string             `json:"description"`
-	Address     string             `json:"address"`
-	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	ID              uuid.UUID          `json:"id"`
+	Name            string             `json:"name"`
+	Description     string             `json:"description"`
+	Address         string             `json:"address"`
+	CreatedAt       pgtype.Timestamptz `json:"created_at"`
+	EmbeddingOpenai *pgvector.Vector   `json:"embedding_openai"`
 }

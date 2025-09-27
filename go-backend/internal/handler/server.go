@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/usecase"
@@ -11,17 +11,19 @@ import (
 
 type server struct {
 	// ユースケースのインターフェースをフィールドとして持つ
-	postUC   usecase.PostUseCaseInterface
+	spotUC   usecase.SpotUseCaseInterface
 	reviewUC usecase.ReviewUseCaseInterface
+	aiUC     usecase.AIGenerateStreamInterface
 }
 
 var _ oapi.StrictServerInterface = (*server)(nil)
 
 // NewServer は server 構造体のポインタを返すコンストラクタ関数
-func NewServer(postuc usecase.PostUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface) *server {
+func NewServer(spotuc usecase.SpotUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface, aiuc usecase.AIGenerateStreamInterface) *server {
 	return &server{
-		postUC:   postuc,
+		spotUC:   spotuc,
 		reviewUC: reviewuc,
+		aiUC:     aiuc,
 	}
 }
 
@@ -32,7 +34,7 @@ func (s *server) HealthCheckOpenAPI(ctx context.Context, request oapi.HealthChec
 // ミドルウェアアクセスログ
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Received request: %s %s %s", r.Method, r.URL.Path, r.Body)
+		slog.Info("Received request", "method", r.Method, "path", r.URL.Path, "body", r.Body)
 		next.ServeHTTP(w, r)
 	})
 }

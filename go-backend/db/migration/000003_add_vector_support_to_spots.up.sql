@@ -1,0 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+
+ALTER TABLE Spot
+ADD COLUMN embedding_openai vector(1536);
