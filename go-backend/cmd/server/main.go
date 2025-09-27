@@ -17,18 +17,36 @@ import (
 )
 
 func main() {
-	var POSTGRESUSER = os.Getenv("POSTGRES_USER")
-	var POSTGRESPASSWORD = os.Getenv("POSTGRES_PASSWORD")
-	var POSTGRESDB = os.Getenv("POSTGRES_DB")
-	var DBHOST = os.Getenv("DB_HOST")
-	var OPENAI_API_BASE = os.Getenv("OPENAI_API_BASE")
-	var OPENAI_API_KEY = os.Getenv("OPENAI_API_KEY")
+	POSTGRES_USER, ok := os.LookupEnv("POSTGRES_USER")
+	if !ok {
+		slog.Error("環境変数", "POSTGRESUSER", ok)
+	}
+	POSTGRES_PASSWORD, ok := os.LookupEnv("POSTGRES_PASSWORD")
+	if !ok {
+		slog.Error("環境変数", "POSTGRES_PASSWORD", ok)
+	}
+	POSTGRES_DB, ok := os.LookupEnv("POSTGRES_DB")
+	if !ok {
+		slog.Error("環境変数", "POSTGRES_DB", ok)
+	}
+	DBHOST, ok := os.LookupEnv("DB_HOST")
+	if !ok {
+		slog.Error("環境変数", "DBHOST", ok)
+	}
+	OPENAI_API_BASE, ok := os.LookupEnv("OPENAI_API_BASE")
+	if !ok {
+		slog.Error("環境変数", "OPENAI_API_BASE", OPENAI_API_BASE)
+	}
+	OPENAI_API_KEY, ok := os.LookupEnv("OPENAI_API_KEY")
+	if !ok {
+		slog.Error("環境変数", "OPENAI_API_KEY", OPENAI_API_KEY)
+	}
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		POSTGRESUSER,
-		POSTGRESPASSWORD,
+		POSTGRES_USER,
+		POSTGRES_PASSWORD,
 		DBHOST,
 		5432,
-		POSTGRESDB)
+		POSTGRES_DB)
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
@@ -40,7 +58,6 @@ func main() {
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	slog.Info("ai url:", "a", OPENAI_API_BASE)
 	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, OPENAI_API_BASE, OPENAI_API_KEY)
 	postUsecase := usecase.NewPostUseCase(spotRepository, aiUsecase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
