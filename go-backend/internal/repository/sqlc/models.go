@@ -7,6 +7,7 @@ package sqlc
 import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/pgvector/pgvector-go"
 )
 
 type Review struct {
@@ -24,4 +25,5 @@ type Spot struct {
 	Description string             `json:"description"`
 	Address     string             `json:"address"`
 	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	Embedding   *pgvector.Vector   `json:"embedding"`
 }

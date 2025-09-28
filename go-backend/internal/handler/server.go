@@ -5,23 +5,26 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/usecase"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
 type server struct {
 	// ユースケースのインターフェースをフィールドとして持つ
-	postUC   usecase.PostUseCaseInterface
+	spotUC   usecase.SpotUseCaseInterface
 	reviewUC usecase.ReviewUseCaseInterface
+	spotRepo repository.SpotRepositoryInterface // spotRepoを追加
 }
 
 var _ oapi.StrictServerInterface = (*server)(nil)
 
 // NewServer は server 構造体のポインタを返すコンストラクタ関数
-func NewServer(postuc usecase.PostUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface) *server {
+func NewServer(spotuc usecase.SpotUseCaseInterface, reviewuc usecase.ReviewUseCaseInterface, spotrepo repository.SpotRepositoryInterface) *server {
 	return &server{
-		postUC:   postuc,
+		spotUC:   spotuc,
 		reviewUC: reviewuc,
+		spotRepo: spotrepo, // spotRepoを初期化
 	}
 }
 

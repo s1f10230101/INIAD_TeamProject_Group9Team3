@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/pgvector/pgvector-go"
 )
 
 const createSpot = `-- name: CreateSpot :one
@@ -19,7 +20,7 @@ INSERT INTO Spot (
     Address
 ) VALUES (
     $1, $2, $3, $4
-) RETURNING id, name, description, address, created_at
+) RETURNING id, name, description, address, created_at, embedding
 `
 
 type CreateSpotParams struct {
@@ -43,6 +44,7 @@ func (q *Queries) CreateSpot(ctx context.Context, arg CreateSpotParams) (Spot, e
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
+		&i.Embedding,
 	)
 	return i, err
 }
@@ -58,7 +60,7 @@ func (q *Queries) DeleteSpot(ctx context.Context, id uuid.UUID) error {
 }
 
 const getSpot = `-- name: GetSpot :one
-SELECT id, name, description, address, created_at FROM Spot
+SELECT id, name, description, address, created_at, embedding FROM Spot
 WHERE Id = $1
 `
 
@@ -71,12 +73,13 @@ func (q *Queries) GetSpot(ctx context.Context, id uuid.UUID) (Spot, error) {
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
+		&i.Embedding,
 	)
 	return i, err
 }
 
 const listSpots = `-- name: ListSpots :many
-SELECT id, name, description, address, created_at FROM Spot
+SELECT id, name, description, address, created_at, embedding FROM Spot
 ORDER BY Created_at DESC
 `
 
@@ -95,6 +98,41 @@ func (q *Queries) ListSpots(ctx context.Context) ([]Spot, error) {
 			&i.Description,
 			&i.Address,
 			&i.CreatedAt,
+			&i.Embedding,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const searchSpotsByVector = `-- name: SearchSpotsByVector :many
+SELECT id, name, description, address, created_at, embedding FROM Spot
+WHERE embedding IS NOT NULL
+ORDER BY embedding <-> $1
+LIMIT 10
+`
+
+func (q *Queries) SearchSpotsByVector(ctx context.Context, embedding *pgvector.Vector) ([]Spot, error) {
+	rows, err := q.db.Query(ctx, searchSpotsByVector, embedding)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Spot
+	for rows.Next() {
+		var i Spot
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Address,
+			&i.CreatedAt,
+			&i.Embedding,
 		); err != nil {
 			return nil, err
 		}
@@ -113,7 +151,7 @@ SET
     Description = $3,
     Address = $4
 WHERE Id = $1
-RETURNING id, name, description, address, created_at
+RETURNING id, name, description, address, created_at, embedding
 `
 
 type UpdateSpotParams struct {
@@ -137,6 +175,23 @@ func (q *Queries) UpdateSpot(ctx context.Context, arg UpdateSpotParams) (Spot, e
 		&i.Description,
 		&i.Address,
 		&i.CreatedAt,
+		&i.Embedding,
 	)
 	return i, err
+}
+
+const updateSpotEmbedding = `-- name: UpdateSpotEmbedding :exec
+UPDATE Spot
+SET embedding = $2
+WHERE Id = $1
+`
+
+type UpdateSpotEmbeddingParams struct {
+	ID        uuid.UUID        `json:"id"`
+	Embedding *pgvector.Vector `json:"embedding"`
+}
+
+func (q *Queries) UpdateSpotEmbedding(ctx context.Context, arg UpdateSpotEmbeddingParams) error {
+	_, err := q.db.Exec(ctx, updateSpotEmbedding, arg.ID, arg.Embedding)
+	return err
 }

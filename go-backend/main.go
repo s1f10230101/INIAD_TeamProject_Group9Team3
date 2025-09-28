@@ -7,9 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
@@ -32,23 +30,18 @@ func main() {
 	}
 	defer pool.Close()
 
-	// マイグレーションの実行
-	if m, err := migrate.New("file:///db/migration", dbURL); err == nil {
-		m.Up()
-	} else {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
+	
 
 	// 1. レポジトリの初期化 (Postgres版を使用)
-	postRepository := repository.NewPostgresPostRepository(pool)
+	spotRepository := repository.NewPostgresPostRepository(pool)
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepository)
+	spotUsecase := usecase.NewSpotUseCase(spotRepository)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
 
-	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
+	// 3. ハンドラを作成し、ユースケースとリポジトリを注入
+	serverMethods := handler.NewServer(spotUsecase, reviewUsecase, spotRepository)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)

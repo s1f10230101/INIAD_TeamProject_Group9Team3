@@ -15,6 +15,8 @@ type SpotRepositoryInterface interface {
 	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
 	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
 	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
+	SearchSpotsByVector(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error)
+	UpdateSpotEmbedding(ctx context.Context, spotId uuid.UUID, embedding []float32) error
 }
 
 type spotRepositoryInmemory struct {
@@ -30,6 +32,7 @@ type spotModel struct {
 	CreatedAt   time.Time `db:"created_at"`
 }
 
+// SpotRepositoryInterfaceはSpotRepositoryInmemory構造体を満たしているかどうか
 var _ SpotRepositoryInterface = (*spotRepositoryInmemory)(nil)
 
 func NewSpotRepositoryInmemory() *spotRepositoryInmemory {
@@ -132,3 +135,14 @@ func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid
 		CreatedAt:   existingSpot.CreatedAt.UTC(),
 	}, nil
 }
+
+func (r *spotRepositoryInmemory) SearchSpotsByVector(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error) {
+	// In-memory implementation does not support vector search. Returning empty slice.
+	return []oapi.SpotResponse{}, nil
+}
+
+func (r *spotRepositoryInmemory) UpdateSpotEmbedding(ctx context.Context, spotId uuid.UUID, embedding []float32) error {
+	// In-memory implementation does not store embeddings. This is a no-op.
+	return nil
+}
+
