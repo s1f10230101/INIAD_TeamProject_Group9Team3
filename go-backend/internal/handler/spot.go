@@ -9,14 +9,14 @@ import (
 // 観光スポット一覧の取得
 // (GET /spots)
 func (s *server) GetAllSpots(ctx context.Context, request oapi.GetAllSpotsRequestObject) (oapi.GetAllSpotsResponseObject, error) {
-	spots, err := s.postUC.GetAllSpots(ctx)
+	spots, err := s.spotUC.GetAllSpots(ctx)
 	return oapi.GetAllSpots200JSONResponse(spots), err
 }
 
 // 観光スポットの登録
 // (POST /spots)
 func (s *server) CreateSpot(ctx context.Context, request oapi.CreateSpotRequestObject) (oapi.CreateSpotResponseObject, error) {
-	createdSpot, err := s.postUC.CreateSpot(ctx, request.Body)
+	createdSpot, err := s.spotUC.CreateSpot(ctx, request.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (s *server) CreateSpot(ctx context.Context, request oapi.CreateSpotRequestO
 // 観光スポットの詳細取得
 // (GET /spots/{spotId})
 func (s *server) GetSpotById(ctx context.Context, request oapi.GetSpotByIdRequestObject) (oapi.GetSpotByIdResponseObject, error) {
-	spot, err := s.postUC.GetSpotByID(ctx, request.SpotId)
+	spot, err := s.spotUC.GetSpotByID(ctx, request.SpotId)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s *server) GetSpotById(ctx context.Context, request oapi.GetSpotByIdReques
 // 観光スポットの更新
 // (PUT /spots/{spotId})
 func (s *server) UpdateSpot(ctx context.Context, request oapi.UpdateSpotRequestObject) (oapi.UpdateSpotResponseObject, error) {
-	spot, err := s.postUC.UpdateSpotByID(ctx, request.SpotId, request.Body)
+	spot, err := s.spotUC.UpdateSpotByID(ctx, request.SpotId, request.Body)
 	if err != nil {
 		return nil, err
 	}

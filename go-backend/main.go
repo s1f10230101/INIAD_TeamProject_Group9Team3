@@ -33,15 +33,15 @@ func main() {
 	
 
 	// 1. レポジトリの初期化 (Postgres版を使用)
-	postRepository := repository.NewPostgresPostRepository(pool)
+	spotRepository := repository.NewPostgresPostRepository(pool)
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepository)
+	spotUsecase := usecase.NewSpotUseCase(spotRepository)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
 
-	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
+	// 3. ハンドラを作成し、ユースケースとリポジトリを注入
+	serverMethods := handler.NewServer(spotUsecase, reviewUsecase, spotRepository)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
