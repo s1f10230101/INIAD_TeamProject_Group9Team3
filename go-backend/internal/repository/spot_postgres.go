@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/pgvector/pgvector-go"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository/sqlc"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
@@ -110,4 +111,33 @@ func (r *postgresSpotRepository) UpdateSpotByID(ctx context.Context, spotId uuid
 		Address:     updated.Address,
 		CreatedAt:   updated.CreatedAt.Time.UTC(),
 	}, nil
+}
+
+func (r *postgresSpotRepository) SearchSpotsByVector(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error) {
+	temp := pgvector.NewVector(embedding)
+	rows, err := r.q.SearchSpotsByVector(ctx, &temp)
+	if err != nil {
+		return nil, err
+	}
+
+	spots := make([]oapi.SpotResponse, len(rows))
+	for i, row := range rows {
+		spots[i] = oapi.SpotResponse{
+			Id:          row.ID,
+			Name:        row.Name,
+			Description: row.Description,
+			Address:     row.Address,
+			CreatedAt:   row.CreatedAt.Time.UTC(),
+		}
+	}
+	return spots, nil
+}
+
+func (r *postgresSpotRepository) UpdateSpotEmbedding(ctx context.Context, spotId uuid.UUID, embedding []float32) error {
+	temp := pgvector.NewVector(embedding)
+	params := sqlc.UpdateSpotEmbeddingParams{
+		ID:        spotId,
+		Embedding: &temp,
+	}
+	return r.q.UpdateSpotEmbedding(ctx, params)
 }

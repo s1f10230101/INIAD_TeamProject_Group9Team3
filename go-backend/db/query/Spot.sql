@@ -28,3 +28,14 @@ RETURNING *;
 -- name: DeleteSpot :exec
 DELETE FROM Spot
 WHERE Id = $1;
+
+-- name: SearchSpotsByVector :many
+SELECT * FROM Spot
+WHERE embedding IS NOT NULL
+ORDER BY embedding <-> $1
+LIMIT 10;
+
+-- name: UpdateSpotEmbedding :exec
+UPDATE Spot
+SET embedding = $2
+WHERE Id = $1;
