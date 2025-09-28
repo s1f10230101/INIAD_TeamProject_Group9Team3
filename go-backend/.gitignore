@@ -1,3 +1,4 @@
 tmp/
 .env
 !.env.test
+go-backend/internal/handler/ai_generate_test.go

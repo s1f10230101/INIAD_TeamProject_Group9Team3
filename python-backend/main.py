@@ -68,17 +68,17 @@ chain = RunnableMap({
 # --- API Endpoints ---
 async def stream_generator(prompt: str):
     """LLMからのストリーミング出力をSSE形式でyieldするジェネレータ"""
-    # astream_events coming soon to langchain, but for now, we use astream
     async for chunk in chain.astream({"question": prompt}):
-        # chunk is an AIMessageChunk object
         content = chunk.content
         print(f"LLM chunk: {chunk}") # Debugging line
         print(content)
         if content:
             # SSE (Server-Sent Events) format
-            # Replace newlines to conform to SSE spec
-            processed_content = content.replace('\n', '\ndata: ')
-            yield f"data: {processed_content}\n\n"
+            # Go側が {"token": "..."} というJSONを期待しているので、それに合わせる
+            response_data = {"token": content}
+            json_data = json.dumps(response_data, ensure_ascii=False)
+            yield f"data: {json_data}\n\n"
+
 
 @app.post("/generate-plan")
 async def generate_plan(req: PlanRequest):
