@@ -13,6 +13,12 @@ on:
       - ".github/workflows/go_ci.yaml"
   workflow_dispatch:
 
+env:
+  DB_HOST: 127.0.0.1
+  POSTGRES_USER: app_user
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: app_db
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,13 +27,13 @@ jobs:
         working-directory: ./go-backend
     services:
       db:
-        image: postgres:16-alpine
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
-        env:
-          POSTGRES_USER: app_user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: app_db
         # サービスが準備完了したことを確認するためのヘルスチェック
         options: >-
           --health-cmd pg_isready
@@ -40,16 +46,19 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version-file: go-backend/go.mod
           cache-dependency-path: |
             go-backend/go.sum
 
       - name: Install dependencies
         run: |
           go mod download
+          go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+      - name: Migrate database
+        run: |
+          migrate -path ./db/migration -database "postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$DB_HOST:5432/$POSTGRES_DB?sslmode=disable" up
 
       - name: Run tests
         run: |
           go test -tags="integration" ./... -v
-        env:
-          DB_HOST: 127.0.0.1

@@ -2,5 +2,7 @@
     "go.buildFlags": [
         "-tags=integration"
     ],
-    "go.testTags": "integration"
+    "go.testTags": "integration",
+    "go.testTimeout": "5s",
+    "go.testFlags": ["-v"]
 }
