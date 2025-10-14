@@ -3,6 +3,11 @@
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
+    <script>
+        import backgroundImage from '$lib/assets/back10.png';
+        import Header from '$lib/components/Header.svelte';
+    </script>
+
     <main>
         <div class="vertical-sections-wrapper1">
 
