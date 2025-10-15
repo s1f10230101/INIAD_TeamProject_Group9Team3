@@ -1,4 +1,20 @@
 services:
+  frontend-dev:
+    build:
+      context: ./frontend-dev
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    tty: true
+    develop:
+      watch:
+        - path: ./frontend-dev
+          action: sync
+          target: /app/
+          ignore:
+            - node_modules/
+            - .svelte-kit/
+
   backend-dev:
     build:
       context: ./go-backend
