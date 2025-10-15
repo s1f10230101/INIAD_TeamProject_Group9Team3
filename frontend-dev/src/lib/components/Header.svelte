@@ -21,6 +21,10 @@
 
 <style>
   header {
+    position: fixed; /* ヘッダーを画面に固定する */
+    top: 0;          /* 画面の上端を基準にする */
+    left: 0;         /* 画面の左端を基準にする */
+    z-index: 100;
     display: flex;
     justify-content: space-between; /* 両端に寄せる */
     align-items: center; /* 上下中央揃え */
