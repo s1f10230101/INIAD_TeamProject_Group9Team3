@@ -1,6 +1,6 @@
 <script>
-  // ロゴ画像をインポートします。パスは実際の場所に合わせて調整してください。
-  import logo from '$lib/assets/icon4.png';
+// ロゴ画像をインポートします。パスは実際の場所に合わせて調整してください。
+import logo from "$lib/assets/icon4.png";
 </script>
 
 <header>

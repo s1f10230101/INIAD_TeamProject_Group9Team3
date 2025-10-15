@@ -1,5 +1,5 @@
 <script>
-  import backgroundImage from '$lib/assets/back10.png'; 
+import backgroundImage from "$lib/assets/back10.png";
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
