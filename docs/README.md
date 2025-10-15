@@ -2,6 +2,7 @@
 ![Dockerアイコン](https://img.shields.io/badge/docker-28.0.0-blue.svg?logo=docker&style=flat)
 ![Golangアイコン](https://img.shields.io/badge/golang-1.25-blue.svg?logo=go&style=flat)
 [![Go Ci](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/go_ci.yaml/badge.svg)](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/go_ci.yaml)
+[![SvelteKit Ci](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/front_ci.yaml/badge.svg)](https://github.com/s1f10230101/INIAD_TeamProject_Group9Team3/actions/workflows/front_ci.yaml)
 
 # プロジェクト概要
 大学のチーム実習のための演習用Webアプリケーションです。  
