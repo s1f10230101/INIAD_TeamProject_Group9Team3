@@ -3,9 +3,10 @@ INSERT INTO Spot (
     Id,
     Name,
     Description,
-    Address
+    Address,
+    embedding_openai
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 ) RETURNING *;
 
 -- name: GetSpot :one
@@ -18,13 +19,24 @@ ORDER BY Created_at DESC;
 
 -- name: UpdateSpot :one
 UPDATE Spot
-SET 
+SET
     Name = $2,
     Description = $3,
-    Address = $4
+    Address = $4,
+    embedding_openai = $5
 WHERE Id = $1
 RETURNING *;
 
 -- name: DeleteSpot :exec
 DELETE FROM Spot
 WHERE Id = $1;
+
+-- name: SearchSpots :many
+SELECT * FROM Spot
+WHERE name LIKE $1 OR description LIKE $1
+ORDER BY created_at DESC;
+
+-- name: SearchSpotsByEmbedding :many
+SELECT * FROM Spot
+ORDER BY embedding_openai <=> $1
+LIMIT 5;

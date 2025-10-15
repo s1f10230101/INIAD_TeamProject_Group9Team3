@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
@@ -19,37 +17,54 @@ import (
 )
 
 func main() {
-	// 環境変数からDBホストを取得、なければlocalhostをデフォルト値とする
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "localhost"
+	POSTGRES_USER, ok := os.LookupEnv("POSTGRES_USER")
+	if !ok {
+		slog.Error("環境変数", "POSTGRESUSER", ok)
 	}
-	dbURL := fmt.Sprintf("postgres://app_user:password@%s:5432/app_db?sslmode=disable", dbHost)
-
+	POSTGRES_PASSWORD, ok := os.LookupEnv("POSTGRES_PASSWORD")
+	if !ok {
+		slog.Error("環境変数", "POSTGRES_PASSWORD", ok)
+	}
+	POSTGRES_DB, ok := os.LookupEnv("POSTGRES_DB")
+	if !ok {
+		slog.Error("環境変数", "POSTGRES_DB", ok)
+	}
+	DBHOST, ok := os.LookupEnv("DB_HOST")
+	if !ok {
+		slog.Error("環境変数", "DBHOST", ok)
+	}
+	OPENAI_API_BASE, ok := os.LookupEnv("OPENAI_API_BASE")
+	if !ok {
+		slog.Error("環境変数", "OPENAI_API_BASE", OPENAI_API_BASE)
+	}
+	OPENAI_API_KEY, ok := os.LookupEnv("OPENAI_API_KEY")
+	if !ok {
+		slog.Error("環境変数", "OPENAI_API_KEY", OPENAI_API_KEY)
+	}
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		POSTGRES_USER,
+		POSTGRES_PASSWORD,
+		DBHOST,
+		5432,
+		POSTGRES_DB)
 	pool, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
 	defer pool.Close()
 
-	// マイグレーションの実行
-	if m, err := migrate.New("file:///db/migration", dbURL); err == nil {
-		m.Up()
-	} else {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
-
 	// 1. レポジトリの初期化 (Postgres版を使用)
-	postRepository := repository.NewPostgresPostRepository(pool)
+	spotRepository := repository.NewPostgresPostRepository(pool)
 	reviewRepository := repository.NewPostgresReviewRepository(pool)
 
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(postRepository)
+	aiUsecase := usecase.NewAIGPTUsecase(spotRepository, OPENAI_API_BASE, OPENAI_API_KEY)
+	postUsecase := usecase.NewPostUseCase(spotRepository, aiUsecase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepository)
 
-	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
-	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
+	// 5. ハンドラを作成し、ユースケースを注入
+	serverMethods := handler.NewServer(postUsecase, reviewUsecase, aiUsecase)
+	handlerFuncs := oapi.NewStrictHandler(serverMethods, []oapi.StrictMiddlewareFunc{})
 
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
 	server := oapi.HandlerWithOptions(handlerFuncs, oapi.StdHTTPServerOptions{

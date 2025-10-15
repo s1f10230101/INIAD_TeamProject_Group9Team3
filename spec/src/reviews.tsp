@@ -11,25 +11,12 @@ using OpenAPI;
 
 namespace Trip_Canvas;
 
-model ReviewResister {
+model ReviewModel {
     @doc("レビューを投稿したユーザーの識別子")
-    userId: string;
-
-    @doc("レビューの評価（1から5までの整数）")
-    @maxValue(5)
-    @minValue(1)
-    rating: integer;
-
-    @doc("レビューのコメント")
-    comment: string;
-}
-
-model ReviewResponse {
-    @doc("レビューを投稿したユーザーの識別子")
-    userId: Uuid;
+    userId: uuid;
 
     @doc("レビュー対象の観光スポットの識別子")
-    spotId: Uuid;
+    spotId: uuid;
 
     @doc("レビューの評価（1から5までの整数）")
     @maxValue(5)
@@ -43,6 +30,9 @@ model ReviewResponse {
     createdAt: utcDateTime;
 }
 
+model ReviewResister is OmitProperties<ReviewModel, "createdAt">;
+
+model ReviewResponse is ReviewModel;
 
 @tag("Spots")
 @tag("Reviews")
@@ -53,12 +43,12 @@ interface ReviewsAPI {
     @operationId("getReviewsBySpotId")
     @route("{spotId}/reviews")
     @get
-    getReviewsBySpotId(@path spotId: Uuid): ReviewResponse[] | Error<500>;
+    getReviewsBySpotId(@path spotId: uuid): ReviewResponse[] | Error<500>;
 
     @summary("レビューの投稿")
     @doc("新しいレビューを投稿します。")
     @operationId("createReview")
     @route("{spotId}/reviews")
     @post
-    createReview(@path spotId: Uuid, @body newReview: ReviewResister): Success<201, ReviewResponse> | Error<400 | 500>;
+    createReview(@path spotId: uuid, @body newReview: ReviewResister): Success<201, ReviewResponse> | Error<400 | 500>;
 }

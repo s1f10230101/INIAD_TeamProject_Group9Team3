@@ -24,12 +24,12 @@ enum Versions {
 }
 
 @encode("uuid")
-scalar Uuid extends string;
+scalar uuid extends string;
 
-model Success<StatusCode extends integer, T> {
+alias Success<StatusCode extends integer, T> = {
   @statusCode _: StatusCode;
   @bodyRoot body: T;
-}
+};
 
 // 400: 不正なリクエスト
 // 401: 認証エラー

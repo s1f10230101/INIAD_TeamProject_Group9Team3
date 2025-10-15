@@ -11,6 +11,8 @@ import (
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
 
+// setupTestRouter はテスト用のHTTPルーターをセットアップします。
+// curl -X POST http://localhost:8080/v1/spots -H "Content-Type: application/json" -d '{"name":"テスト用観光地","description":"これはハンドラテスト用の素晴らしい観光地です。","address":"東京都テスト区テスト1-1-1"}'
 func TestPostAndGetSpot(t *testing.T) {
 	// --- setup ---
 	router := setupTestRouter()

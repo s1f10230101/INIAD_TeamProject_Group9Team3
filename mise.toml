@@ -8,6 +8,11 @@ lazygit = "latest"
 "go:github.com/air-verse/air" = "latest"
 "go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "latest"
 
+[tasks.dockerComposeUp]
+alias = "dcup"
+description = "Docker Composeでサービスを起動します`mise run dcup`"
+run = "docker compose up --build --watch"
+
 [tasks.run]
 description = "すべてのサービスをローカルで起動します"
 depends = "run:*"
@@ -17,13 +22,17 @@ dir = "go-backend"
 run = [ "go run ./main.go" ]
 
 
-[tasks.test]
+[tasks.allTest]
 description = "すべてのサービスのテストを実行します"
 depends = "test:*"
 [tasks."test:backend"]
 description = "Goバックエンドのテストを実行します"
 dir = "go-backend"
 run = "go test ./... -v"
+[tasks."test:backend-integration"]
+description = "Goバックエンドの統合テストを実行します"
+dir = "go-backend"
+run = "go test -tags=integration ./... -v"
 
 
 [tasks.genoapi]
@@ -31,3 +40,6 @@ description = "TypeSpecからOpenAPI仕様からスタブコードを生成し�
 run = [
     "cd spec && tsp compile ./src/main.tsp",
     "cd go-backend && oapi-codegen --config=oapi/oapi_config.yaml ../openapi.1.0.yaml"]
+
+[env.'_'.file]
+path = "go-backend/.env"

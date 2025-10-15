@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -12,9 +13,11 @@ import (
 
 type SpotRepositoryInterface interface {
 	GetAllSpots(ctx context.Context) ([]oapi.SpotResponse, error)
-	CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error)
+	CreateSpot(ctx context.Context, spot *oapi.SpotResister, vector []float32) (oapi.SpotResponse, error)
 	GetSpotByID(ctx context.Context, spotId uuid.UUID) (oapi.SpotResponse, error)
 	UpdateSpotByID(ctx context.Context, spotId uuid.UUID, spot *oapi.SpotUpdate) (oapi.SpotResponse, error)
+	SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error)
+	SearchSpotsByEmbedding(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error)
 }
 
 type spotRepositoryInmemory struct {
@@ -58,7 +61,7 @@ func (r *spotRepositoryInmemory) GetAllSpots(ctx context.Context) ([]oapi.SpotRe
 	return AllSavedSpot, nil
 }
 
-func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *oapi.SpotResister) (oapi.SpotResponse, error) {
+func (r *spotRepositoryInmemory) CreateSpot(ctx context.Context, spot *oapi.SpotResister, vector []float32) (oapi.SpotResponse, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -131,4 +134,30 @@ func (r *spotRepositoryInmemory) UpdateSpotByID(ctx context.Context, spotId uuid
 		Address:     existingSpot.Address,
 		CreatedAt:   existingSpot.CreatedAt.UTC(),
 	}, nil
+}
+
+func (r *spotRepositoryInmemory) SearchSpots(ctx context.Context, query string) ([]oapi.SpotResponse, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	var results []oapi.SpotResponse
+	for _, spot := range r.postsDB {
+		if strings.Contains(strings.ToLower(spot.Name), strings.ToLower(query)) ||
+			strings.Contains(strings.ToLower(spot.Description), strings.ToLower(query)) ||
+			strings.Contains(strings.ToLower(spot.Address), strings.ToLower(query)) {
+			results = append(results, oapi.SpotResponse{
+				Id:          spot.Id,
+				Name:        spot.Name,
+				Description: spot.Description,
+				Address:     spot.Address,
+				CreatedAt:   spot.CreatedAt.UTC(),
+			})
+		}
+	}
+	return results, nil
+}
+
+func (r *spotRepositoryInmemory) SearchSpotsByEmbedding(ctx context.Context, embedding []float32) ([]oapi.SpotResponse, error) {
+	// In-memory repository does not support vector search. Returning empty slice.
+	return make([]oapi.SpotResponse, 0), nil
 }
