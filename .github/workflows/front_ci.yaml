@@ -36,3 +36,7 @@ jobs:
         run: pnpm test:unit run --browser.headless
       - name: e2e test
         run: pnpm test:e2e
+      - name: lint and format
+        run: |
+          pnpm lint
+          pnpm format
