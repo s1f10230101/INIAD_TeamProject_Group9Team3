@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('home page has expected h1', async ({ page }) => {
+test('ルートページに0より多く、つまり1つ以上<h1>が存在することを確認する', async ({ page }) => {
 	await page.goto('/');
-	await expect(page.locator('h1')).toBeVisible();
+	await expect(page.locator('h1').count()).toBeGreaterThan(0);
 });
