@@ -67,6 +67,7 @@
         background-position: center center; 
         background-attachment: fixed;
         background-image: var(--background-url); 
+        padding-top: 10vw;
     }
 
     .vertical-sections-wrapper1 {

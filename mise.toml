@@ -7,6 +7,7 @@ lazygit = "latest"
 "go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "latest"
 "go:github.com/air-verse/air" = "latest"
 "go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "latest"
+pnpm = "latest"
 
 [tasks.dockerComposeUp]
 alias = "dcup"
