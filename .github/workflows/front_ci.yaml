@@ -1,0 +1,55 @@
+name: SvelteKit Ci
+# もしmainブランチのgo-backendディレクトリ内のファイル、またはこのワークフローファイル自体が変更された場合にトリガーされます。
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "frontend-dev/**"
+      - ".github/workflows/front_ci.yaml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "frontend-dev/**"
+      - ".github/workflows/front_ci.yaml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend-dev
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: pnpm setup
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Use Node.js latest
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "pnpm"
+          cache-dependency-path: './frontend-dev/pnpm-lock.yaml'
+
+      - name: pnpm installs
+        run: |
+          pnpm install
+          pnpm exec playwright install
+
+      - name: build
+        run: pnpm build
+
+      - name: unit e2e test
+        run: |
+          pnpm test:unit run --browser.headless
+          pnpm test:e2e
+
+      - name: lint and format
+        run: |
+          pnpm lint
+          pnpm format

@@ -1,6 +1,6 @@
 <script>
-  // ロゴ画像をインポートします。パスは実際の場所に合わせて調整してください。
-  import logo from '$lib/assets/icon4.png';
+// ロゴ画像をインポートします。パスは実際の場所に合わせて調整してください。
+import logo from "$lib/assets/icon4.png";
 </script>
 
 <header>
@@ -11,9 +11,9 @@
   </div>
   <nav>
     <ul>
-      <li><a href="/plan">旅行プラン生成</a></li>
+      <li><a href="/proposals">旅行プラン生成</a></li>
       <li><a href="/facilities">こだわりの施設一覧</a></li>
-      <li><a href="/auth">ログイン/新規登録</a></li>
+      <li><a href="/auth/login">ログイン/新規登録</a></li>
     </ul>
   </nav>
 </header>

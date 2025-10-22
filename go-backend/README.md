@@ -19,7 +19,8 @@
 - [air]
   - Go製のホットリロードツール
   - `go install github.com/air-verse/air` でインストール
-  - `air -c .air.toml`で起動
+  - `air -c ./cmd/server/.air.toml` で本番環境用のホットリロード起動
+  - `air -c ./cmd/inmemoryserver/.air.toml` でインメモリDBのホットリロード起動
 - [sqlc]
   - SQLからGoのコードを自動生成するツール
   - `go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest` でインストール
@@ -29,6 +30,7 @@
   - `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest` でインストール
   - `migrate create -ext sql -dir db/migration -seq <name>` でマイグレーションファイルを作成
   - `migrate -database "postgres://..." -path db/migration up` でマイグレーションを適用
+  - ただし、現在はmain.goでmigrateを実行しているため、手動で実行する必要はない
 ## ディレクトリ構成
 ```plaintext
 .
@@ -51,13 +53,50 @@
 * **Repository層**
   - データの保存場所です。Usecaseから依頼を受けて、メモリやデータベースにデータを保存・取得します。  
 
+## 内部設計(アーキテクチャ)
+### 1. Spot, Review, Userの基本アーキテクチャ
+- 各エンティティ(Spot, Review, User)ごとにCRUD操作を提供
+- HandlerからのリクエストをUsecaseが受け取り、Repositoryに処理を依頼、PostgreSQLに永続化
+
+### 2. AIプラン生成アーキテクチャ
+AIによる旅行プラン生成は、RAG (Retrieval-Augmented Generation) のアプローチを採用しています。全体的なフローは以下の通りです。
+
+リクエスト返答のシーケンス図:
+```mermaid
+sequenceDiagram
+    participant User as ユーザー
+    participant Handler as Handler
+    participant Usecase as AIGPTUsecase
+    participant Repo as SpotRepository
+    participant OpenAI as OpenAI API
+
+    User->>Handler: 旅行プラン生成リクエスト (プロンプト)
+    Handler->>Usecase: プロンプトを渡す
+    Usecase->>Repo: プロンプトに一致する観光地情報を検索(RAGのRetrieval)
+    Repo-->>Usecase: 観光地情報を返す
+    Usecase->>Usecase: プロンプトと観光地情報を組み合わせて詳細プロンプトを構築
+    Usecase->>OpenAI: Chat Completion APIをストリーミングモードで呼び出し
+    OpenAI-->>Usecase: AIからのレスポンスをストリームで受け取る
+    Usecase-->>Handler: 随時書き込み返答
+    Handler-->>User: ストリームとしてレスポンスを流す
+```
+
 ## テスト
 - 各層ごとにユニットテストを実装
-- 統合テストについて
+- テストについて
   - dbなどの外部依存関係を含むテストは`//go:build integration`でビルドタグを付与して分離
   - `go test ./... -v` で統合テスト以外のテストを実行
-  - `go test -tags="integration" ./... -v` で統合テスト含む全てのテストを実行
-    - `docker compose up db -d`で依存関係の起動が必要
-    - 考えてみれば`docker compose run --rm --build backend-dev go test -tags="integration" ./... -v`1コマンドで良いかも
-- テストコードのエラーメッセージにはなるべく日本語を使用するようにします。
-  - 1. チームは日本人だけ 2. テスト出力のログは日本語が目立つて見やすい
+  - 統合テスト含む全てのテストを実行
+    - `docker compose up db -d`で依存関係の起動
+    - `cp .env.example .env`で環境変数の設定(必要に応じて編集)
+    - `migrate -path db/migration -database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}?sslmode=disable" up`でマイグレーションの適用
+    - `go test -tags="integration" ./... -v`で統合テストの実行
+  - 手動テスト
+    - OpenAIのAPIを使った本番テストは手動で実行し人間が結果を確認します
+    - Plan生成テスト
+      1. `docker compose up --build --watch`で起動
+      2. `curl -X POST -H "Content-Type: application/json" -d '{"prompt": "テスト投稿です"}' http://localhost:8080/v1/plans`でテスト投稿
+
+## その他
+- 外部サービス依存
+  - OpanAI ChatGPT API

@@ -4,49 +4,12 @@ package repository_test
 
 import (
 	"context"
-	"log"
 	"testing"
 
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
-
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/oapi"
 )
-
-var testPool *pgxpool.Pool
-
-// TestMain はテストのセットアップとティアダウンを行います。
-func TestMain(m *testing.M) {
-	// compose.yamlで定義したDBに接続
-	dbURL := "postgres://app_user:password@localhost:5432/app_db?sslmode=disable"
-	var err error
-	testPool, err = pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("database接続失敗: %v", err)
-	}
-	defer testPool.Close()
-
-	pool, err := pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
-	}
-	defer pool.Close()
-	mg, err := migrate.New(
-		"file://../../db/migration",
-		dbURL,
-	)
-	if err != nil {
-		log.Fatalf("Failed to create migrate instance: %v", err)
-	}
-	mg.Up()
-
-	// Run tests
-	m.Run()
-}
 
 func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 	// --- Setup: トランザクションを開始 ---
@@ -67,7 +30,8 @@ func TestPostgresSpotRepository_CreateAndGetSpot(t *testing.T) {
 		Address:     "東京都テスト区",
 	}
 
-	createdSpot, err := repo.CreateSpot(context.Background(), input)
+	vector1536 := make([]float32, 1536) // 1536次元のベクトルをゼロで初期化
+	createdSpot, err := repo.CreateSpot(context.Background(), input, vector1536)
 	if err != nil {
 		t.Fatalf("CreateSpot失敗: %v", err)
 	}

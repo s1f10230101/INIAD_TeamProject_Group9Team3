@@ -23,7 +23,6 @@ func TestPostReview(t *testing.T) {
 	reviewInput := oapi.ReviewResister{
 		Rating:  5,
 		Comment: comment,
-		UserId:  uuid.New().String(),
 	}
 	body, _ := json.Marshal(reviewInput)
 	reqPost := httptest.NewRequest(http.MethodPost, "/v1/spots/"+spotID.String()+"/reviews", strings.NewReader(string(body)))

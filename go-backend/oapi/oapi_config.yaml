@@ -8,6 +8,8 @@ generate:
   # client: true
 output-options:
   nullable-type: true
+  user-templates:
+    "strict/strict-interface.tmpl": ./oapi/custom.tmpl
 additional-imports:
   - package: github.com/google/uuid
     alias: uuid

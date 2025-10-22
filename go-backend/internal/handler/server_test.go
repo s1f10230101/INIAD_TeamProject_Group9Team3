@@ -14,10 +14,11 @@ func setupTestRouter() http.Handler {
 	spotRepositoryInmemory := repository.NewSpotRepositoryInmemory()
 	reviewRepositoryInmemory := repository.NewReviewRepositoryInmemory()
 	// 2. ユースケースのインスタンスを作成し、レポジトリを注入
-	postUsecase := usecase.NewPostUseCase(spotRepositoryInmemory)
+	fakeAiCase := usecase.NewAIGenerateFake()
+	spotUsecase := usecase.NewPostUseCase(spotRepositoryInmemory, fakeAiCase)
 	reviewUsecase := usecase.NewReviewUseCase(reviewRepositoryInmemory)
 	// 3. ハンドラを作成し、ユースケースを注入
-	serverMethods := handler.NewServer(postUsecase, reviewUsecase)
+	serverMethods := handler.NewServer(spotUsecase, reviewUsecase, fakeAiCase)
 	handlerFuncs := oapi.NewStrictHandler(serverMethods, nil)
 	// 4. HTTPサーバーの設定と起動(標準ライブラリのnet/httpを使用)
 	// 5. ハンドラをサーバーに登録
@@ -25,8 +26,8 @@ func setupTestRouter() http.Handler {
 		BaseURL:    "/v1",
 		BaseRouter: http.NewServeMux(),
 		Middlewares: []oapi.MiddlewareFunc{
-			handler.LoggingMiddleware,
 			handler.CorsMiddleware,
+			handler.LoggingMiddleware,
 		},
 	})
 	return server
