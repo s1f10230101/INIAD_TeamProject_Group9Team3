@@ -1,31 +1,33 @@
 <script lang="ts">
-  import backgroundImage from '$lib/assets/back10.png'; 
+import backgroundImage from "$lib/assets/back10.png";
 
-  // SvelteKitから現在のページの情報を取得
-    import { page } from '$app/stores'; 
+// SvelteKitから現在のページの情報を取得
+import { page } from "$app/stores";
 
-    // 元の施設データと型をインポート
-    import { facilities, type Facility } from '$lib/data/facilities';
+// 元の施設データと型をインポート
+import { facilities, type Facility } from "$lib/data/facilities";
 
-    // 1. URLのパラメータ（[facilityId]の部分）を取得し、数値に変換
-    // $page.params.facilityId は文字列なので、Number()で数値化します。
-    const facilityId = Number($page.params.facilityId);
+// 1. URLのパラメータ（[facilityId]の部分）を取得し、数値に変換
+// $page.params.facilityId は文字列なので、Number()で数値化します。
+const facilityId = Number($page.params.facilityId);
 
-    // 2. 施設IDに基づいて、該当する施設データを検索
-    const facilityData: Facility | undefined = facilities.find(f => f.id === facilityId);
+// 2. 施設IDに基づいて、該当する施設データを検索
+const facilityData: Facility | undefined = facilities.find(
+    (f) => f.id === facilityId,
+);
 
-    const setStarWidth = (node: HTMLElement, rating: number) => {
+const setStarWidth = (node: HTMLElement, rating: number) => {
     const roundReview = Math.round(rating * 10) / 10;
-    const widthPercentage = roundReview * 20; 
-    node.style.setProperty('--starWidth', `${widthPercentage}%`);
-    };
+    const widthPercentage = roundReview * 20;
+    node.style.setProperty("--starWidth", `${widthPercentage}%`);
+};
 
-    let isDetailVisible: boolean = false; 
+let isDetailVisible: boolean = false;
 
-    // 詳細表示の状態を切り替える関数
-    const toggleDetail = () => {
-        isDetailVisible = !isDetailVisible;
-    };
+// 詳細表示の状態を切り替える関数
+const toggleDetail = () => {
+    isDetailVisible = !isDetailVisible;
+};
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
