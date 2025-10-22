@@ -7,7 +7,6 @@
   <div class="logo-container">
     <a href="/" aria-label="トップページへ">
       <img src={logo} alt="TRIP CANVAS ロゴ" />
-      <span>TRIP CANVAS</span>
     </a>
   </div>
   <nav>
