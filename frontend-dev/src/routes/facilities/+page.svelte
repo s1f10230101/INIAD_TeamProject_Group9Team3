@@ -1,14 +1,13 @@
 <script lang="ts">
-    import backgroundImage from '$lib/assets/back10.png'; 
-    import { facilities, type Facility } from '$lib/data/facilities';
-    const data: Facility[] = facilities;
+import backgroundImage from "$lib/assets/back10.png";
+import { facilities, type Facility } from "$lib/data/facilities";
+const data: Facility[] = facilities;
 
-    const setStarWidth = (node: HTMLElement, rating: number) => {
-        const roundReview = Math.round(rating * 10) / 10;
-        const widthPercentage = roundReview * 20; 
-        node.style.setProperty('--starWidth', `${widthPercentage}%`);
-    };
-
+const setStarWidth = (node: HTMLElement, rating: number) => {
+    const roundReview = Math.round(rating * 10) / 10;
+    const widthPercentage = roundReview * 20;
+    node.style.setProperty("--starWidth", `${widthPercentage}%`);
+};
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
