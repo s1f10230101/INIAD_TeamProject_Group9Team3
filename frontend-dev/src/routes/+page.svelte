@@ -1,13 +1,8 @@
-<script>
-  import backgroundImage from '$lib/assets/back10.png'; 
+<script lang="ts">
+import backgroundImage from "$lib/assets/back10.png";
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
-    <script>
-        import backgroundImage from '$lib/assets/back10.png';
-        import Header from '$lib/components/Header.svelte';
-    </script>
-
     <main>
         <div class="vertical-sections-wrapper1">
 
@@ -20,7 +15,7 @@
                     出会える旅行プラン検索アプリです
                 </p>
             </section>
-            
+
             <section class="vertical-text">
                 <h1>隠れた名所を見つける</h1>
                 <p>
@@ -41,7 +36,7 @@
                     出会える旅行プラン検索アプリです
                 </p>
             </section>
-            
+
             <section class="vertical-text">
                 <h1>あなただけの旅行体験</h1>
                 <p>
@@ -64,52 +59,52 @@
 <style>
     .full-screen-background{
         background-size: cover;
-        background-position: center center; 
+        background-position: center center;
         background-attachment: fixed;
-        background-image: var(--background-url); 
+        background-image: var(--background-url);
     }
 
     .vertical-sections-wrapper1 {
         /* セクションを横並びにする */
         display: flex;
         /* セクション間の間隔を調整 */
-        gap: 20.83vw; 
+        gap: 20.83vw;
         padding-bottom: 15vw;
 
         /* 縦書きのテキストが画面中央に配置されるように */
         align-items: center;
         justify-content: center;
-        
+
     }
 
     .vertical-sections-wrapper2 {
         /* セクションを横並びにする */
         display: flex;
         /* セクション間の間隔を調整 */
-        gap: 17.18vw; 
+        gap: 17.18vw;
         padding-bottom: 15vw;
-        
+
         /* 縦書きのテキストが画面中央に配置されるように */
         align-items: center;
         justify-content: center;
-        
+
     }
 
     .vertical-text {
         /* 縦書き設定 */
         writing-mode: vertical-rl;
-        width: auto; 
-        height: auto; 
-        
+        width: auto;
+        height: auto;
+
         /* テキストのスタイル */
         color: #5C4033; /* 濃い茶色など、背景に合わせた色 */
-        
+
         /* フォントサイズの調整（任意） */
         font-size: 18px;
         line-height: 2.2; /* 縦書きの行間 */
         padding: 20px;
         /* アルファベットを縦に表示 */
-        text-orientation: upright; 
+        text-orientation: upright;
     }
 
     .vertical-text h1 {
