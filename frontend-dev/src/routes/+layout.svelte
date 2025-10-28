@@ -68,52 +68,52 @@
 
 <style>
   /* 6. 背景フェード用のスタイルを追加 */
-  .background-wrapper {
-    position: fixed; /* 画面全体に固定 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1; /* ★重要: すべてのコンテンツの背後に配置 */
-  }
+	.background-wrapper {
+		position: fixed; /* 画面全体に固定 */
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		z-index: -1; /* ★重要: すべてのコンテンツの背後に配置 */
+	}
 
-  .background-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    opacity: 1;
-    transition: opacity 1.5s ease-in-out; /* フェード時間 */
-  }
+	.background-layer {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-size: cover;
+		background-position: center center;
+		opacity: 1;
+		transition: opacity 1.5s ease-in-out; /* フェード時間 */
+	}
 
-  .current-bg.fade-out {
-    opacity: 0;
-  }
+	.fade-out {
+		opacity: 0;
+	}
 
-  .next-bg {
-    opacity: 1;
-  }
+	.next-bg {
+		opacity: 1;
+	}
 
-  /* 7. 既存のレイアウトスタイルを調整 */
-  .site-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    /* 背景が透けて見えるように */
-    background-color: transparent; 
-  }
+	/* 7. 既存のレイアウトスタイルを調整 */
+	.site-container {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		/* 背景が透けて見えるように */
+		background-color: transparent; 
+	}
 
-  main {
-    flex-grow: 1;
-    /* ヘッダー固定分の高さを確保 (以前の会話より) */
-    padding-top: 61px; 
-    /* 背景より手前に来るように */
-    position: relative; 
-    z-index: 1;
-  }
+	main {
+		flex-grow: 1;
+		/* ヘッダー固定分の高さを確保 (以前の会話より) */
+		padding-top: 61px; 
+		/* 背景より手前に来るように */
+		position: relative; 
+		z-index: 1;
+	}
 </style>
 
