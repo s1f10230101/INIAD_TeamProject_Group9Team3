@@ -16,26 +16,26 @@
 
 	const backgroundImages = [back10, back11, back12, back13];
 
-  // 3. 状態変数を定義 (これが不足していたためエラーになっていました)
-  let currentImage = backgroundImages[0];
-  let nextImage = backgroundImages[1 % backgroundImages.length];
-  let currentIndex = 0;
-  let isFadingOut = false;
+  // 3. 状態変数を定義 
+	let currentImage = $state(backgroundImages[0]);
+  	let nextImage = $state(backgroundImages[1 % backgroundImages.length]);
+  	let currentIndex = 0; // これはHTMLで使わないので `let` のままでOK
+  	let isFadingOut = $state(false);
 
   // 4. onMountでタイマーをセット
-  onMount(() => {
-    const interval = setInterval(() => {
-      isFadingOut = true; 
-      setTimeout(() => {
-        currentIndex = (currentIndex + 1) % backgroundImages.length;
-        currentImage = backgroundImages[currentIndex];
-        nextImage = backgroundImages[(currentIndex + 1) % backgroundImages.length];
-        isFadingOut = false;
-      }, 1500); // CSSのアニメーション時間
-    }, 7000); // 切り替え間隔
+  	onMount(() => {
+    	const interval = setInterval(() => {
+      		isFadingOut = true; 
+      		setTimeout(() => {
+        			currentIndex = (currentIndex + 1) % backgroundImages.length;
+        			currentImage = backgroundImages[currentIndex];
+        			nextImage = backgroundImages[(currentIndex + 1) % backgroundImages.length];
+        			isFadingOut = false;
+      		}, 1500); // CSSのアニメーション時間
+    	}, 7000); // 切り替え間隔
 
     return () => {
-      clearInterval(interval);
+      	clearInterval(interval);
     };
   });
 </script>
