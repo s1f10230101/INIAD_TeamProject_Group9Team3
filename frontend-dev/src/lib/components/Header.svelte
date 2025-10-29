@@ -14,7 +14,7 @@ import logo from "$lib/assets/icon4.png";
     <ul>
       <li><a href="/proposals">旅行プラン生成</a></li>
       <li><a href="/facilities">こだわりの施設一覧</a></li>
-      <li><a href="/auth/login">ログイン/新規登録</a></li>
+      <li><a href="/facilities/register">施設登録</a></li>
     </ul>
   </nav>
 </header>
