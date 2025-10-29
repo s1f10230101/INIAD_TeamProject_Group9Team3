@@ -7,7 +7,7 @@ import { page } from "$app/stores";
 // 元の施設データと型をインポート
 import { facilities, type Facility } from "$lib/data/facilities";
 
-import { goto } from '$app/navigation';
+import { goto } from "$app/navigation";
 
 // 1. URLのパラメータ（[facilityId]の部分）を取得し、数値に変換
 // $page.params.facilityId は文字列なので、Number()で数値化します。
@@ -31,14 +31,14 @@ const toggleDetail = () => {
     isDetailVisible = !isDetailVisible;
 };
 
-const updateStarWidth = (node: HTMLElement, rating: number) => {
+const updateStarWidth = (node: HTMLElement, _rating: number) => {
     // 値が更新されるたびに実行される関数を返す
     return {
         update(newRating: number) {
             const roundReview = Math.round(newRating * 10) / 10;
             const widthPercentage = roundReview * 20;
             node.style.setProperty("--starWidth", `${widthPercentage}%`);
-        }
+        },
     };
 };
 
@@ -53,12 +53,12 @@ let isConfirmMode: boolean = false;
 // 1. 確認ボタンが押された時の処理
 const handleConfirm = (event: Event) => {
     // フォームのデフォルト送信（ページ遷移）を防止
-    event.preventDefault(); 
-    
+    event.preventDefault();
+
     if (!reviewTitle || !reviewContent || ratingValue === 0.0) {
-        return; 
+        return;
     }
-    
+
     isConfirmMode = true;
 };
 
@@ -71,13 +71,13 @@ const handleSubmit = () => {
         content: reviewContent,
         rating: ratingValue,
     };
-    
+
     console.log("投稿データ:", reviewData);
-    
+
     // 投稿後の処理（例: 一覧ページへ移動、完了メッセージ表示など）
     alert("レビューを投稿しました！");
 
-    goto('/facilities');
+    goto("/facilities");
 };
 
 // 3. 修正ボタンが押された時の処理
