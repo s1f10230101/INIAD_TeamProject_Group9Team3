@@ -1,7 +1,71 @@
 <script lang="ts">
 import backgroundImage from "$lib/assets/back10.png";
-import { facilities, type Facility } from "$lib/data/facilities";
-const data: Facility[] = facilities;
+//import { facilities, type Facility } from "$lib/data/facilities";
+
+//const data: Facility[] = facilities;
+
+import {onMount} from 'svelte'
+import type { components } from '$lib/types/api';
+import client from '$lib/api/client'
+
+// ratingが含まれない場合の施設の変数の型
+// let facilities: components["schemas"]["SpotResponse"][] = [];
+
+// rating, commentCountを含まれるようにSpotWithRating型を定義した。
+type SpotWithRating = components["schemas"]["SpotResponse"] & {
+    averageRating?:number;
+    commentCount?:number;
+};
+let facilities: SpotWithRating[] = [];
+let isLoading = true;
+let error: Error | null = null;
+
+onMount(async() => {
+    try {
+        const { data: spotsData, error: spotsError } = await client.GET("/spots");
+        if (spotsError) {
+            throw new Error(spotsError.message || "施設一覧を取得することが失敗した");    
+        }
+        if(!spotsData) {
+            facilities = [];
+            return;
+        }
+
+        const facilitiesWithRatings: SpotWithRating[] = await Promise.all(
+            spotsData.map(async (spot) => {
+                const {data: reviewsData, error: reviewsError} = await client.GET("/spots/{spotId}/reviews", {
+                    params: {path: {spotId: spot.id}},
+                });
+                let averageRating: number | undefined;
+                let commentCount:number | undefined;
+                if (reviewsError) {
+                    console.warn(`施設 ${spot.name} (${spot.id})のレビューを取得できませんでした`, reviewsError);
+                } else if (reviewsData && reviewsData.length > 0) {
+                    const totalRating = reviewsData.reduce((sum, review) => sum + review.rating, 0);
+                    averageRating = parseFloat((totalRating / reviewsData.length).toFixed(1));
+                    commentCount = reviewsData.length;
+                }
+
+                return  {
+                    ...spot,
+                    averageRating,
+                    commentCount,
+                };
+            })
+        );
+        facilities = facilitiesWithRatings;
+    } catch(e) {
+        if (e instanceof Error) {
+            error = e;            
+        } else if (typeof e === 'object' && e !== null && 'message' in e && typeof e.message === 'string') {
+            error = new Error(e.message);
+        } else {
+            error = new Error("予期しないエラーが起きました。")
+        }
+    } finally {
+        isLoading = false;
+    }
+});
 
 const setStarWidth = (node: HTMLElement, rating: number) => {
     const roundReview = Math.round(rating * 10) / 10;
@@ -13,7 +77,8 @@ const setStarWidth = (node: HTMLElement, rating: number) => {
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
     <main class="center-content">
         <div class="review-main-container">
-            {#each data as facility (facility.id)}
+            <!--{#each data as facility (facility.id)}-->
+            {#each facilities as facility (facility.id)}
             <div class="box">
                 <a 
                     href={`facilities/reviews/${facility.id}`} 
@@ -23,12 +88,14 @@ const setStarWidth = (node: HTMLElement, rating: number) => {
                 <div class="line">
                     <div class="item-info">
                         <span class="facility-name" style="padding-right:1vw ;">{facility.name}</span>
-                        <span class="facility-location">{facility.location}</span>
+                        <!--<span class="facility-location">{facility.location}</span>-->
+                        <span class="facility-location">{facility.address}</span>
                     </div>
                     
                     <div class="card-review_star" >
-                        <span class="stars-clip" use:setStarWidth={facility.rating}></span>                    
-                        <span class="rating-value">{facility.rating.toFixed(1)}</span>
+                        <span class="stars-clip" use:setStarWidth={facility.averageRating ?? 0}></span>
+                        <!--<span class="rating-value">{facility.rating.toFixed(1)}</span>-->
+                        <span class="rating-value">{facility.averageRating ?? 0}</span>
                         <span class="comment-count" style="padding-left:1vw ;">コメント数({facility.commentCount})</span>
                     </div>
                 </div>
