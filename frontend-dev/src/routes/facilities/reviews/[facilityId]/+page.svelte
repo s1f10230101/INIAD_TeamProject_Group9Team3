@@ -1,77 +1,83 @@
 <script lang="ts">
-import backgroundImage from "$lib/assets/back10.png";
+	import backgroundImage from "$lib/assets/back10.png";
+	import { page } from "$app/stores";
+	import { onMount } from "svelte";
+	import client from "$lib/api/client";
+	import type { components } from "$lib/types/api";
 
-// SvelteKitから現在のページの情報を取得
-import { page } from "$app/stores";
+	type Spot = components["schemas"]["SpotResponse"];
+	type Review = components["schemas"]["ReviewResponse"];
 
-// 元の施設データと型をインポート
-import { facilities, type Facility } from "$lib/data/facilities";
+	const facilityId = $page.params.facilityId;
 
-// 1. URLのパラメータ（[facilityId]の部分）を取得し、数値に変換
-// $page.params.facilityId は文字列なので、Number()で数値化します。
-const facilityId = Number($page.params.facilityId);
+	let facilityData: Spot | null = null;
+	let reviews: Review[] = [];
+	let isLoading = true;
+	let error: string | null = null;
 
-// 2. 施設IDに基づいて、該当する施設データを検索
-const facilityData: Facility | undefined = facilities.find(
-    (f) => f.id === facilityId,
-);
+	onMount(async () => {
+		isLoading = true;
+		try {
+			// 1. 施設の詳細情報を取得
+			const { data: spotData, error: spotError } = await client.GET("/spots/{spotId}", {
+				params: { path: { spotId: facilityId } },
+			});
 
-const setStarWidth = (node: HTMLElement, rating: number) => {
-    const roundReview = Math.round(rating * 10) / 10;
-    const widthPercentage = roundReview * 20;
-    node.style.setProperty("--starWidth", `${widthPercentage}%`);
-};
+			if (spotError) throw new Error("施設の情報の取得に失敗しました。");
+			facilityData = spotData;
 
-let isDetailVisible: boolean = false;
+			// 2. レビューの一覧を取得
+			const { data: reviewsData, error: reviewsError } = await client.GET("/spots/{spotId}/reviews", {
+				params: { path: { spotId: facilityId } },
+			});
 
-// 詳細表示の状態を切り替える関数
-const toggleDetail = () => {
-    isDetailVisible = !isDetailVisible;
-};
+			if (reviewsError) throw new Error("レビューの取得に失敗しました。");
+			reviews = reviewsData || [];
+
+		} catch (e: any) {
+			error = e.message;
+		} finally {
+			isLoading = false;
+		}
+	});
+
+	const setStarWidth = (node: HTMLElement, rating: number) => {
+		const roundReview = Math.round(rating * 10) / 10;
+		const widthPercentage = roundReview * 20;
+		node.style.setProperty("--starWidth", `${widthPercentage}%`);
+	};
+
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
     <main class="center-content">
-        {#if facilityData}
-        <h1>レビューを投稿する</h1>
-        <hr class="custom-line">
-        <div class="review-main-container">
-            <button on:click={toggleDetail}>
-                <div class="line box">
-                    <div class="item-info">
-                        <span class="facility-name" style="padding-right:1vw ;">{facilityData.name}</span>
-                        <span class="facility-location">{facilityData.location}</span>
+        {#if isLoading}
+            <p>読み込み中...</p>
+        {:else if error}
+            <h1>エラー</h1>
+            <p>{error}</p>
+        {:else if facilityData}
+            <h1>{facilityData.name} のレビュー</h1>
+            <hr class="custom-line">
+
+            <!-- レビュー一覧 -->
+            <div class="reviews-list">
+                {#each reviews as review}
+                    <div class="review-card">
+                        <div class="card-review_star" >
+                            <span class="stars-clip" use:setStarWidth={review.rating}></span>                    
+                            <span class="rating-value">{review.rating.toFixed(1)}</span>
+                        </div>
+                        <p class="review-comment">{review.comment}</p>
+                        <p class="review-meta">投稿者: {review.userId.substring(0, 8)}... | 投稿日: {new Date(review.createdAt).toLocaleDateString()}</p>
                     </div>
-                    
-                    <div class="card-review_star" >
-                        <span class="stars-clip" use:setStarWidth={facilityData.rating}></span>                    
-                        <span class="rating-value">{facilityData.rating.toFixed(1)}</span>
-                        <span class="comment-count" style="padding-left:1vw ;">コメント数({facilityData.commentCount})</span>
-                    </div>
-                </div>
-            </button>
-            {#if isDetailVisible} 
-            <div class="container">
-                <h1>{facilityData.name} のレビュー詳細</h1>
-                <p>場所: {facilityData.location}</p>
-                <p>営業時間: {facilityData.openHours}</p>
-                <p>料金: {facilityData.price}</p>
-                <p>説明: {facilityData.explanation}</p>
-                
-                <h2>評価</h2>
-                <p>総合評価: {facilityData.rating.toFixed(1)} / コメント数: {facilityData.commentCount}件</p>
+                {:else}
+                    <p>この施設にはまだレビューがありません。</p>
+                {/each}
             </div>
-            {/if}
-        </div>
-
+        {/if}
         
-        {:else}
-        <h1>エラー</h1>
-        <p>施設ID: {facilityId} に対応する施設が見つかりませんでした。</p>
-    {/if}
-    
-    <a href="/facilities">一覧に戻る</a>
-
+        <a href="/facilities">施設一覧に戻る</a>
     </main>
 </div>
 
