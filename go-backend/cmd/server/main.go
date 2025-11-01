@@ -72,13 +72,14 @@ func main() {
 		BaseRouter: http.NewServeMux(),
 		Middlewares: []oapi.MiddlewareFunc{
 			handler.LoggingMiddleware,
-			handler.CorsMiddleware,
+			//handler.CorsMiddleware,
 		},
 	})
 
 	// 5. ハンドラをサーバーに登録
 	log.Println("Server is running on http://localhost:8080/v1")
-	if err := http.ListenAndServe(":8080", server); err != nil {
+	//if err := http.ListenAndServe(":8080", server); err != nil {
+	if err := http.ListenAndServe(":8080", handler.CorsMiddleware(server)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
