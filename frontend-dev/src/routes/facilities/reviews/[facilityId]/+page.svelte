@@ -9,7 +9,8 @@
 	type Spot = components["schemas"]["SpotResponse"];
 	type Review = components["schemas"]["ReviewResponse"];
 
-	const facilityId = $page.params.facilityId;
+	// scriptスコープで変数を宣言
+	let facilityId: string;
 
 	let facilityData: Spot | null = null;
 	let reviews: Review[] = [];
@@ -19,6 +20,8 @@
     let commentCount = 0;
 
 	onMount(async () => {
+        // onMountの中で$pageストアから値を取得して代入
+        facilityId = $page.params.facilityId;
 		isLoading = true;
 		try {
 			const { data: spotData, error: spotError } = await client.GET("/spots/{spotId}", {
@@ -75,30 +78,24 @@
         };
     };
 
-    // フォームデータ保持用の変数 (reviewTitleを削除)
     let reviewContent: string = "";
     let ratingValue: number = 0.0;
 
-    // 画面状態を管理する変数 (false: 入力画面, true: 確認画面)
     let isConfirmMode: boolean = false;
 
-    // 1. 確認ボタンが押された時の処理
     const handleConfirm = (event: Event) => {
         event.preventDefault();
-        // reviewTitleのチェックを削除
         if (!reviewContent || ratingValue === 0.0) {
             return;
         }
         isConfirmMode = true;
     };
 
-    // 2. 投稿ボタンが押された時の処理
     const handleSubmit = async () => {
         try {
             const { response, data } = await client.POST("/spots/{spotId}/reviews", {
                 params: { path: { spotId: facilityId } },
                 body: {
-                    // reviewContentのみをcommentとして送信
                     comment: reviewContent,
                     rating: ratingValue,
                     userId: '00000000-0000-0000-0000-000000000000',
@@ -119,7 +116,6 @@
         }
     };
 
-    // 3. 修正ボタンが押された時の処理
     const handleEdit = () => {
         isConfirmMode = false;
     };

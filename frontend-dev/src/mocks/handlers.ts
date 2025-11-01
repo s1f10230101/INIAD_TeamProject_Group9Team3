@@ -75,4 +75,31 @@ export const handlers = [
           },
         ]);
       }),
-    ];
+      // レビュー投稿のモックAPI
+  http.post('http://localhost:8080/v1/spots/:spotId/reviews', async ({ request, params }) => {
+    const { spotId } = params;
+    const newReview = await request.json();
+
+    return HttpResponse.json(
+      {
+        ...newReview,
+        spotId: spotId,
+        userId: 'mock-user-id',
+        createdAt: new Date().toISOString(),
+      },
+      { status: 201 },
+    );
+  }),
+  // 単一の施設情報を返すモックAPI
+  http.get('http://localhost:8080/v1/spots/:spotId', ({ params }) => {
+    const { spotId } = params;
+    // テストが期待しているデータを返します
+    return HttpResponse.json({
+        id: spotId,
+        name: '東京タワー',
+        address: '東京都港区芝公園４丁目２−８',
+        description: '東京のシンボル的なタワーです。',
+        createdAt: new Date().toISOString(),
+    });
+  }),
+];
