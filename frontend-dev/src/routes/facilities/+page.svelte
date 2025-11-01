@@ -4,63 +4,80 @@ import backgroundImage from "$lib/assets/back10.png";
 
 //const data: Facility[] = facilities;
 
-import {onMount} from 'svelte'
-import type { components } from '$lib/types/api';
-import client from '$lib/api/client'
+import { onMount } from "svelte";
+import type { components } from "$lib/types/api";
+import client from "$lib/api/client";
 
 // ratingが含まれない場合の施設の変数の型
 // let facilities: components["schemas"]["SpotResponse"][] = [];
 
 // rating, commentCountを含まれるようにSpotWithRating型を定義した。
 type SpotWithRating = components["schemas"]["SpotResponse"] & {
-    averageRating?:number;
-    commentCount?:number;
+    averageRating?: number;
+    commentCount?: number;
 };
 let facilities: SpotWithRating[] = [];
 let isLoading = true;
 let error: Error | null = null;
 
-onMount(async() => {
+onMount(async () => {
     try {
-        const { data: spotsData, error: spotsError } = await client.GET("/spots");
+        const { data: spotsData, error: spotsError } =
+            await client.GET("/spots");
         if (spotsError) {
-            throw new Error(spotsError.message || "施設一覧を取得することが失敗した");    
+            throw new Error(
+                spotsError.message || "施設一覧を取得することが失敗した",
+            );
         }
-        if(!spotsData) {
+        if (!spotsData) {
             facilities = [];
             return;
         }
 
         const facilitiesWithRatings: SpotWithRating[] = await Promise.all(
             spotsData.map(async (spot) => {
-                const {data: reviewsData, error: reviewsError} = await client.GET("/spots/{spotId}/reviews", {
-                    params: {path: {spotId: spot.id}},
-                });
+                const { data: reviewsData, error: reviewsError } =
+                    await client.GET("/spots/{spotId}/reviews", {
+                        params: { path: { spotId: spot.id } },
+                    });
                 let averageRating: number | undefined;
-                let commentCount:number | undefined;
+                let commentCount: number | undefined;
                 if (reviewsError) {
-                    console.warn(`施設 ${spot.name} (${spot.id})のレビューを取得できませんでした`, reviewsError);
+                    console.warn(
+                        `施設 ${spot.name} (${spot.id})のレビューを取得できませんでした`,
+                        reviewsError,
+                    );
                 } else if (reviewsData && reviewsData.length > 0) {
-                    const totalRating = reviewsData.reduce((sum, review) => sum + review.rating, 0);
-                    averageRating = parseFloat((totalRating / reviewsData.length).toFixed(1));
+                    const totalRating = reviewsData.reduce(
+                        (sum, review) => sum + review.rating,
+                        0,
+                    );
+                    averageRating = parseFloat(
+                        (totalRating / reviewsData.length).toFixed(1),
+                    );
                     commentCount = reviewsData.length;
                 }
 
-                return  {
+                return {
                     ...spot,
                     averageRating,
                     commentCount,
                 };
-            })
+            }),
         );
         facilities = facilitiesWithRatings;
-    } catch(e) {
+    } catch (e) {
         if (e instanceof Error) {
-            error = e;            
-        } else if (typeof e === 'object' && e !== null && 'message' in e && typeof e.message === 'string') {
+            error = e;
+        } else if (
+            typeof e === "object" &&
+            e !== null &&
+            "message" in e &&
+            typeof e.message === "string"
+        ) {
             error = new Error(e.message);
         } else {
-            error = new Error("予期しないエラーが起きました。")
+            error = new Error("予期しないエラーが起きました。");
         }
     } finally {
         isLoading = false;

@@ -1,22 +1,22 @@
 <script>
 import backgroundImage from "$lib/assets/back10.png";
-import client from '$lib/api/client';
-    import { preventDefault } from "svelte/legacy";
+import client from "$lib/api/client";
+import { preventDefault } from "svelte/legacy";
 
-let prompt = '';
-let aiResponse = '';
+let prompt = "";
+let aiResponse = "";
 let isLoading = false;
 
 async function handleSubmit() {
     if (!prompt) return;
     isLoading = true;
-    aiResponse = '';
+    aiResponse = "";
 
-    const { response } = await client.POST('/plans', {
+    const { response } = await client.POST("/plans", {
         body: {
-            prompt:prompt
+            prompt: prompt,
         },
-        parseAs: 'stream'
+        parseAs: "stream",
     });
 
     if (response.body) {
@@ -25,14 +25,14 @@ async function handleSubmit() {
 
         try {
             while (true) {
-                const {done, value} = await reader.read();
+                const { done, value } = await reader.read();
                 if (done) break;
 
                 const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n\n');
+                const lines = chunk.split("\n\n");
 
                 for (const line of lines) {
-                    if (line.startsWith('data:')) {
+                    if (line.startsWith("data:")) {
                         const data = line.substring(5).trim();
                         try {
                             const parsed = JSON.parse(data);
@@ -40,16 +40,16 @@ async function handleSubmit() {
                                 aiResponse += parsed.text;
                             }
                         } catch (e) {
-                            console.error('SSE データの解析エラー:', e);
+                            console.error("SSE データの解析エラー:", e);
                         }
-                    } else if (line.includes('event: done')) {
+                    } else if (line.includes("event: done")) {
                         reader.cancel();
                         return;
                     }
                 }
             }
         } catch (error) {
-            console.error('ストリーム読み込みエラー:', error);
+            console.error("ストリーム読み込みエラー:", error);
         } finally {
             isLoading = false;
         }

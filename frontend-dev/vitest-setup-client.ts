@@ -1,10 +1,10 @@
 /// <reference types="@vitest/browser/matchers" />
 /// <reference types="@vitest/browser/providers/playwright" />
 
-import '@testing-library/jest-dom/vitest';
+import "@testing-library/jest-dom/vitest";
 
-import { worker } from './src/mocks/browser';
-import { beforeAll, afterEach, afterAll } from 'vitest';
+import { worker } from "./src/mocks/browser";
+import { beforeAll, afterEach, afterAll } from "vitest";
 
 // すべてのテストの開始前にworkerを起動
 beforeAll(() => worker.start());
