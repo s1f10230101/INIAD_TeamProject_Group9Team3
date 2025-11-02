@@ -2,14 +2,14 @@ import { HttpResponse } from "msw";
 import { createOpenApiHttp } from "openapi-msw";
 import type { paths } from "$lib/types/api";
 
-const http = createOpenApiHttp< paths >({
+const http = createOpenApiHttp<paths>({
     baseUrl: "http://localhost:8080/v1",
 });
 
 // ここでバックエンドAPIのモックを定義します
 export const handlers = [
     // 旅行プラン生成API (/v1/plans) のモック
-    http.post("/plans", async ({request, response}) => {
+    http.post("/plans", async ({ request, response }) => {
         const stream = new ReadableStream({
             async start(controller) {
                 const encoder = new TextEncoder();
@@ -51,11 +51,11 @@ export const handlers = [
             new HttpResponse(stream, {
                 headers: { "Content-Type": "text/event-stream" },
             }),
-    );
+        );
     }),
 
     // 他のAPIエンドポイントのモックもここに追加できます
-    http.get("/spots", ({response}) => {
+    http.get("/spots", ({ response }) => {
         return HttpResponse.json([
             {
                 id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
@@ -88,23 +88,20 @@ export const handlers = [
         ]);
     }),
     // レビュー投稿のモックAPI
-    http.post(
-        "/spots/{spotId}/reviews",
-        async ({ request, params }) => {
-            const { spotId } = params;
-            const newReview = await request.json();
+    http.post("/spots/{spotId}/reviews", async ({ request, params }) => {
+        const { spotId } = params;
+        const newReview = await request.json();
 
-            return HttpResponse.json(
-                {
-                    ...newReview,
-                    spotId: spotId,
-                    userId: "mock-user-id",
-                    createdAt: new Date().toISOString(),
-                },
-                { status: 201 },
-            );
-        },
-    ),
+        return HttpResponse.json(
+            {
+                ...newReview,
+                spotId: spotId,
+                userId: "mock-user-id",
+                createdAt: new Date().toISOString(),
+            },
+            { status: 201 },
+        );
+    }),
     // 単一の施設情報を返すモックAPI
     http.get("/spots/{spotId}", ({ params }) => {
         const { spotId } = params;
