@@ -1,125 +1,142 @@
 <script lang="ts">
-	import backgroundImage from "$lib/assets/back10.png";
-	import { page } from "$app/stores";
-	import { onMount } from "svelte";
-	import client from "$lib/api/client";
-	import type { components } from "$lib/types/api";
-    import { goto } from "$app/navigation";
+import backgroundImage from "$lib/assets/back10.png";
+import { page } from "$app/stores";
+import { onMount } from "svelte";
+import client from "$lib/api/client";
+import type { components } from "$lib/types/api";
+import { goto } from "$app/navigation";
 
-	type Spot = components["schemas"]["SpotResponse"];
-	type Review = components["schemas"]["ReviewResponse"];
+type Spot = components["schemas"]["SpotResponse"];
+type Review = components["schemas"]["ReviewResponse"];
 
-	// scriptスコープで変数を宣言
-	let facilityId: string;
+// scriptスコープで変数を宣言
+let facilityId: string;
 
-	let facilityData: Spot | null = null;
-	let reviews: Review[] = [];
-	let isLoading = true;
-	let error: string | null = null;
-    let averageRating = 0.0;
-    let commentCount = 0;
+let facilityData: Spot | null = null;
+let reviews: Review[] = [];
+let isLoading = true;
+let error: string | null = null;
+let averageRating = 0.0;
+let commentCount = 0;
 
-	onMount(async () => {
-        // onMountの中で$pageストアから値を取得して代入
-        facilityId = $page.params.facilityId;
-		isLoading = true;
-		try {
-			const { data: spotData, error: spotError } = await client.GET("/spots/{spotId}", {
-				params: { path: { spotId: facilityId } },
-			});
-			if (spotError) throw new Error("施設の情報の取得に失敗しました。");
-			facilityData = spotData;
-
-			const { data: reviewsData, error: reviewsError } = await client.GET("/spots/{spotId}/reviews", {
-				params: { path: { spotId: facilityId } },
-			});
-			if (reviewsError) throw new Error("レビューの取得に失敗しました。");
-			reviews = reviewsData || [];
-
-            if (reviews.length > 0) {
-                const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-                averageRating = parseFloat((totalRating / reviews.length).toFixed(1));
-                commentCount = reviews.length;
-            } else {
-                averageRating = 0;
-                commentCount = 0;
-            }
-		} catch (e: any) {
-			error = e.message;
-		} finally {
-			isLoading = false;
-		}
-	});
-
-	const setStarWidth = (node: HTMLElement, rating: number) => {
-        const calculateAndSetWidth = (currentRating: number) => {
-			const roundReview = Math.round(currentRating * 10) / 10;
-			const widthPercentage = roundReview * 20;
-			node.style.setProperty("--starWidth", `${widthPercentage}%`);
-		};
-		calculateAndSetWidth(rating);
-		return {
-			update(newRating: number) {
-				calculateAndSetWidth(newRating);
-			}
-		};
-	};
-
-    let isDetailVisible: boolean = false;
-    const toggleDetail = () => { isDetailVisible = !isDetailVisible; };
-
-    const updateStarWidth = (node: HTMLElement, _rating: number) => {
-        return {
-            update(newRating: number) {
-                const roundReview = Math.round(newRating * 10) / 10;
-                const widthPercentage = roundReview * 20;
-                node.style.setProperty("--starWidth", `${widthPercentage}%`);
+onMount(async () => {
+    // onMountの中で$pageストアから値を取得して代入
+    facilityId = $page.params.facilityId;
+    isLoading = true;
+    try {
+        const { data: spotData, error: spotError } = await client.GET(
+            "/spots/{spotId}",
+            {
+                params: { path: { spotId: facilityId } },
             },
-        };
-    };
+        );
+        if (spotError) throw new Error("施設の情報の取得に失敗しました。");
+        facilityData = spotData;
 
-    let reviewContent: string = "";
-    let ratingValue: number = 0.0;
+        const { data: reviewsData, error: reviewsError } = await client.GET(
+            "/spots/{spotId}/reviews",
+            {
+                params: { path: { spotId: facilityId } },
+            },
+        );
+        if (reviewsError) throw new Error("レビューの取得に失敗しました。");
+        reviews = reviewsData || [];
 
-    let isConfirmMode: boolean = false;
-
-    const handleConfirm = (event: Event) => {
-        event.preventDefault();
-        if (!reviewContent || ratingValue === 0.0) {
-            return;
+        if (reviews.length > 0) {
+            const totalRating = reviews.reduce(
+                (sum, review) => sum + review.rating,
+                0,
+            );
+            averageRating = parseFloat(
+                (totalRating / reviews.length).toFixed(1),
+            );
+            commentCount = reviews.length;
+        } else {
+            averageRating = 0;
+            commentCount = 0;
         }
-        isConfirmMode = true;
-    };
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        isLoading = false;
+    }
+});
 
-    const handleSubmit = async () => {
-        try {
-            const { response, data } = await client.POST("/spots/{spotId}/reviews", {
+const setStarWidth = (node: HTMLElement, rating: number) => {
+    const calculateAndSetWidth = (currentRating: number) => {
+        const roundReview = Math.round(currentRating * 10) / 10;
+        const widthPercentage = roundReview * 20;
+        node.style.setProperty("--starWidth", `${widthPercentage}%`);
+    };
+    calculateAndSetWidth(rating);
+    return {
+        update(newRating: number) {
+            calculateAndSetWidth(newRating);
+        },
+    };
+};
+
+let isDetailVisible: boolean = false;
+const toggleDetail = () => {
+    isDetailVisible = !isDetailVisible;
+};
+
+const updateStarWidth = (node: HTMLElement, _rating: number) => {
+    return {
+        update(newRating: number) {
+            const roundReview = Math.round(newRating * 10) / 10;
+            const widthPercentage = roundReview * 20;
+            node.style.setProperty("--starWidth", `${widthPercentage}%`);
+        },
+    };
+};
+
+let reviewContent: string = "";
+let ratingValue: number = 0.0;
+
+let isConfirmMode: boolean = false;
+
+const handleConfirm = (event: Event) => {
+    event.preventDefault();
+    if (!reviewContent || ratingValue === 0.0) {
+        return;
+    }
+    isConfirmMode = true;
+};
+
+const handleSubmit = async () => {
+    try {
+        const { response, data } = await client.POST(
+            "/spots/{spotId}/reviews",
+            {
                 params: { path: { spotId: facilityId } },
                 body: {
                     comment: reviewContent,
                     rating: ratingValue,
-                    userId: '00000000-0000-0000-0000-000000000000',
-                    spotId: facilityId
-                }
-            });
+                    userId: "00000000-0000-0000-0000-000000000000",
+                    spotId: facilityId,
+                },
+            },
+        );
 
-            if (response.ok) {
-                alert("レビューを投稿しました！");
-                goto("/facilities");
-            } else {
-                const errorInfo = data as { message?: string };
-                alert(`投稿に失敗しました: ${errorInfo?.message || 'サーバーエラー'}`);
-            }
-        } catch (e) {
-            alert("投稿中に予期せぬエラーが発生しました。");
-            console.error("投稿エラー:", e);
+        if (response.ok) {
+            alert("レビューを投稿しました！");
+            goto("/facilities");
+        } else {
+            const errorInfo = data as { message?: string };
+            alert(
+                `投稿に失敗しました: ${errorInfo?.message || "サーバーエラー"}`,
+            );
         }
-    };
+    } catch (e) {
+        alert("投稿中に予期せぬエラーが発生しました。");
+        console.error("投稿エラー:", e);
+    }
+};
 
-    const handleEdit = () => {
-        isConfirmMode = false;
-    };
-
+const handleEdit = () => {
+    isConfirmMode = false;
+};
 </script>
 
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
