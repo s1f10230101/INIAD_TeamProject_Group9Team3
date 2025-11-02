@@ -1,9 +1,15 @@
-import { http, HttpResponse } from "msw";
+import { HttpResponse } from "msw";
+import { createOpenApiHttp } from "openapi-msw";
+import type { paths } from "$lib/types/api";
+
+const http = createOpenApiHttp< paths >({
+    baseUrl: "http://localhost:8080/v1",
+});
 
 // ここでバックエンドAPIのモックを定義します
 export const handlers = [
     // 旅行プラン生成API (/v1/plans) のモック
-    http.post("http://localhost:8080/v1/plans", async () => {
+    http.post("/plans", async ({request, response}) => {
         const stream = new ReadableStream({
             async start(controller) {
                 const encoder = new TextEncoder();
@@ -34,16 +40,22 @@ export const handlers = [
                 controller.close();
             },
         });
-
+        /*
         return new HttpResponse(stream, {
             headers: {
                 "Content-Type": "text/event-stream",
             },
         });
+        */
+        return response.untyped(
+            new HttpResponse(stream, {
+                headers: { "Content-Type": "text/event-stream" },
+            }),
+    );
     }),
 
     // 他のAPIエンドポイントのモックもここに追加できます
-    http.get("http://localhost:8080/v1/spots", () => {
+    http.get("/spots", ({response}) => {
         return HttpResponse.json([
             {
                 id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
@@ -63,7 +75,7 @@ export const handlers = [
     }),
 
     // レビューのモックAPI (動的パス)
-    http.get("http://localhost:8080/v1/spots/:spotId/reviews", ({ params }) => {
+    http.get("/spots/{spotId}/reviews", ({ params }) => {
         const { spotId } = params;
         return HttpResponse.json([
             {
@@ -77,7 +89,7 @@ export const handlers = [
     }),
     // レビュー投稿のモックAPI
     http.post(
-        "http://localhost:8080/v1/spots/:spotId/reviews",
+        "/spots/{spotId}/reviews",
         async ({ request, params }) => {
             const { spotId } = params;
             const newReview = await request.json();
@@ -94,7 +106,7 @@ export const handlers = [
         },
     ),
     // 単一の施設情報を返すモックAPI
-    http.get("http://localhost:8080/v1/spots/:spotId", ({ params }) => {
+    http.get("/spots/{spotId}", ({ params }) => {
         const { spotId } = params;
         // テストが期待しているデータを返します
         return HttpResponse.json({
