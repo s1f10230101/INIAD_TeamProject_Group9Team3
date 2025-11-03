@@ -9,7 +9,7 @@ const http = createOpenApiHttp<paths>({
 // ここでバックエンドAPIのモックを定義します
 export const handlers = [
     // 旅行プラン生成API (/v1/plans) のモック
-    http.post("/plans", async ({ request, response }) => {
+    http.post("/plans", async ({ response }) => {
         const stream = new ReadableStream({
             async start(controller) {
                 const encoder = new TextEncoder();
@@ -40,13 +40,7 @@ export const handlers = [
                 controller.close();
             },
         });
-        /*
-        return new HttpResponse(stream, {
-            headers: {
-                "Content-Type": "text/event-stream",
-            },
-        });
-        */
+
         return response.untyped(
             new HttpResponse(stream, {
                 headers: { "Content-Type": "text/event-stream" },
@@ -55,7 +49,7 @@ export const handlers = [
     }),
 
     // 他のAPIエンドポイントのモックもここに追加できます
-    http.get("/spots", ({ response }) => {
+    http.get("/spots", () => {
         return HttpResponse.json([
             {
                 id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
