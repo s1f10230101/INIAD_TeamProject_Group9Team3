@@ -1,5 +1,5 @@
 <script lang="ts">
-  import backgroundImage from "$lib/assets/back10.png";
+import backgroundImage from "$lib/assets/back10.png";
 </script>
 
 <div

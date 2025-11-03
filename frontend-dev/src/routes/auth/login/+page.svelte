@@ -1,28 +1,28 @@
 <script>
-  import backgroundImage from "$lib/assets/back10.png";
+import backgroundImage from "$lib/assets/back10.png";
 
-  // SvelteKitのナビゲーション機能をインポート
-  import { goto } from "$app/navigation";
+// SvelteKitのナビゲーション機能をインポート
+import { goto } from "$app/navigation";
 
-  // ユーザー入力をバインドするための変数
-  let mailAddress = "";
-  let password = "";
+// ユーザー入力をバインドするための変数
+let mailAddress = "";
+let password = "";
 
-  // ログイン処理（ダミー）
-  function handleLogin() {
-    console.log("ログイン試行:", { mailAddress, password });
+// ログイン処理（ダミー）
+function handleLogin() {
+  console.log("ログイン試行:", { mailAddress, password });
 
-    // 実際のログイン処理はバックエンドで
+  // 実際のログイン処理はバックエンドで
 
-    alert("ログインに成功しました！（ダミー処理）");
-    goto("/"); // トップページ（ルート）に遷移
-  }
+  alert("ログインに成功しました！（ダミー処理）");
+  goto("/"); // トップページ（ルート）に遷移
+}
 
-  // 新規登録画面への遷移
-  function handleSignup() {
-    // /register 画面に遷移
-    goto("/auth/signup");
-  }
+// 新規登録画面への遷移
+function handleSignup() {
+  // /register 画面に遷移
+  goto("/auth/signup");
+}
 </script>
 
 <div

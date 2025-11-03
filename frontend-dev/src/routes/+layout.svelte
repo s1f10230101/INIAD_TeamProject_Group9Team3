@@ -1,10 +1,10 @@
 <script>
-  import "../app.css";
-  import favicon from "$lib/assets/icon4.png";
-  import Header from "$lib/components/Header.svelte";
-  import Footer from "$lib/components/Footer.svelte";
+import "../app.css";
+import favicon from "$lib/assets/icon4.png";
+import Header from "$lib/components/Header.svelte";
+import Footer from "$lib/components/Footer.svelte";
 
-  let { children } = $props();
+let { children } = $props();
 </script>
 
 <div class="site-container">

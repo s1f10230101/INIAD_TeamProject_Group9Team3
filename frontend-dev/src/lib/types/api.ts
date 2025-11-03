@@ -4,756 +4,756 @@
  */
 
 export interface paths {
-    "/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description APIの起動確認用エンドポイント */
-        get: operations["HealthCheck_OpenAPI"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * ユーザーログイン
-         * @description 既存のユーザーがログインし、JWTトークンを取得します。
-         */
-        post: operations["loginUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description APIの起動確認用エンドポイント */
+    get: operations["HealthCheck_OpenAPI"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/login": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * ユーザー情報取得
-         * @description JWTトークンを使用して認証されたユーザーの情報を取得します。
-         */
-        get: operations["getUserInfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * ユーザーログイン
+     * @description 既存のユーザーがログインし、JWTトークンを取得します。
+     */
+    post: operations["loginUser"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/auth/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * ユーザー登録
-         * @description 新しいユーザーを登録し、JWTトークンを発行します。
-         */
-        post: operations["registerUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * ユーザー情報取得
+     * @description JWTトークンを使用して認証されたユーザーの情報を取得します。
+     */
+    get: operations["getUserInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/register": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/plans": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 旅行プランの生成
-         * @description ユーザーの希望に基づいて新しい旅行プランを生成します。"
-         *     AIが生成する旅行プラン
-         *     形式: data: {text: "生成されたテキスト"}\n\n
-         *     SSEの形式の末尾が\n\nである都合上、もし例えば"data: 生成されたテキスト\n\n"のようにしてしまうと、生成されたテキストに\n\nが含まれる場合に正しくパースできなくなってしまう。
-         *     そのため、SSE形式の文字列にはJSONエスケープを施すこととし、上記の例では"data: {text: "生成されたテキスト"}\n\n"のようにする。
-         *     最後に、生成が完了したことを示すために"event: done\n\n"というイベントが送信されます。
-         */
-        post: operations["generatePlan"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * ユーザー登録
+     * @description 新しいユーザーを登録し、JWTトークンを発行します。
+     */
+    post: operations["registerUser"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/plans": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 観光スポット一覧の取得
-         * @description 登録されている観光スポットの一覧を取得します。
-         */
-        get: operations["getAllSpots"];
-        put?: never;
-        /**
-         * 観光スポットの登録
-         * @description 新しい観光スポットを登録します。
-         */
-        post: operations["createSpot"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * 旅行プランの生成
+     * @description ユーザーの希望に基づいて新しい旅行プランを生成します。"
+     *     AIが生成する旅行プラン
+     *     形式: data: {text: "生成されたテキスト"}\n\n
+     *     SSEの形式の末尾が\n\nである都合上、もし例えば"data: 生成されたテキスト\n\n"のようにしてしまうと、生成されたテキストに\n\nが含まれる場合に正しくパースできなくなってしまう。
+     *     そのため、SSE形式の文字列にはJSONエスケープを施すこととし、上記の例では"data: {text: "生成されたテキスト"}\n\n"のようにする。
+     *     最後に、生成が完了したことを示すために"event: done\n\n"というイベントが送信されます。
+     */
+    post: operations["generatePlan"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots/{spotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 観光スポットの詳細取得
-         * @description 指定したIDの観光スポットの詳細情報を取得します。
-         */
-        get: operations["getSpotById"];
-        /**
-         * 観光スポットの更新
-         * @description 指定したIDの観光スポットの情報を更新します。
-         */
-        put: operations["updateSpot"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * 観光スポット一覧の取得
+     * @description 登録されている観光スポットの一覧を取得します。
+     */
+    get: operations["getAllSpots"];
+    put?: never;
+    /**
+     * 観光スポットの登録
+     * @description 新しい観光スポットを登録します。
+     */
+    post: operations["createSpot"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots/{spotId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots/{spotId}/reviews": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 観光スポットのレビュー一覧の取得
-         * @description 指定した観光スポットのレビュー一覧を取得します。
-         */
-        get: operations["getReviewsBySpotId"];
-        put?: never;
-        /**
-         * レビューの投稿
-         * @description 新しいレビューを投稿します。
-         */
-        post: operations["createReview"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * 観光スポットの詳細取得
+     * @description 指定したIDの観光スポットの詳細情報を取得します。
+     */
+    get: operations["getSpotById"];
+    /**
+     * 観光スポットの更新
+     * @description 指定したIDの観光スポットの情報を更新します。
+     */
+    put: operations["updateSpot"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots/{spotId}/reviews": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /**
+     * 観光スポットのレビュー一覧の取得
+     * @description 指定した観光スポットのレビュー一覧を取得します。
+     */
+    get: operations["getReviewsBySpotId"];
+    put?: never;
+    /**
+     * レビューの投稿
+     * @description 新しいレビューを投稿します。
+     */
+    post: operations["createReview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        JWTAuth: {
-            /** @description JWTトークン */
-            token: string;
-        };
-        Prompt: {
-            /** @description 旅行の希望や条件 */
-            prompt: string;
-        };
-        /** @description The template for omitting properties. */
-        ReviewResister: {
-            /** @description レビューを投稿したユーザーの識別子 */
-            userId: components["schemas"]["uuid"];
-            /** @description レビュー対象の観光スポットの識別子 */
-            spotId: components["schemas"]["uuid"];
-            /** @description レビューの評価（1から5までの整数） */
-            rating: number;
-            /** @description レビューのコメント */
-            comment: string;
-        };
-        ReviewResponse: {
-            /** @description レビューを投稿したユーザーの識別子 */
-            userId: components["schemas"]["uuid"];
-            /** @description レビュー対象の観光スポットの識別子 */
-            spotId: components["schemas"]["uuid"];
-            /** @description レビューの評価（1から5までの整数） */
-            rating: number;
-            /** @description レビューのコメント */
-            comment: string;
-            /**
-             * Format: date-time
-             * @description レビューの作成日時
-             */
-            createdAt: string;
-        };
-        /** @description The template for omitting properties. */
-        SpotResister: {
-            /** @description 観光スポットの名称 */
-            name: string;
-            /** @description 観光スポットの説明 */
-            description: string;
-            /** @description 観光スポットの所在地 */
-            address: string;
-        };
-        SpotResponse: {
-            /** @description 観光スポットの一意の識別子 */
-            id: components["schemas"]["uuid"];
-            /** @description 観光スポットの名称 */
-            name: string;
-            /** @description 観光スポットの説明 */
-            description: string;
-            /** @description 観光スポットの所在地 */
-            address: string;
-            /**
-             * Format: date-time
-             * @description 作成日時(utc unix timestamp)
-             */
-            createdAt: string;
-        };
-        SpotUpdate: {
-            name: string | null;
-            description: string | null;
-            address: string | null;
-        };
-        /** @description The template for omitting properties. */
-        UserResister: {
-            /** @description ユーザー名 */
-            username: string;
-            /** @description メールアドレス */
-            email: string;
-            /**
-             * Format: password
-             * @description パスワード
-             */
-            password: string;
-        };
-        /** @description The template for omitting properties. */
-        UserResponse: {
-            /** @description ユーザーの一意の識別子 */
-            id: string;
-            /** @description ユーザー名 */
-            username: string;
-            /** @description メールアドレス */
-            email: string;
-        };
-        /** Format: uuid */
-        uuid: string;
+  schemas: {
+    JWTAuth: {
+      /** @description JWTトークン */
+      token: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    Prompt: {
+      /** @description 旅行の希望や条件 */
+      prompt: string;
+    };
+    /** @description The template for omitting properties. */
+    ReviewResister: {
+      /** @description レビューを投稿したユーザーの識別子 */
+      userId: components["schemas"]["uuid"];
+      /** @description レビュー対象の観光スポットの識別子 */
+      spotId: components["schemas"]["uuid"];
+      /** @description レビューの評価（1から5までの整数） */
+      rating: number;
+      /** @description レビューのコメント */
+      comment: string;
+    };
+    ReviewResponse: {
+      /** @description レビューを投稿したユーザーの識別子 */
+      userId: components["schemas"]["uuid"];
+      /** @description レビュー対象の観光スポットの識別子 */
+      spotId: components["schemas"]["uuid"];
+      /** @description レビューの評価（1から5までの整数） */
+      rating: number;
+      /** @description レビューのコメント */
+      comment: string;
+      /**
+       * Format: date-time
+       * @description レビューの作成日時
+       */
+      createdAt: string;
+    };
+    /** @description The template for omitting properties. */
+    SpotResister: {
+      /** @description 観光スポットの名称 */
+      name: string;
+      /** @description 観光スポットの説明 */
+      description: string;
+      /** @description 観光スポットの所在地 */
+      address: string;
+    };
+    SpotResponse: {
+      /** @description 観光スポットの一意の識別子 */
+      id: components["schemas"]["uuid"];
+      /** @description 観光スポットの名称 */
+      name: string;
+      /** @description 観光スポットの説明 */
+      description: string;
+      /** @description 観光スポットの所在地 */
+      address: string;
+      /**
+       * Format: date-time
+       * @description 作成日時(utc unix timestamp)
+       */
+      createdAt: string;
+    };
+    SpotUpdate: {
+      name: string | null;
+      description: string | null;
+      address: string | null;
+    };
+    /** @description The template for omitting properties. */
+    UserResister: {
+      /** @description ユーザー名 */
+      username: string;
+      /** @description メールアドレス */
+      email: string;
+      /**
+       * Format: password
+       * @description パスワード
+       */
+      password: string;
+    };
+    /** @description The template for omitting properties. */
+    UserResponse: {
+      /** @description ユーザーの一意の識別子 */
+      id: string;
+      /** @description ユーザー名 */
+      username: string;
+      /** @description メールアドレス */
+      email: string;
+    };
+    /** Format: uuid */
+    uuid: string;
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    HealthCheck_OpenAPI: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "text/plain": string;
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  HealthCheck_OpenAPI: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    loginUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    email: string;
-                    password: string;
-                };
-            };
+        content: {
+          "text/plain": string;
         };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JWTAuth"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
     };
-    getUserInfo: {
-        parameters: {
-            query?: never;
-            header: {
-                Authorization: string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserResponse"];
-                };
-            };
-            /** @description Access is unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  loginUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    registerUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody: {
+      content: {
+        "application/json": {
+          email: string;
+          password: string;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserResister"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JWTAuth"];
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+      };
     };
-    generatePlan: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Prompt"];
-            };
+        content: {
+          "application/json": components["schemas"]["JWTAuth"];
         };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    "cache-control": "no-cache";
-                    connection: "keep-alive";
-                    [name: string]: unknown;
-                };
-                content: {
-                    "text/event-stream": string;
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
+      };
+      /** @description Access is unauthorized. */
+      401: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
     };
-    getAllSpots: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotResponse"][];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  getUserInfo: {
+    parameters: {
+      query?: never;
+      header: {
+        Authorization: string;
+      };
+      path?: never;
+      cookie?: never;
     };
-    createSpot: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SpotResister"];
-            };
+        content: {
+          "application/json": components["schemas"]["UserResponse"];
         };
-        responses: {
-            /** @description The request has succeeded and a new resource has been created as a result. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotResponse"];
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
+      };
+      /** @description Access is unauthorized. */
+      401: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
     };
-    getSpotById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                spotId: components["schemas"]["uuid"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotResponse"];
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  registerUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    updateSpot: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                spotId: components["schemas"]["uuid"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SpotUpdate"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotResponse"];
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The server cannot find the requested resource. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserResister"];
+      };
     };
-    getReviewsBySpotId: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                spotId: components["schemas"]["uuid"];
-            };
-            cookie?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponse"][];
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["JWTAuth"];
         };
+      };
+      /** @description The server could not understand the request due to invalid syntax. */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
     };
-    createReview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                spotId: components["schemas"]["uuid"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReviewResister"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded and a new resource has been created as a result. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewResponse"];
-                };
-            };
-            /** @description The server could not understand the request due to invalid syntax. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  generatePlan: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Prompt"];
+      };
+    };
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          "cache-control": "no-cache";
+          connection: "keep-alive";
+          [name: string]: unknown;
+        };
+        content: {
+          "text/event-stream": string;
+        };
+      };
+      /** @description The server could not understand the request due to invalid syntax. */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  getAllSpots: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpotResponse"][];
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  createSpot: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SpotResister"];
+      };
+    };
+    responses: {
+      /** @description The request has succeeded and a new resource has been created as a result. */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpotResponse"];
+        };
+      };
+      /** @description The server could not understand the request due to invalid syntax. */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  getSpotById: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        spotId: components["schemas"]["uuid"];
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpotResponse"];
+        };
+      };
+      /** @description The server cannot find the requested resource. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  updateSpot: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        spotId: components["schemas"]["uuid"];
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SpotUpdate"];
+      };
+    };
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SpotResponse"];
+        };
+      };
+      /** @description The server could not understand the request due to invalid syntax. */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description The server cannot find the requested resource. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  getReviewsBySpotId: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        spotId: components["schemas"]["uuid"];
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReviewResponse"][];
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  createReview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        spotId: components["schemas"]["uuid"];
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReviewResister"];
+      };
+    };
+    responses: {
+      /** @description The request has succeeded and a new resource has been created as a result. */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReviewResponse"];
+        };
+      };
+      /** @description The server could not understand the request due to invalid syntax. */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
 }

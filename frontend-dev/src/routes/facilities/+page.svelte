@@ -1,88 +1,86 @@
 <script lang="ts">
-  import backgroundImage from "$lib/assets/back10.png";
-  import { onMount } from "svelte";
-  import type { components } from "$lib/types/api";
-  import client from "$lib/api/client";
+import backgroundImage from "$lib/assets/back10.png";
+import { onMount } from "svelte";
+import type { components } from "$lib/types/api";
+import client from "$lib/api/client";
 
-  // rating, commentCountを含まれるようにSpotWithRating型を定義した。
-  type SpotWithRating = components["schemas"]["SpotResponse"] & {
-    averageRating?: number;
-    commentCount?: number;
-  };
-  let facilities: SpotWithRating[] = [];
-  let isLoading = true;
-  let error: Error | null = null;
+// rating, commentCountを含まれるようにSpotWithRating型を定義した。
+type SpotWithRating = components["schemas"]["SpotResponse"] & {
+  averageRating?: number;
+  commentCount?: number;
+};
+let facilities: SpotWithRating[] = [];
+let isLoading = true;
+let error: Error | null = null;
 
-  onMount(async () => {
-    try {
-      const { data: spotsData, error: spotsError } = await client.GET("/spots");
-      if (spotsError) {
-        throw new Error(
-          spotsError.message || "施設一覧を取得することが失敗した",
-        );
-      }
-      if (!spotsData) {
-        facilities = [];
-        return;
-      }
-
-      const facilitiesWithRatings: SpotWithRating[] = await Promise.all(
-        spotsData.map(async (spot) => {
-          const { data: reviewsData, error: reviewsError } = await client.GET(
-            "/spots/{spotId}/reviews",
-            {
-              params: { path: { spotId: spot.id } },
-            },
-          );
-          let averageRating: number | undefined;
-          let commentCount: number | undefined;
-          if (reviewsError) {
-            console.warn(
-              `施設 ${spot.name} (${spot.id})のレビューを取得できませんでした`,
-              reviewsError,
-            );
-          } else if (reviewsData && reviewsData.length > 0) {
-            const totalRating = reviewsData.reduce(
-              (sum, review) => sum + review.rating,
-              0,
-            );
-            averageRating = parseFloat(
-              (totalRating / reviewsData.length).toFixed(1),
-            );
-            commentCount = reviewsData.length;
-          }
-
-          return {
-            ...spot,
-            averageRating,
-            commentCount,
-          };
-        }),
-      );
-      facilities = facilitiesWithRatings;
-    } catch (e) {
-      if (e instanceof Error) {
-        error = e;
-      } else if (
-        typeof e === "object" &&
-        e !== null &&
-        "message" in e &&
-        typeof e.message === "string"
-      ) {
-        error = new Error(e.message);
-      } else {
-        error = new Error("予期しないエラーが起きました。");
-      }
-    } finally {
-      isLoading = false;
+onMount(async () => {
+  try {
+    const { data: spotsData, error: spotsError } = await client.GET("/spots");
+    if (spotsError) {
+      throw new Error(spotsError.message || "施設一覧を取得することが失敗した");
     }
-  });
+    if (!spotsData) {
+      facilities = [];
+      return;
+    }
 
-  const setStarWidth = (node: HTMLElement, rating: number) => {
-    const roundReview = Math.round(rating * 10) / 10;
-    const widthPercentage = roundReview * 20;
-    node.style.setProperty("--starWidth", `${widthPercentage}%`);
-  };
+    const facilitiesWithRatings: SpotWithRating[] = await Promise.all(
+      spotsData.map(async (spot) => {
+        const { data: reviewsData, error: reviewsError } = await client.GET(
+          "/spots/{spotId}/reviews",
+          {
+            params: { path: { spotId: spot.id } },
+          },
+        );
+        let averageRating: number | undefined;
+        let commentCount: number | undefined;
+        if (reviewsError) {
+          console.warn(
+            `施設 ${spot.name} (${spot.id})のレビューを取得できませんでした`,
+            reviewsError,
+          );
+        } else if (reviewsData && reviewsData.length > 0) {
+          const totalRating = reviewsData.reduce(
+            (sum, review) => sum + review.rating,
+            0,
+          );
+          averageRating = parseFloat(
+            (totalRating / reviewsData.length).toFixed(1),
+          );
+          commentCount = reviewsData.length;
+        }
+
+        return {
+          ...spot,
+          averageRating,
+          commentCount,
+        };
+      }),
+    );
+    facilities = facilitiesWithRatings;
+  } catch (e) {
+    if (e instanceof Error) {
+      error = e;
+    } else if (
+      typeof e === "object" &&
+      e !== null &&
+      "message" in e &&
+      typeof e.message === "string"
+    ) {
+      error = new Error(e.message);
+    } else {
+      error = new Error("予期しないエラーが起きました。");
+    }
+  } finally {
+    isLoading = false;
+  }
+});
+
+const setStarWidth = (node: HTMLElement, rating: number) => {
+  const roundReview = Math.round(rating * 10) / 10;
+  const widthPercentage = roundReview * 20;
+  node.style.setProperty("--starWidth", `${widthPercentage}%`);
+};
 </script>
 
 <div
