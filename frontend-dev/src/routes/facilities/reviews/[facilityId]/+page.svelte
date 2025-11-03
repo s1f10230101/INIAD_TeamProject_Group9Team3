@@ -1,38 +1,87 @@
 <script lang="ts">
 import backgroundImage from "$lib/assets/back10.png";
-
-// SvelteKitから現在のページの情報を取得
 import { page } from "$app/stores";
-
-// 元の施設データと型をインポート
-import { facilities, type Facility } from "$lib/data/facilities";
-
+import { onMount } from "svelte";
+import client from "$lib/api/client";
+import type { components } from "$lib/types/api";
 import { goto } from "$app/navigation";
 
-// 1. URLのパラメータ（[facilityId]の部分）を取得し、数値に変換
-// $page.params.facilityId は文字列なので、Number()で数値化します。
-const facilityId = Number($page.params.facilityId);
+type Spot = components["schemas"]["SpotResponse"];
+type Review = components["schemas"]["ReviewResponse"];
 
-// 2. 施設IDに基づいて、該当する施設データを検索
-const facilityData: Facility | undefined = facilities.find(
-    (f) => f.id === facilityId,
-);
+// scriptスコープで変数を宣言
+let facilityId: string;
+
+let facilityData: Spot | null = null;
+let reviews: Review[] = [];
+let isLoading = true;
+let error: string | null = null;
+let averageRating = 0.0;
+let commentCount = 0;
+
+onMount(async () => {
+    // onMountの中で$pageストアから値を取得して代入
+    facilityId = $page.params.facilityId;
+    isLoading = true;
+    try {
+        const { data: spotData, error: spotError } = await client.GET(
+            "/spots/{spotId}",
+            {
+                params: { path: { spotId: facilityId } },
+            },
+        );
+        if (spotError) throw new Error("施設の情報の取得に失敗しました。");
+        facilityData = spotData;
+
+        const { data: reviewsData, error: reviewsError } = await client.GET(
+            "/spots/{spotId}/reviews",
+            {
+                params: { path: { spotId: facilityId } },
+            },
+        );
+        if (reviewsError) throw new Error("レビューの取得に失敗しました。");
+        reviews = reviewsData || [];
+
+        if (reviews.length > 0) {
+            const totalRating = reviews.reduce(
+                (sum, review) => sum + review.rating,
+                0,
+            );
+            averageRating = parseFloat(
+                (totalRating / reviews.length).toFixed(1),
+            );
+            commentCount = reviews.length;
+        } else {
+            averageRating = 0;
+            commentCount = 0;
+        }
+    } catch (e: any) {
+        error = e.message;
+    } finally {
+        isLoading = false;
+    }
+});
 
 const setStarWidth = (node: HTMLElement, rating: number) => {
-    const roundReview = Math.round(rating * 10) / 10;
-    const widthPercentage = roundReview * 20;
-    node.style.setProperty("--starWidth", `${widthPercentage}%`);
+    const calculateAndSetWidth = (currentRating: number) => {
+        const roundReview = Math.round(currentRating * 10) / 10;
+        const widthPercentage = roundReview * 20;
+        node.style.setProperty("--starWidth", `${widthPercentage}%`);
+    };
+    calculateAndSetWidth(rating);
+    return {
+        update(newRating: number) {
+            calculateAndSetWidth(newRating);
+        },
+    };
 };
 
 let isDetailVisible: boolean = false;
-
-// 詳細表示の状態を切り替える関数
 const toggleDetail = () => {
     isDetailVisible = !isDetailVisible;
 };
 
 const updateStarWidth = (node: HTMLElement, _rating: number) => {
-    // 値が更新されるたびに実行される関数を返す
     return {
         update(newRating: number) {
             const roundReview = Math.round(newRating * 10) / 10;
@@ -42,47 +91,50 @@ const updateStarWidth = (node: HTMLElement, _rating: number) => {
     };
 };
 
-// フォームデータ保持用の変数
-let reviewTitle: string = "";
 let reviewContent: string = "";
-let ratingValue: number = 0.0; // 既存の変数を使用
+let ratingValue: number = 0.0;
 
-// 画面状態を管理する変数 (false: 入力画面, true: 確認画面)
 let isConfirmMode: boolean = false;
 
-// 1. 確認ボタンが押された時の処理
 const handleConfirm = (event: Event) => {
-    // フォームのデフォルト送信（ページ遷移）を防止
     event.preventDefault();
-
-    if (!reviewTitle || !reviewContent || ratingValue === 0.0) {
+    if (!reviewContent || ratingValue === 0.0) {
         return;
     }
-
     isConfirmMode = true;
 };
 
-// 2. 投稿ボタンが押された時の処理
-const handleSubmit = () => {
-    // ★ ここに投稿データをサーバーに送信するロジックを実装 ★
-    const reviewData = {
-        facilityId: facilityId,
-        title: reviewTitle,
-        content: reviewContent,
-        rating: ratingValue,
-    };
+const handleSubmit = async () => {
+    try {
+        const { response, data } = await client.POST(
+            "/spots/{spotId}/reviews",
+            {
+                params: { path: { spotId: facilityId } },
+                body: {
+                    comment: reviewContent,
+                    rating: ratingValue,
+                    userId: "00000000-0000-0000-0000-000000000000",
+                    spotId: facilityId,
+                },
+            },
+        );
 
-    console.log("投稿データ:", reviewData);
-
-    // 投稿後の処理（例: 一覧ページへ移動、完了メッセージ表示など）
-    alert("レビューを投稿しました！");
-
-    goto("/facilities");
+        if (response.ok) {
+            alert("レビューを投稿しました！");
+            goto("/facilities");
+        } else {
+            const errorInfo = data as { message?: string };
+            alert(
+                `投稿に失敗しました: ${errorInfo?.message || "サーバーエラー"}`,
+            );
+        }
+    } catch (e) {
+        alert("投稿中に予期せぬエラーが発生しました。");
+        console.error("投稿エラー:", e);
+    }
 };
 
-// 3. 修正ボタンが押された時の処理
 const handleEdit = () => {
-    // 入力画面に戻る
     isConfirmMode = false;
 };
 </script>
@@ -115,27 +167,40 @@ const handleEdit = () => {
                 <div class="line box">
                     <div class="item-info">
                         <span class="facility-name" style="padding-right:1vw ;">{facilityData.name}</span>
-                        <span class="facility-location">{facilityData.location}</span>
+                        <span class="facility-location">{facilityData.address}</span>
                     </div>
-                    
                     <div class="card-review_star" >
-                        <span class="stars-clip" use:setStarWidth={facilityData.rating}></span>                    
-                        <span class="rating-value">{facilityData.rating.toFixed(1)}</span>
-                        <span class="comment-count" style="padding-left:1vw ;">コメント数({facilityData.commentCount})</span>
+                        <span class="stars-clip" use:setStarWidth={averageRating}></span>                    
+                        <span class="rating-value">{averageRating.toFixed(1)}</span>
+                        <span class="comment-count" style="padding-left:1vw ;">コメント数({commentCount})</span>
                     </div>
                 </div>
             </button>
-            {#if isDetailVisible} 
-            <div class="container">
-                <h1>{facilityData.name} のレビュー詳細</h1>
-                <p>場所: {facilityData.location}</p>
-                <p>営業時間: {facilityData.openHours}</p>
-                <p>料金: {facilityData.price}</p>
-                <p>説明: {facilityData.explanation}</p>
-                
-                <h2>評価</h2>
-                <p>総合評価: {facilityData.rating.toFixed(1)} / コメント数: {facilityData.commentCount}件</p>
-            </div>
+            <!--{#if isDetailVisible}-->
+            {#if isDetailVisible}
+                {#if isLoading}
+                    <p>読み込み中...</p>
+                {:else if error}
+                    <h1>エラー</h1>
+                    <p>{error}</p>
+                {:else if facilityData}
+                    <h1>{facilityData.name} のレビュー</h1>
+                    <hr class="custom-line">
+                    <div class="reviews-list">
+                        {#each reviews as review}
+                            <div class="review-card">
+                                <div class="card-review_star" >
+                                    <span class="stars-clip" use:setStarWidth={review.rating}></span>                    
+                                    <span class="rating-value">{review.rating.toFixed(1)}</span>
+                                </div>
+                                <p class="review-comment">{review.comment}</p>
+                                <p class="review-meta">投稿者: {review.userId.substring(0, 8)}... | 投稿日: {new Date(review.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        {:else}
+                            <p>この施設にはまだレビューがありません。</p>
+                        {/each}
+                    </div>
+                {/if}
             {/if}
         </div>
         {:else}
@@ -143,15 +208,10 @@ const handleEdit = () => {
         <p>施設ID: {facilityId} に対応する施設が見つかりませんでした。</p>
     {/if}
     
-    <a href="/facilities" style="color: #5C4033; font-weight: bold; text-shadow: 5px 5px 5px #ffffff;">一覧に戻る</a>
+    <!--<a href="/facilities" style="color: #5C4033; font-weight: bold; text-shadow: 5px 5px 5px #ffffff;">一覧に戻る</a>-->
     {#if !isConfirmMode}
     <div class="comment-container">
         <form class="review-form-grid" on:submit|preventDefault={handleConfirm}>
-            <div class="form-row">
-                <label for="review-title" class="grid-label">レビュータイトル</label>
-                <input type="text" id="review-title" name="reviewTitle" class="grid-input" placeholder="タイトルを入力" required bind:value={reviewTitle}>
-                <div class="grid-side-panel"></div>
-            </div>
 
             <div class="form-row review-content-row">
                 <label for="review-content" class="grid-label">レビュー内容</label>
@@ -182,7 +242,7 @@ const handleEdit = () => {
                 
                 <div class="confirmation-detail">
                     <p><strong>施設名:</strong> {facilityData?.name}</p>
-                    <p><strong>タイトル:</strong> {reviewTitle}</p>
+
                     <p><strong>内容:</strong></p>
                     <pre>{reviewContent}</pre>
                     <p><strong>評価:</strong> 
@@ -199,7 +259,8 @@ const handleEdit = () => {
                 </div>
             </div>
         {/if}
-
+        
+        <a href="/facilities">施設一覧に戻る</a>
     </main>
 </div>
 
