@@ -8,19 +8,6 @@ import {
 import { describe, it, expect, afterEach, vi } from "vitest";
 import ReviewPage from "../+page.svelte";
 
-// SvelteKitの$pageストアをモックします
-// readableをファクトリ関数の中で動的にインポートして、巻き上げ問題を回避します
-vi.mock("$app/stores", async (importOriginal) => {
-    const { readable } = await import("svelte/store");
-    const original = await importOriginal();
-    return {
-        original,
-        page: readable({
-            params: { facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a" }, // テスト用のID
-        }),
-    };
-});
-
 // SvelteKitのナビゲーション機能をモックします
 vi.mock("$app/navigation", () => ({
     goto: vi.fn(),
@@ -37,7 +24,7 @@ describe("Review Submission Page", () => {
     });
 
     it("マウント時に施設詳細と既存レビューが表示される", async () => {
-        render(ReviewPage);
+        render(ReviewPage, {props: {params: {facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"}, data:Object}});
 
         // APIから取得した施設名が表示されるのを待ちます
         const facilityName = await screen.findByText("東京タワー");
@@ -58,7 +45,7 @@ describe("Review Submission Page", () => {
         // window.alertをスパイし、何もしないようにします
         vi.spyOn(window, "alert").mockImplementation(() => {});
 
-        render(ReviewPage);
+        render(ReviewPage, {props: {params: {facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"}, data:Object}});
 
         // ページがAPIデータを読み込むのを待ちます
         await screen.findByText("東京タワー");

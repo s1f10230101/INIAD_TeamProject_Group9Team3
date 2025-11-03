@@ -5,7 +5,7 @@
   import { goto } from "$app/navigation";
 
   let { params }: PageProps = $props();
-  let facilityId: string = params.facilityId;
+  const facilityId: string = params.facilityId;
 
   let averageRating = $state(0.0);
   let commentCount = $state(0);
