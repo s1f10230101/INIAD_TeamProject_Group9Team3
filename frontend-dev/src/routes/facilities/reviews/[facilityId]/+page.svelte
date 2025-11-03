@@ -1,86 +1,86 @@
 <script lang="ts">
-  import backgroundImage from "$lib/assets/back10.png";
-  import type { PageProps } from "./$types";
-  import client from "$lib/api/client";
-  import { goto } from "$app/navigation";
+import backgroundImage from "$lib/assets/back10.png";
+import type { PageProps } from "./$types";
+import client from "$lib/api/client";
+import { goto } from "$app/navigation";
 
-  let { params }: PageProps = $props();
-  const facilityId: string = params.facilityId;
+let { params }: PageProps = $props();
+const facilityId: string = params.facilityId;
 
-  let averageRating = $state(0.0);
-  let commentCount = $state(0);
+let averageRating = $state(0.0);
+let commentCount = $state(0);
 
-  const spotPromise = client.GET("/spots/{spotId}", {
+const spotPromise = client.GET("/spots/{spotId}", {
     params: { path: { spotId: facilityId } },
-  });
+});
 
-  const reviewsPromise = client.GET("/spots/{spotId}/reviews", {
+const reviewsPromise = client.GET("/spots/{spotId}/reviews", {
     params: { path: { spotId: facilityId } },
-  });
+});
 
-  const setStarWidth = (node: HTMLElement, rating: number) => {
+const setStarWidth = (node: HTMLElement, rating: number) => {
     const calculateAndSetWidth = (currentRating: number) => {
-      const roundReview = Math.round(currentRating * 10) / 10;
-      const widthPercentage = roundReview * 20;
-      node.style.setProperty("--starWidth", `${widthPercentage}%`);
+        const roundReview = Math.round(currentRating * 10) / 10;
+        const widthPercentage = roundReview * 20;
+        node.style.setProperty("--starWidth", `${widthPercentage}%`);
     };
     calculateAndSetWidth(rating);
     return {
-      update(newRating: number) {
-        calculateAndSetWidth(newRating);
-      },
+        update(newRating: number) {
+            calculateAndSetWidth(newRating);
+        },
     };
-  };
+};
 
-  let isDetailVisible: boolean = $state(false);
-  const toggleDetail = () => {
+let isDetailVisible: boolean = $state(false);
+const toggleDetail = () => {
     isDetailVisible = !isDetailVisible;
-  };
+};
 
-  const updateStarWidth = (node: HTMLElement, _rating: number) => {
+const updateStarWidth = (node: HTMLElement, _rating: number) => {
     return {
-      update(newRating: number) {
-        const roundReview = Math.round(newRating * 10) / 10;
-        const widthPercentage = roundReview * 20;
-        node.style.setProperty("--starWidth", `${widthPercentage}%`);
-      },
+        update(newRating: number) {
+            const roundReview = Math.round(newRating * 10) / 10;
+            const widthPercentage = roundReview * 20;
+            node.style.setProperty("--starWidth", `${widthPercentage}%`);
+        },
     };
-  };
+};
 
-  let isConfirmMode: boolean = $state(false);
+let isConfirmMode: boolean = $state(false);
 
-  const handleConfirm = (event: Event) => {
+const handleConfirm = (event: Event) => {
     event.preventDefault();
     if (ratingValue === 0.0) {
-      return;
+        return;
     }
     isConfirmMode = true;
-  };
+};
 
-  let reviewContent = $state("")
-  let ratingValue = $state(0)
-  const handleSubmit = async () => {
+let reviewContent = $state("");
+let ratingValue = $state(0);
+const handleSubmit = async () => {
     const { response, data } = await client.POST("/spots/{spotId}/reviews", {
-      params: { path: { spotId: facilityId } },
-      body: {
-        comment: reviewContent,
-        rating: ratingValue,
-        userId: "00000000-0000-0000-0000-000000000000",
-        spotId: facilityId,
-      },
+        params: { path: { spotId: facilityId } },
+        body: {
+            comment: reviewContent,
+            rating: ratingValue,
+            userId: "00000000-0000-0000-0000-000000000000",
+            spotId: facilityId,
+        },
     });
 
     if (response.ok) {
-      goto("/facilities");
+        goto("/facilities");
     } else {
-      const errorInfo = data as { message?: string };
-      alert(`投稿に失敗しました: ${errorInfo?.message || "サーバーエラー"}`);
+        const errorInfo = data as { message?: string };
+        alert(`投稿に失敗しました: ${errorInfo?.message || "サーバーエラー"}`);
     }
-  };
+};
 
-  const handleEdit = () => {
+const handleEdit = () => {
     isConfirmMode = false;
-  };
+};
 </script>
 
 <div

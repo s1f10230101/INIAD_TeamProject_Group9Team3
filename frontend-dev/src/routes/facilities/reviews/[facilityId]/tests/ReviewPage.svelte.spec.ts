@@ -24,7 +24,12 @@ describe("Review Submission Page", () => {
     });
 
     it("マウント時に施設詳細と既存レビューが表示される", async () => {
-        render(ReviewPage, {props: {params: {facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"}, data:Object}});
+        render(ReviewPage, {
+            props: {
+                params: { facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a" },
+                data: Object,
+            },
+        });
 
         // APIから取得した施設名が表示されるのを待ちます
         const facilityName = await screen.findByText("東京タワー");
@@ -45,14 +50,21 @@ describe("Review Submission Page", () => {
         // window.alertをスパイし、何もしないようにします
         vi.spyOn(window, "alert").mockImplementation(() => {});
 
-        render(ReviewPage, {props: {params: {facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"}, data:Object}});
+        render(ReviewPage, {
+            props: {
+                params: { facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a" },
+                data: Object,
+            },
+        });
 
         // ページがAPIデータを読み込むのを待ちます
         await screen.findByText("東京タワー");
 
         // フォーム可視化ボタンを入力します
-        const detailButton = screen.getByRole("button", { name: "これ何のボタン？"})
-        await fireEvent.click(detailButton)
+        const detailButton = screen.getByRole("button", {
+            name: "これ何のボタン？",
+        });
+        await fireEvent.click(detailButton);
         // APIから取得したレビューコメントが表示されるのを待ちます
         const reviewComment = await screen.findByText("とても良かったです！");
         expect(reviewComment).toBeInTheDocument();
