@@ -32,7 +32,7 @@ describe("Review Submission Page", () => {
 
         // 詳細表示ボタンをクリックします
         const detailsButton = screen.getByRole("button", {
-            name: /東京タワー/,
+            name: "これ何のボタン？",
         });
         await fireEvent.click(detailsButton);
 
@@ -49,6 +49,13 @@ describe("Review Submission Page", () => {
 
         // ページがAPIデータを読み込むのを待ちます
         await screen.findByText("東京タワー");
+
+        // フォーム可視化ボタンを入力します
+        const detailButton = screen.getByRole("button", { name: "これ何のボタン？"})
+        await fireEvent.click(detailButton)
+        // APIから取得したレビューコメントが表示されるのを待ちます
+        const reviewComment = await screen.findByText("とても良かったです！");
+        expect(reviewComment).toBeInTheDocument();
 
         // フォームの要素を取得します
         const contentTextarea = screen.getByPlaceholderText("詳細を入力");

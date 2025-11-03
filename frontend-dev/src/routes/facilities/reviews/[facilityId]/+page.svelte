@@ -105,7 +105,7 @@
       </div>
       <hr class="custom-line" />
       <div class="review-main-container">
-        <button onclick={toggleDetail}>
+        <button onclick={toggleDetail} aria-label="これ何のボタン？">
           <div class="line box">
             <div class="item-info">
               <span class="facility-name" style="padding-right:1vw ;"
@@ -233,7 +233,9 @@
                   <button
                     class="btn-confirm"
                     onclick={handleEdit}
-                    style="background-color: #795548;">修正する</button
+                    style="background-color: #795548;"
+                    aria-label="本当に何のボタンだよこれ"
+                    >修正する</button
                   >
                 </div>
               </div>
