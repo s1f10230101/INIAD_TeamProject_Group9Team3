@@ -43,7 +43,7 @@ export const handlers = [
 
         return response.untyped(
             new HttpResponse(stream, {
-                headers: { "Content-Type": "text/event-stream" },
+ headers: { "Content-Type": "text/event-stream" },
             }),
         );
     }),
