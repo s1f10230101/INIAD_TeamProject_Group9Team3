@@ -40,17 +40,18 @@ jobs:
       - name: pnpm installs
         run: pnpm install
 
-      - name: Svelteの整合性check
-        run: pnpm check
 
       - name: buildが通るかチェック
         run: pnpm build
 
+      - name: formatを実行
+        run: pnpm format
       - name: lintを実行
         run: pnpm lint
 
-      - name: formatを実行
-        run: pnpm format
+
+      - name: Svelteの整合性check
+        run: pnpm check
 
       - name: playwriteインストール
         run: |
