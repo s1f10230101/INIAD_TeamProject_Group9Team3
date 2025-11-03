@@ -40,25 +40,35 @@ jobs:
       - name: pnpm installs
         run: pnpm install
 
+      - name: Svelteの整合性check
+        run: pnpm check --fail-on-warnings
 
       - name: buildが通るかチェック
         run: pnpm build
 
-      - name: formatを実行
-        run: pnpm format
-      - name: lintを実行
-        run: pnpm lint
-
-
-      - name: Svelteの整合性check
-        run: pnpm check
+      - name: lintを実行 (自動的な修正は`pnpm lint --fix --unsafe`)
+        run: pnpm lint --error-on-warnings
 
       - name: playwriteインストール
-        run: |
-          pnpm exec playwright install
+        run: pnpm exec playwright install
 
       - name: E2Eテストを実行
         run: pnpm test:e2e
 
       - name: ユニットテストを実行
         run: pnpm test:unit run --browser.headless
+
+      - name: Gitのボットユーザーをセットアップ
+        shell: bash
+        run: |
+          git config --global user.email "github-actions"
+          git config --global user.name "github-actions@github.com"
+
+      - name: Github CI上で自動的にフォーマットを修正
+        run: |
+          pnpm format --fix
+          git add .
+          git diff --staged --exit-code || (git commit -m 'bot: フォーマットを修正' && git push)
+
+      - name: formatを実行(自動修正は`pnpm format --fix`)
+        run: pnpm format
