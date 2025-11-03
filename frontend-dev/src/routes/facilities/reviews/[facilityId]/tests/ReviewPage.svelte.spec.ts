@@ -14,7 +14,7 @@ vi.mock("$app/stores", async (importOriginal) => {
     const { readable } = await import("svelte/store");
     const original = await importOriginal();
     return {
-        ...original,
+        original,
         page: readable({
             params: { facilityId: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a" }, // テスト用のID
         }),

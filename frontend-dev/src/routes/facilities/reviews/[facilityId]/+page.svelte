@@ -129,7 +129,7 @@
             <p>読み込み中...</p>
           {:then reviewValue}
             <div class="reviews-list">
-              {#each reviewValue.data as review}
+              {#each reviewValue.data! as review}
                 <div class="review-card">
                   <div class="card-review_star">
                     <span class="stars-clip" use:setStarWidth={review.rating}
