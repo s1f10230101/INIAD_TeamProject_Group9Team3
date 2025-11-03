@@ -53,7 +53,7 @@ export const handlers = [
         return HttpResponse.json([
             {
                 id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
-                name: "東京タワー",
+              name: "東京タワー",
                 address: "東京都港区芝公園４丁目２−８",
                 description: "東京のシンボル的なタワーです。",
                 createdAt: new Date().toISOString(),

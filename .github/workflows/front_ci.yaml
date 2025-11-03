@@ -63,8 +63,8 @@ jobs:
       - name: Gitのボットユーザーをセットアップ
         shell: bash
         run: |
-          git config --global user.email "github-actions"
-          git config --global user.name "github-actions@github.com"
+          git config --global user.email "github-actions[bot]"
+          git config --global user.name "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Github CI上で自動的にフォーマットを修正
         run: |
