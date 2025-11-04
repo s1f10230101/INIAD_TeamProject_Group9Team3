@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, cleanup } from "@testing-library/svelte";
 import { describe, it, expect, afterEach } from "vitest";
-import ProposalsPage from "../+page.svelte";
+import ProposalsPage from "./+page.svelte";
 
 describe("Proposals Page", () => {
   // 各テストの後にDOMをクリーンアップします
