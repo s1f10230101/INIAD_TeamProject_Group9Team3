@@ -9,7 +9,7 @@ let { children } = $props();
 <div class="site-container">
   <Header />
 
-  <main class="grow-1">
+  <main class="grow">
     {@render children()}
   </main>
 
@@ -17,7 +17,7 @@ let { children } = $props();
 </div>
 
 <svelte:head>
-  <link rel="icon" href="favicon.png" />
+  <link rel="icon" href="/favicon.png" />
 </svelte:head>
 
 <style>

@@ -1,63 +1,40 @@
-<script>
-import { preventDefault } from "svelte/legacy";
-
+<script lang="ts">
 import backgroundImage from "$lib/assets/back10.png";
-import client from "$lib/api/client";
+import client, { streamingRecvHelper } from "$lib/api/client";
+import { type PageProps } from "./$types";
+import { enhance } from "$app/forms";
 
-let prompt = $state("");
+import { type SubmitFunction } from "@sveltejs/kit";
+
+let { form }: PageProps = $props();
+
 let aiResponse = $state("");
+let prompt = $state("");
 let isLoading = $state(false);
 
-async function handleSubmit() {
-  if (!prompt) return;
-  isLoading = true;
-  aiResponse = "";
+// ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
+const option: SubmitFunction = async ({ formData, cancel }) => {
+  cancel();
+  const promptData = formData.get("prompt");
+  if (!promptData) return;
+  const prompt = promptData.toString();
 
+  isLoading = true;
   const { response } = await client.POST("/plans", {
     body: {
       prompt: prompt,
     },
     parseAs: "stream",
   });
+  await streamingRecvHelper(response, (recvText) => {
+    aiResponse += recvText;
+  });
 
-  if (response.body) {
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n\n");
-
-        for (const line of lines) {
-          if (line.startsWith("data:")) {
-            const data = line.substring(5).trim();
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.text) {
-                aiResponse += parsed.text;
-              }
-            } catch (e) {
-              console.error("SSE データの解析エラー:", e);
-            }
-          } else if (line.includes("event: done")) {
-            reader.cancel();
-            return;
-          }
-        }
-      }
-    } catch (error) {
-      console.error("ストリーム読み込みエラー:", error);
-    } finally {
-      isLoading = false;
-    }
-  } else {
+  return async ({ update }) => {
+    await update({ reset: true });
     isLoading = false;
-  }
-}
+  };
+};
 </script>
 
 <div
@@ -66,12 +43,12 @@ async function handleSubmit() {
 >
   <main class="center-content">
     <h1>体験したい旅行体験をご自由にお書きください</h1>
-    <!--<input type="text" id="xx" class="form" name="form" placeholder="例:  家族で温泉旅行" required>-->
-    <form onsubmit={preventDefault(handleSubmit)}>
+    <form method="POST" use:enhance={option}>
       <input
         type="text"
         bind:value={prompt}
         class="form"
+        name="prompt"
         placeholder="例：家族で温泉旅行"
       />
       <button type="submit" class="submit-button" disabled={isLoading}>
@@ -80,7 +57,13 @@ async function handleSubmit() {
     </form>
     <div class="ai-response-container">
       <div class="ai-response-box">
-        {aiResponse}
+        {#if form}
+          <!-- JS無効の環境ではこちらが実行される -->
+          {form.res}
+        {:else}
+          <!-- JS有効ならこちらがストリーム更新される -->
+          {aiResponse}
+        {/if}
       </div>
     </div>
   </main>

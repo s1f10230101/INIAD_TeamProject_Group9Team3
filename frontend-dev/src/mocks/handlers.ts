@@ -1,14 +1,39 @@
 import { HttpResponse } from "msw";
 import { createOpenApiHttp } from "openapi-msw";
-import type { paths } from "$lib/types/api";
+import type { components, paths } from "$lib/types/api";
 
 const http = createOpenApiHttp<paths>({
   baseUrl: "http://localhost:8080/v1",
 });
 
+const spots: components["schemas"]["SpotResponse"][] = [
+  {
+    id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
+    name: "東京タワー",
+    address: "東京都港区芝公園４丁目２−８",
+    description: "東京のシンボル的なタワーです。",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "d2c6d2d9-1c9g-5c2b-9c2b-1c9g5c2b9c2b",
+    name: "浅草寺",
+    address: "東京都台東区浅草２丁目３−１",
+    description: "都内最古の寺院です。",
+    createdAt: new Date().toISOString(),
+  },
+];
+const reviews: components["schemas"]["ReviewResponse"][] = [
+  {
+    spotId: "d2c6d2d9-1c9g-5c2b-9c2b-1c9g5c2b9c2b",
+    userId: "user-123",
+    comment: "とても良かったです！",
+    rating: 5,
+    createdAt: new Date().toISOString(),
+  },
+];
+
 // ここでバックエンドAPIのモックを定義します
 export const handlers = [
-  // 旅行プラン生成API (/v1/plans) のモック
   http.post("/plans", async ({ response }) => {
     const stream = new ReadableStream({
       async start(controller) {
@@ -48,64 +73,51 @@ export const handlers = [
     );
   }),
 
-  // 他のAPIエンドポイントのモックもここに追加できます
-  http.get("/spots", () => {
-    return HttpResponse.json([
-      {
-        id: "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a",
-        name: "東京タワー",
-        address: "東京都港区芝公園４丁目２−８",
-        description: "東京のシンボル的なタワーです。",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "d2c6d2d9-1c9g-5c2b-9c2b-1c9g5c2b9c2b",
-        name: "浅草寺",
-        address: "東京都台東区浅草２丁目３−１",
-        description: "都内最古の寺院です。",
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+  http.get("/spots", ({ response }) => {
+    console.log(spots);
+    return response(200).json(spots);
+  }),
+
+  http.post("/spots", async ({ response, request }) => {
+    const newSpots = await request.json();
+    const spot = { ...newSpots, createdAt: "a", id: "a" };
+    spots.push(spot);
+    return response(201).json(spot);
   }),
 
   // レビューのモックAPI (動的パス)
-  http.get("/spots/{spotId}/reviews", ({ params }) => {
+  http.get("/spots/{spotId}/reviews", ({ params, response }) => {
     const { spotId } = params;
-    return HttpResponse.json([
-      {
-        spotId: spotId,
-        userId: "user-123",
-        comment: "とても良かったです！",
-        rating: 5,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+    return response(200).json(reviews.filter((e) => e.spotId === spotId));
   }),
   // レビュー投稿のモックAPI
-  http.post("/spots/{spotId}/reviews", async ({ request, params }) => {
-    const { spotId } = params;
-    const newReview = await request.json();
-
-    return HttpResponse.json(
-      {
-        ...newReview,
+  http.post(
+    "/spots/{spotId}/reviews",
+    async ({ request, params, response }) => {
+      const { spotId } = params;
+      const newReviewd = await request.json();
+      reviews.push({
+        ...newReviewd,
+        createdAt: "0",
+        userId: "a",
         spotId: spotId,
-        userId: "mock-user-id",
-        createdAt: new Date().toISOString(),
-      },
-      { status: 201 },
-    );
-  }),
+      });
+
+      return response(201).json({
+        ...newReviewd,
+        createdAt: "0",
+        userId: "a",
+        spotId: spotId,
+      });
+    },
+  ),
   // 単一の施設情報を返すモックAPI
-  http.get("/spots/{spotId}", ({ params }) => {
+  http.get("/spots/{spotId}", ({ params, response }) => {
     const { spotId } = params;
-    // テストが期待しているデータを返します
-    return HttpResponse.json({
-      id: spotId,
-      name: "東京タワー",
-      address: "東京都港区芝公園４丁目２−８",
-      description: "東京のシンボル的なタワーです。",
-      createdAt: new Date().toISOString(),
-    });
+    // テストが期待しているデータを返すためにIDを書き換えて特定の返答しかしません
+    // spotId = "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"
+    const resp = spots.find((e) => e.id === spotId);
+    if (resp) return response(200).json(resp);
+    else return response(404).json({ message: "Not Found" });
   }),
 ];

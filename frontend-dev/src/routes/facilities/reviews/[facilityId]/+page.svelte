@@ -4,20 +4,28 @@ import type { PageProps } from "./$types";
 import client from "$lib/api/client";
 import { goto } from "$app/navigation";
 
-let { params }: PageProps = $props();
+let { params, data }: PageProps = $props();
 const facilityId: string = params.facilityId;
+const spotPromise = data.spotPromise;
+const reviewsPromise = data.reviewPromise;
 
-let averageRating = $state(0.0);
-let commentCount = $state(0);
-
-const spotPromise = client.GET("/spots/{spotId}", {
-  params: { path: { spotId: facilityId } },
-});
-
-const reviewsPromise = client.GET("/spots/{spotId}/reviews", {
-  params: { path: { spotId: facilityId } },
-});
-
+// レビュー平均値を通信が終わり次第thenメソッドチェーンで代入する
+let [averageRating, commentCount] = $state([0, 0]);
+if (reviewsPromise){
+reviewsPromise
+  .then((res) => res.data)
+  .then((data) => {
+    if (!data || data.length === 0) return;
+    else {
+      averageRating = parseFloat(
+        (
+          data.reduce((acc, review) => acc + review.rating, 0) / data.length
+        ).toFixed(1),
+      );
+      commentCount = data.length;
+    }
+  });
+}
 const setStarWidth = (node: HTMLElement, rating: number) => {
   const calculateAndSetWidth = (currentRating: number) => {
     const roundReview = Math.round(currentRating * 10) / 10;

@@ -1,5 +1,4 @@
 <script>
-// ロゴ画像をインポートします。パスは実際の場所に合わせて調整してください。
 import logo from "$lib/assets/icon4.png";
 </script>
 
@@ -14,14 +13,14 @@ import logo from "$lib/assets/icon4.png";
     <ul>
       <li><a href="/proposals">旅行プラン生成</a></li>
       <li><a href="/facilities">こだわりの施設一覧</a></li>
-      <li><a href="/auth/login">ログイン/新規登録</a></li>
+      <li><a href="/facilities/register">新規施設登録</a></li>
     </ul>
   </nav>
 </header>
 
 <style>
   header {
-    position: fixed; /* ヘッダーを画面に固定する */
+    position: sticky; /* ヘッダーを画面に固定する */
     top: 0;          /* 画面の上端を基準にする */
     left: 0;         /* 画面の左端を基準にする */
     z-index: 100;
@@ -73,7 +72,7 @@ import logo from "$lib/assets/icon4.png";
   /* スマートフォン (～767px) */
   @media (max-width: 767px) {
       header {
-      position: fixed; /* ヘッダーを画面に固定する */
+      position: sticky; /* ヘッダーを画面に固定する */
       top: 0;          /* 画面の上端を基準にする */
       left: 0;         /* 画面の左端を基準にする */
       z-index: 100;

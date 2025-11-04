@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
 import backgroundImage from "$lib/assets/back10.png";
+import type { PageProps } from "./$types";
+let { form }: PageProps = $props();
 </script>
 
 <div
@@ -9,7 +11,7 @@ import backgroundImage from "$lib/assets/back10.png";
   <main class="center-content">
     <div class="register-container">
       <h1>施設情報登録</h1>
-      <form>
+      <form method="POST">
         <div class="form-group">
           <label for="facility-name">施設名</label>
           <input
@@ -17,8 +19,11 @@ import backgroundImage from "$lib/assets/back10.png";
             id="facility-name"
             name="facilityName"
             placeholder="施設名を入力"
-            required
+            value={form?.facilityName}
           />
+          {#if form?.missingName}
+            <p class="text-red-600">名前は必須です</p>
+          {/if}
         </div>
 
         <div class="form-group">
@@ -28,7 +33,7 @@ import backgroundImage from "$lib/assets/back10.png";
             id="location"
             name="location"
             placeholder="住所を入力"
-            required
+            value={form?.location}
           />
         </div>
 
@@ -61,8 +66,7 @@ import backgroundImage from "$lib/assets/back10.png";
             name="description"
             placeholder="施設の特徴や魅力を詳しく記入してください"
             rows="5"
-            required
-          ></textarea>
+          >{form?.description}</textarea>
         </div>
 
         <div class="button-group">
