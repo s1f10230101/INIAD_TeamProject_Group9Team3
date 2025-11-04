@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("施設一覧ページにモックデータが表示されることを確認する", async ({ page }) => {
+test("施設一覧ページにモックデータが表示されることを確認する", async ({
+  page,
+}) => {
   await page.goto("/facilities");
 
   // MSWが返すモックデータの「東京タワー」が画面に表示されるのを待ちます

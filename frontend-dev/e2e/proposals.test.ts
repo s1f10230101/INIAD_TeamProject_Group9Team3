@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("プロポーザルページでフォームを送信し、AIの応答が表示されることを確認する", async ({ page }) => {
+test("プロポーザルページでフォームを送信し、AIの応答が表示されることを確認する", async ({
+  page,
+}) => {
   await page.goto("/proposals");
 
   // フォームの要素を取得します

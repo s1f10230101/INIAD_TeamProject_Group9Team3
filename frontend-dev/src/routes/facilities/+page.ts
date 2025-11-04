@@ -12,7 +12,7 @@ export const load: PageLoad = async () => {
       const { data: reviewsData } = await client.GET(
         "/spots/{spotId}/reviews",
         {
-          params: { path: { spotId: spot.id } }
+          params: { path: { spotId: spot.id } },
         },
       );
       if (reviewsData && reviewsData.length > 0) {
