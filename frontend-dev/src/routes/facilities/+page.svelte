@@ -9,7 +9,7 @@ type SpotWithRating = components["schemas"]["SpotResponse"] & {
   averageRating?: number;
   commentCount?: number;
 };
-let facilities: SpotWithRating[] = [];
+let facilities: SpotWithRating[] = $state([]);
 let isLoading = true;
 let error: Error | null = null;
 

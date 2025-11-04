@@ -5,8 +5,8 @@ import backgroundImage from "$lib/assets/back10.png";
 import { goto } from "$app/navigation";
 
 // ユーザー入力をバインドするための変数
-let mailAddress = "";
-let password = "";
+let mailAddress = $state("");
+let password = $state("");
 
 // ログイン処理（ダミー）
 function handleLogin() {
@@ -59,7 +59,7 @@ function handleSignup() {
         </div>
 
         <div class="button-group">
-          <button on:click={handleLogin} type="submit" class="btn-submit"
+          <button onclick={handleLogin} type="submit" class="btn-submit"
             >ログイン</button
           >
         </div>
@@ -67,7 +67,7 @@ function handleSignup() {
     </div>
 
     <div class="button-group">
-      <button on:click={handleSignup} type="submit" class="btn-submit"
+      <button onclick={handleSignup} type="submit" class="btn-submit"
         >新規登録</button
       >
     </div>

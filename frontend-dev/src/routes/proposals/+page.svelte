@@ -1,10 +1,12 @@
 <script>
+import { preventDefault } from "svelte/legacy";
+
 import backgroundImage from "$lib/assets/back10.png";
 import client from "$lib/api/client";
 
-let prompt = "";
-let aiResponse = "";
-let isLoading = false;
+let prompt = $state("");
+let aiResponse = $state("");
+let isLoading = $state(false);
 
 async function handleSubmit() {
   if (!prompt) return;
@@ -65,7 +67,7 @@ async function handleSubmit() {
   <main class="center-content">
     <h1>体験したい旅行体験をご自由にお書きください</h1>
     <!--<input type="text" id="xx" class="form" name="form" placeholder="例:  家族で温泉旅行" required>-->
-    <form on:submit|preventDefault={handleSubmit}>
+    <form onsubmit={preventDefault(handleSubmit)}>
       <input
         type="text"
         bind:value={prompt}
