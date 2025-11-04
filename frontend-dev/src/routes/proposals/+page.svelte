@@ -14,7 +14,7 @@ let isLoading = $state(false);
 
 // ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
 const option: SubmitFunction = async ({ formData, cancel }) => {
-  cancel();
+  cancel(); // フォーム送信をキャンセル
   const promptData = formData.get("prompt");
   if (!promptData) return;
   const prompt = promptData.toString();
@@ -29,10 +29,10 @@ const option: SubmitFunction = async ({ formData, cancel }) => {
   await streamingRecvHelper(response, (recvText) => {
     aiResponse += recvText;
   });
+  isLoading = false;
 
   return async ({ update }) => {
     await update({ reset: true });
-    isLoading = false;
   };
 };
 </script>

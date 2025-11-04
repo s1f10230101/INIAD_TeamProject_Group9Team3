@@ -1,9 +1,7 @@
-import { dev, building } from "$app/environment";
+import { building, dev } from "$app/environment";
 
-if (!building) {
-  if (dev) {
-    const { worker } = await import("./mocks/browser");
+if (!building && dev) {
+  const { worker } = await import("./mocks/browser");
 
-    await worker.start({ onUnhandledRequest: "bypass" });
-  }
+  await worker.start({ onUnhandledRequest: "bypass" });
 }

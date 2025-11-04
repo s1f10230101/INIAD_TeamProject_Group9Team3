@@ -15,10 +15,9 @@ __screenshots__/
 Thumbs.db
 
 # Env
-.env
-.env.*
-!.env.example
-!.env.test
+!.env
+.env.local
+.env.*.local
 
 # Vite
 vite.config.js.timestamp-*
