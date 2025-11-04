@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@testing-library/svelte";
 import { describe, it, expect, afterEach, vi } from "vitest";
-import ReviewPage from "../+page.svelte";
+import ReviewPage from "./+page.svelte";
 
 // SvelteKitのナビゲーション機能をモックします
 vi.mock("$app/navigation", () => ({
