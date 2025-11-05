@@ -1,15 +1,15 @@
 <script>
 import "../app.css";
-import Header from "$lib/components/Header.svelte";
-import Footer from "$lib/components/Footer.svelte";
+import Header from "./Header.svelte";
+import Footer from "./Footer.svelte";
 
 let { children } = $props();
 </script>
 
-<div class="site-container">
+<div class="min-h-screen bg-[url('/back.png')] bg-cover bg-fixed bg-center">
   <Header />
 
-  <main class="grow">
+  <main class="container m-auto grow flex items-center flex-col">
     {@render children()}
   </main>
 
@@ -19,11 +19,3 @@ let { children } = $props();
 <svelte:head>
   <link rel="icon" href="/favicon.png" />
 </svelte:head>
-
-<style>
-  .site-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* 画面全体の高さを最低でも確保する */
-  }
-</style>

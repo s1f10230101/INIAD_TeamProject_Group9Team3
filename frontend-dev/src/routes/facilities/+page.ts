@@ -16,18 +16,15 @@ export const load: PageLoad = async () => {
         },
       );
       if (reviewsData && reviewsData.length > 0) {
-        const totalRating = reviewsData.reduce(
-          (sum, review) => sum + review.rating,
-          0,
-        );
-        const averageRating = parseFloat(
-          (totalRating / reviewsData.length).toFixed(1),
-        );
-        const commentCount = reviewsData.length;
         return {
           spot,
-          averageRating,
-          commentCount,
+          averageRating: parseFloat(
+            (reviewsData.reduce(
+              (sum, review) => sum + review.rating,
+              0,
+            ) / reviewsData.length).toFixed(1),
+          ),
+          commentCount: reviewsData.length,
         };
       } else {
         return {
@@ -38,6 +35,7 @@ export const load: PageLoad = async () => {
       }
     }),
   );
+
   return {
     facilitiesWithRatings: facilitiesWithRatings,
   };

@@ -45,11 +45,13 @@
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
       "esbuild",
-      "msw"
+      "msw",
+      "sharp"
     ],
     "ignoredBuiltDependencies": [
       "@tailwindcss/oxide",
-      "msw"
+      "msw",
+      "sharp"
     ]
   },
   "dependencies": {

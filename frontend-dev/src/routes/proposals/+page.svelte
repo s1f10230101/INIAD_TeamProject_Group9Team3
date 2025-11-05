@@ -1,125 +1,78 @@
 <script lang="ts">
-import backgroundImage from "$lib/assets/back10.png";
-import client, { streamingRecvHelper } from "$lib/api/client";
-import { type PageProps } from "./$types";
-import { enhance } from "$app/forms";
+  import client, { streamingRecvHelper } from "$lib/api/client";
+  import { type PageProps, type SubmitFunction } from "./$types";
+  import { enhance } from "$app/forms";
 
-import { type SubmitFunction } from "@sveltejs/kit";
+  let { form }: PageProps = $props();
 
-let { form }: PageProps = $props();
+  let errorMsg = $state((form)? form.invaild: "")
+  let aiResponse = $state("");
+  let prompt = $state("");
+  let isLoading = $state(false);
 
-let aiResponse = $state("");
-let prompt = $state("");
-let isLoading = $state(false);
+  // ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
+  const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
+    cancel(); // フォーム送信をキャンセル(サーバーでストリームは使えないのでJSオンの時はサーバー処理はしない)
+    const promptData = formData.get("prompt");
+    if (!promptData) {errorMsg = "err"; return;}
+    const prompt = promptData.toString();
 
-// ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
-const option: SubmitFunction = async ({ formData, cancel }) => {
-  cancel(); // フォーム送信をキャンセル
-  const promptData = formData.get("prompt");
-  if (!promptData) return;
-  const prompt = promptData.toString();
+    isLoading = true;
+    const { response } = await client.POST("/plans", {
+      body: {
+        prompt: prompt,
+      },
+      parseAs: "stream",
+    });
+    await streamingRecvHelper(response, (recvText) => {
+      aiResponse += recvText;
+    });
+    isLoading = false;
 
-  isLoading = true;
-  const { response } = await client.POST("/plans", {
-    body: {
-      prompt: prompt,
-    },
-    parseAs: "stream",
-  });
-  await streamingRecvHelper(response, (recvText) => {
-    aiResponse += recvText;
-  });
-  isLoading = false;
-
-  return async ({ update }) => {
-    await update({ reset: true });
+    return async ({ update }) => {
+      await update({ reset: true });
+    };
   };
-};
 </script>
 
-<div
-  class="full-screen-background"
-  style="--background-url: url('{backgroundImage}')"
->
-  <main class="center-content">
-    <h1>体験したい旅行体験をご自由にお書きください</h1>
-    <form method="POST" use:enhance={option}>
+<div class="p-2 flex flex-col space-y-7">
+  <h1
+    class="font-bold text-[#5c4033] text-[1.75rem] flex"
+  >
+    体験したい旅行体験をご自由にお書きください
+  </h1>
+  <form method="POST" use:enhance={enhanceOption}>
+    <div class="pb-4">
       <input
         type="text"
         bind:value={prompt}
-        class="form"
+        class="bg-white/90 p-3 rounded-xl w-full"
         name="prompt"
         placeholder="例：家族で温泉旅行"
       />
-      <button type="submit" class="submit-button" disabled={isLoading}>
+    </div>
+    <p>{errorMsg}</p>
+    <div>
+      <button
+        type="submit"
+        class="w-full text-white bg-blue-700 rounded-3xl p-3"
+        disabled={isLoading}
+      >
         {isLoading ? "生成中..." : "送信"}
       </button>
-    </form>
-    <div class="ai-response-container">
-      <div class="ai-response-box">
-        {#if form}
-          <!-- JS無効の環境ではこちらが実行される -->
-          {form.res}
-        {:else}
-          <!-- JS有効ならこちらがストリーム更新される -->
-          {aiResponse}
-        {/if}
-      </div>
     </div>
-  </main>
+  </form>
+  <div class="mt-1 w-full">
+    <div
+      class="p-5 min-h-96 bg-white/95 text-base text-[#5c4033] whitespace-pre-wrap rounded-4xl bg-linear-to-r from-pink-300 via-pink-100 to-pink-50"
+    >
+      {#if form}
+        <!-- JS無効の環境ではこちらが実行される -->
+        {form.res}
+      {:else}
+        <!-- JS有効ならこちらがストリーム更新される -->
+        {aiResponse}
+      {/if}
+    </div>
+  </div>
 </div>
-
-<style>
-  .full-screen-background {
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    background-image: var(--background-url);
-    padding-top: 10vw;
-    display: flex;
-    justify-content: center; /* 横方向の中央寄せ */
-    align-items: center; /* 縦方向の中央寄せ */
-  }
-
-  .center-content {
-    padding: 5vw;
-  }
-
-  .center-content h1 {
-    font-weight: bold;
-    color: #5c4033;
-    font-size: 28px;
-    display: flex;
-    justify-content: center; /* 横方向の中央寄せ */
-    padding-bottom: 1vw;
-    text-shadow: 1px 1px 5px #ffffff;
-  }
-
-  .form {
-    width: 60vw; /* フォーム全体の幅 */
-    padding: 1.5vh 1vw;
-    background-color: rgba(255, 255, 255, 0.9); /* 半透明の白背景 */
-    border-radius: 10px; /* 角丸 */
-    box-shadow: 0 4px 15px #5c4033; /* 軽い影 */
-    margin-bottom: 30px;
-  }
-
-  .ai-response-container {
-    width: 60vw;
-    margin-top: 20px;
-  }
-
-  .ai-response-box {
-    width: 100%;
-    min-height: 20vh; /* 最低の高さを確保 */
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.95); /* より不透明な白背景 */
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    font-size: 16px;
-    line-height: 1.6;
-    color: #5c4033;
-    white-space: pre-wrap; /* テキストの改行を有効にする */
-    padding-bottom: 20vw;
-  }
-</style>
