@@ -1,14 +1,14 @@
 <script lang="ts">
-  import ProgressBer from "./ProgressBer.svelte";
-  import { type PageProps } from "./$types";
-  import Textarea from "$lib/components/Textarea.svelte";
-  import { enhance } from "$app/forms";
-  import StarRateInput from "$lib/components/StarRateInput.svelte";
-  import StarsRate from "$lib/components/StarsRate.svelte";
-  let reviewContent = $state("");
-  let { data, form }: PageProps = $props();
-  let reviewRating = $state(1);
-  let dialog: HTMLDialogElement;
+import ProgressBer from "./ProgressBer.svelte";
+import { type PageProps } from "./$types";
+import Textarea from "$lib/components/Textarea.svelte";
+import { enhance } from "$app/forms";
+import StarRateInput from "$lib/components/StarRateInput.svelte";
+import StarsRate from "$lib/components/StarsRate.svelte";
+let reviewContent = $state("");
+let { data, form }: PageProps = $props();
+let reviewRating = $state(1);
+let dialog: HTMLDialogElement;
 </script>
 
 <div class="flex items-center flex-col pt-6">

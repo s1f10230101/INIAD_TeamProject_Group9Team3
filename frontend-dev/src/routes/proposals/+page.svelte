@@ -1,38 +1,41 @@
 <script lang="ts">
-  import client, { streamingRecvHelper } from "$lib/api/client";
-  import { type PageProps, type SubmitFunction } from "./$types";
-  import { enhance } from "$app/forms";
+import client, { streamingRecvHelper } from "$lib/api/client";
+import { type PageProps, type SubmitFunction } from "./$types";
+import { enhance } from "$app/forms";
 
-  let { form }: PageProps = $props();
+let { form }: PageProps = $props();
 
-  let errorMsg = $state((form)? form.invaild: "")
-  let aiResponse = $state("");
-  let prompt = $state("");
-  let isLoading = $state(false);
+let errorMsg = $state(form ? form.invaild : "");
+let aiResponse = $state("");
+let prompt = $state("");
+let isLoading = $state(false);
 
-  // ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
-  const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
-    cancel(); // フォーム送信をキャンセル(サーバーでストリームは使えないのでJSオンの時はサーバー処理はしない)
-    const promptData = formData.get("prompt");
-    if (!promptData) {errorMsg = "err"; return;}
-    const prompt = promptData.toString();
+// ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
+const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
+  cancel(); // フォーム送信をキャンセル(サーバーでストリームは使えないのでJSオンの時はサーバー処理はしない)
+  const promptData = formData.get("prompt");
+  if (!promptData) {
+    errorMsg = "err";
+    return;
+  }
+  const prompt = promptData.toString();
 
-    isLoading = true;
-    const { response } = await client.POST("/plans", {
-      body: {
-        prompt: prompt,
-      },
-      parseAs: "stream",
-    });
-    await streamingRecvHelper(response, (recvText) => {
-      aiResponse += recvText;
-    });
-    isLoading = false;
+  isLoading = true;
+  const { response } = await client.POST("/plans", {
+    body: {
+      prompt: prompt,
+    },
+    parseAs: "stream",
+  });
+  await streamingRecvHelper(response, (recvText) => {
+    aiResponse += recvText;
+  });
+  isLoading = false;
 
-    return async ({ update }) => {
-      await update({ reset: true });
-    };
+  return async ({ update }) => {
+    await update({ reset: true });
   };
+};
 </script>
 
 <div class="p-2 flex flex-col space-y-7">

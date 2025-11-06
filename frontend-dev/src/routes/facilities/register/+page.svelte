@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import Input from "$lib/components/Input.svelte";
-  import Textarea from "$lib/components/Textarea.svelte";
-  import type { PageProps } from "./$types";
-  let { form }: PageProps = $props();
+import { enhance } from "$app/forms";
+import Input from "$lib/components/Input.svelte";
+import Textarea from "$lib/components/Textarea.svelte";
+import type { PageProps } from "./$types";
+let { form }: PageProps = $props();
 </script>
 
 <main class="pt-10 flex justify-center">

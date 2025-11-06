@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { components } from "$lib/types/api";
-  import StarsRate from "$lib/components/StarsRate.svelte";
+import type { components } from "$lib/types/api";
+import StarsRate from "$lib/components/StarsRate.svelte";
 
-  interface Prop {
-    spot: {
-      id: components["schemas"]["uuid"];
-      name: string;
-      description: string;
-      address: string;
-      createdAt: string;
-    };
-    averageRating: number;
-    commentCount: number;
-  }
-  let facility: Prop = $props();
+interface Prop {
+  spot: {
+    id: components["schemas"]["uuid"];
+    name: string;
+    description: string;
+    address: string;
+    createdAt: string;
+  };
+  averageRating: number;
+  commentCount: number;
+}
+let facility: Prop = $props();
 </script>
 
 <div

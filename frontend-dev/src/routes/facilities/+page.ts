@@ -19,10 +19,10 @@ export const load: PageLoad = async () => {
         return {
           spot,
           averageRating: parseFloat(
-            (reviewsData.reduce(
-              (sum, review) => sum + review.rating,
-              0,
-            ) / reviewsData.length).toFixed(1),
+            (
+              reviewsData.reduce((sum, review) => sum + review.rating, 0) /
+              reviewsData.length
+            ).toFixed(1),
           ),
           commentCount: reviewsData.length,
         };

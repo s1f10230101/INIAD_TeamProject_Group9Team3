@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { PageProps } from "./$types";
-  import Review from "./Review.svelte";
-  let { data, params }: PageProps = $props();
-  const { reviewPromise } = data;
+import type { PageProps } from "./$types";
+import Review from "./Review.svelte";
+let { data, params }: PageProps = $props();
+const { reviewPromise } = data;
 </script>
 
 <div class="container mx-auto p2 flex justify-center items-center flex-col">

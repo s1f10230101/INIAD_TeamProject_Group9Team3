@@ -1,20 +1,20 @@
 <script lang="ts">
-  interface Props {
-    id: string;
-    label: string;
-    value: string;
-    name: string;
-    error: string;
-    placeholder: string;
-  }
-  let {
-    id,
-    label,
-    value = $bindable(),
-    name,
-    error = "",
-    placeholder = "",
-  }: Props = $props();
+interface Props {
+  id: string;
+  label: string;
+  value: string;
+  name: string;
+  error: string;
+  placeholder: string;
+}
+let {
+  id,
+  label,
+  value = $bindable(),
+  name,
+  error = "",
+  placeholder = "",
+}: Props = $props();
 </script>
 
 <div class="mb-6">

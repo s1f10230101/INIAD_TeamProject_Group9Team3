@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { star = $bindable(1), name }: { star: number, name: string } = $props();
+let { star = $bindable(1), name }: { star: number; name: string } = $props();
 </script>
 
 <div class="flex text-4xl justify-center py-2">

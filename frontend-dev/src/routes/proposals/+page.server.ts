@@ -5,11 +5,11 @@ export const actions = {
   default: async ({ request }) => {
     const recvData = await request.formData();
     const promptData = recvData.get("prompt");
-    if (!promptData || promptData.toString()==="") {
+    if (!promptData || promptData.toString() === "") {
       return fail(400, {
-        invaild: "ひっす"
-      })
-    };
+        invaild: "ひっす",
+      });
+    }
     const prompt = promptData.toString();
     const { response } = await client.POST("/plans", {
       body: {

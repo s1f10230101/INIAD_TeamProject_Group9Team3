@@ -1,10 +1,10 @@
 <script lang="ts">
-  /**
-   * @prop {star}
-   */
-  // star is int 1~5
-  let { star }: { star: number } = $props();
-  let starSt = $derived(Math.round(star - 1));
+/**
+ * @prop {star}
+ */
+// star is int 1~5
+let { star }: { star: number } = $props();
+let starSt = $derived(Math.round(star - 1));
 </script>
 
 <span class="text-4xl flex justify-center">

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Facility from "./Facility.svelte";
+import Facility from "./Facility.svelte";
 
-  let { data } = $props();
-  const { facilitiesWithRatings } = data;
+let { data } = $props();
+const { facilitiesWithRatings } = data;
 </script>
 
 <div class="p-3 flex flex-col bg-white/90 rounded-2xl shadow-2xl mt-2 w-full">

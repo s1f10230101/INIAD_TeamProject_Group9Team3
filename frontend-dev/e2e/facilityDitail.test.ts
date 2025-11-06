@@ -7,7 +7,6 @@ test("施設詳細ページにモックデータが表示されることを確�
   const facilityId = "d2c6d2d9-1c9g-5c2b-9c2b-1c9g5c2b9c2b";
   await page.goto(`/facilities/${facilityId}`);
 
-
   // 同様に「浅草寺」も表示されることを確認します
   const facility2 = page.getByText("浅草寺");
   await expect(facility2).toBeVisible();

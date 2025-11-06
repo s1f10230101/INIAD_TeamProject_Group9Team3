@@ -1,5 +1,5 @@
 <script>
-  import logo from "$lib/assets/icon4.png";
+import logo from "$lib/assets/icon4.png";
 </script>
 
 <header
