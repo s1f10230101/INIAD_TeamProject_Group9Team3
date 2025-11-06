@@ -9,7 +9,7 @@ let { children } = $props();
 <div class="min-h-screen bg-[url('/back.png')] bg-cover bg-fixed bg-center">
   <Header />
 
-  <main class="container m-auto grow flex items-center flex-col">
+  <main class="container m-auto p-2 grow flex items-center flex-col">
     {@render children()}
   </main>
 
