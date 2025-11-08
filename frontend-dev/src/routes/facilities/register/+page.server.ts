@@ -21,7 +21,7 @@ export const actions: Actions = {
         },
       });
 
-      redirect(response.status, "/");
+      redirect(301, "/");
     } else {
       return fail(400, {
         facilityName,

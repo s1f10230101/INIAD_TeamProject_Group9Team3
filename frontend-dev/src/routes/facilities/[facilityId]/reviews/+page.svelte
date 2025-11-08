@@ -12,7 +12,7 @@ const { reviewPromise } = data;
     >+コメントを書き込む</a
   >
   <div
-    class="bg-white flex justify-between items-center flex-col rounded-xl py-6 px-4 m-4 text-[#5c4033] font-bold text-xl shadow-2xl space-y-2"
+    class="bg-white flex justify-between items-center flex-col rounded-xl py-6 px-4 m-4 text-[#5c4033] font-bold text-xl shadow-2xl space-y-2 w-full"
   >
     {#await reviewPromise}
       <p>読み込み中...</p>

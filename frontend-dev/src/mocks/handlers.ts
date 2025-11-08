@@ -94,20 +94,15 @@ export const handlers = [
   http.post(
     "/spots/{spotId}/reviews",
     async ({ request, params, response }) => {
-      const { spotId } = params;
       const newReviewd = await request.json();
       reviews.push({
         ...newReviewd,
         createdAt: "0",
-        userId: "a",
-        spotId: spotId,
       });
 
       return response(201).json({
         ...newReviewd,
         createdAt: "0",
-        userId: "a",
-        spotId: spotId,
       });
     },
   ),

@@ -7,11 +7,11 @@ let { form }: PageProps = $props();
 
 let errorMsg = $state(form ? form.invaild : "");
 let aiResponse = $state("");
-let prompt = $state("");
+let prompt = $state("")
 let isLoading = $state(false);
 
 // ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
-const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
+const enhanceOption: SubmitFunction = async ({ formData, cancel, formElement }) => {
   cancel(); // フォーム送信をキャンセル(サーバーでストリームは使えないのでJSオンの時はサーバー処理はしない)
   const promptData = formData.get("prompt");
   if (!promptData) {
@@ -19,22 +19,14 @@ const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
     return;
   }
   const prompt = promptData.toString();
+  formElement.reset()
 
+  aiResponse = "";
   isLoading = true;
-  const { response } = await client.POST("/plans", {
-    body: {
-      prompt: prompt,
-    },
-    parseAs: "stream",
-  });
-  await streamingRecvHelper(response, (recvText) => {
-    aiResponse += recvText;
-  });
-  isLoading = false;
+  const { response } = await client.POST("/plans", {body: {prompt: prompt},parseAs: "stream" });
+  await streamingRecvHelper(response, (recvText) => aiResponse += recvText);
 
-  return async ({ update }) => {
-    await update({ reset: true });
-  };
+  isLoading = false;
 };
 </script>
 
@@ -58,8 +50,8 @@ const enhanceOption: SubmitFunction = async ({ formData, cancel }) => {
     <div>
       <button
         type="submit"
-        class="w-full text-white bg-blue-700 rounded-3xl p-3"
-        disabled={isLoading}
+        class="w-full text-white bg-blue-500 rounded-3xl p-3 disabled:bg-blue-300 hover:bg-blue-800"
+        disabled={isLoading || !prompt}
       >
         {isLoading ? "生成中..." : "送信"}
       </button>
