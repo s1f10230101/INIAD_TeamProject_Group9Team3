@@ -7,11 +7,15 @@ let { form }: PageProps = $props();
 
 let errorMsg = $state(form ? form.invaild : "");
 let aiResponse = $state("");
-let prompt = $state("")
+let prompt = $state("");
 let isLoading = $state(false);
 
 // ブラウザでjavascriptが有効なときはストリーム受信するためのenhanceオプション
-const enhanceOption: SubmitFunction = async ({ formData, cancel, formElement }) => {
+const enhanceOption: SubmitFunction = async ({
+  formData,
+  cancel,
+  formElement,
+}) => {
   cancel(); // フォーム送信をキャンセル(サーバーでストリームは使えないのでJSオンの時はサーバー処理はしない)
   const promptData = formData.get("prompt");
   if (!promptData) {
@@ -19,12 +23,15 @@ const enhanceOption: SubmitFunction = async ({ formData, cancel, formElement }) 
     return;
   }
   const prompt = promptData.toString();
-  formElement.reset()
+  formElement.reset();
 
   aiResponse = "";
   isLoading = true;
-  const { response } = await client.POST("/plans", {body: {prompt: prompt},parseAs: "stream" });
-  await streamingRecvHelper(response, (recvText) => aiResponse += recvText);
+  const { response } = await client.POST("/plans", {
+    body: { prompt: prompt },
+    parseAs: "stream",
+  });
+  await streamingRecvHelper(response, (recvText) => (aiResponse += recvText));
 
   isLoading = false;
 };

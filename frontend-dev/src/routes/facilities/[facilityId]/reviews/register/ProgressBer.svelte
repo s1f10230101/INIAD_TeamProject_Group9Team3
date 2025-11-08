@@ -1,4 +1,4 @@
-<div class="progress-bar-container">
+<div class="progress-bar-container w-full">
   <div
     class="progress-step"
     class:is-active={true}
@@ -13,7 +13,6 @@
   .progress-bar-container {
     display: flex;
     justify-content: center; /* フォームに揃えて中央に配置 */
-    width: 60vw; /* フォームと同じ幅に合わせる */
     margin-bottom: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;

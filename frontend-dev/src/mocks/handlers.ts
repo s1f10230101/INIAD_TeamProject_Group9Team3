@@ -28,7 +28,7 @@ const reviews: components["schemas"]["ReviewResponse"][] = [
     spotId: "d2c6d2d9-1c9g-5c2b-9c2b-1c9g5c2b9c2b",
     userId: "user-123",
     comment: "とても良かったです！",
-    rating: 5,
+    rating: 3.5,
     createdAt: new Date().toISOString(),
   },
 ];

@@ -49,6 +49,7 @@
       "sharp"
     ],
     "ignoredBuiltDependencies": [
+      "@parcel/watcher",
       "@tailwindcss/oxide",
       "msw",
       "sharp"

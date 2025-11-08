@@ -17,10 +17,10 @@ let facility: Prop = $props();
 </script>
 
 <div
-  class="p-2 m-4 rounded-md shadow-sm text-[#5c4033] font-bold text-xl hover:shadow-2xl"
+  class="p-3 rounded-3xl text-[#5c4033] font-bold text-xl w-full bg-gray-50/85"
 >
   <a
-    href={`facilities/${facility.spot.id}`}
+    href="/facilities/{facility.spot.id}/reviews/register"
     aria-label="{facility.spot.name}のレビューを見る"
   >
     <div class="flex justify-between flex-col items-center space-y-3">
@@ -28,6 +28,7 @@ let facility: Prop = $props();
       <span class="text-xs font-normal">{facility.spot.address}</span>
 
       <StarsRate star={facility.averageRating ?? 0} />
+      <p class="text-sm">{facility.spot.description}</p>
       <span class="flex justify-center text-base"
         >コメント数({facility.commentCount})</span
       >

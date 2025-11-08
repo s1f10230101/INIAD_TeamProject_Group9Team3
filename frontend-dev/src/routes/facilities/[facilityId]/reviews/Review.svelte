@@ -1,4 +1,5 @@
 <script lang="ts">
+import StarsRate from "$lib/components/StarsRate.svelte";
 import type { components } from "$lib/types/api";
 
 interface Props {
@@ -14,7 +15,6 @@ let spot: Props = $props();
 <h1 class="pr-5 text-3xl">{spot.userId}</h1>
 <small class="text-xs text-gray-700 font-thin">{spot.createdAt}</small>
 <div class="">
-  <span class=""></span>
-  <span class="">{spot.rating}</span>
+  <StarsRate star={spot.rating} />
 </div>
 <p class="text-sm">{spot.comment}</p>

@@ -11,12 +11,9 @@ let reviewRating = $state(1);
 let dialog: HTMLDialogElement;
 </script>
 
-<div class="flex items-center flex-col pt-6">
+<div class="flex items-center flex-col pt-6 w-full">
   <ProgressBer />
-  <form class="" method="POST" use:enhance={()=>{
-      dialog.close()
-      return ({update})=>{update({invalidateAll: true, reset:true})}}
-    }>
+  <form class="w-full" method="POST" use:enhance={()=>dialog.close()}>
     <Textarea
       id="review-content"
       name="reviewContent"
@@ -57,12 +54,12 @@ let dialog: HTMLDialogElement;
       </div>
 
       <div class="flex justify-center flex-col space-4 gap-4">
-        <button type="submit" class=" bg-green-700 rounded-2xl p-2"
+        <button type="submit" class=" bg-green-700 rounded-2xl p-2 hover:bg-green-900"
           >投稿する</button
         >
         <button
           type="button"
-          class="bg-red-700 rounded-2xl p-2"
+          class="bg-red-700 rounded-2xl p-2 hover:bg-red-900"
           onclick={() => dialog.close()}>修正する</button
         >
       </div>

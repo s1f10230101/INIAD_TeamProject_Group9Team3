@@ -4,17 +4,23 @@
  */
 // star is int 1~5
 let { star }: { star: number } = $props();
-let starSt = $derived(Math.round(star - 1));
 </script>
 
-<span class="text-4xl flex justify-center">
-  <!-- 10回繰り返す, Svelte 5最新構文 -->
-  {#each { length: 5 }, i}
-    {#if i <= starSt}
-      <span class="text-yellow-500">★</span>
-    {:else}
-      <span class="text-gray-600">★</span>
-    {/if}
-  {/each}
+<div class="flex justify-center gap-1 w-auto shrink-0 text-4xl">
+  <!-- w-とh-で手動で幅を調整して奇跡的なかみ合いをしている。文字サイズを変更するとすぐ壊れる -->
+  <span
+    class="relative inline-block w-44 star-clips
+    before:content-['★★★★★'] before: text-gray-300
+    after:content-['★★★★★'] after:absolute after:left-0
+    after:overflow-hidden after:text-yellow-300"
+    style="--starWidth: {star * 20 + 1.5}%"
+  ></span>
+  <!-- なぜか1.5プラスすると数値に正確な幅になる -->
   <span class="text-orange-700 font-bold">{star.toFixed(2)}</span>
-</span>
+</div>
+
+<style>
+  .star-clips::after {
+    width: var(--starWidth);
+  }
+</style>
