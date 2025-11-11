@@ -27,4 +27,6 @@ WORKDIR /app
 
 COPY --from=builder --chown=nonroot:nonroot /app/server ./server
 
+EXPOSE 8080
+
 ENTRYPOINT ["./server"]

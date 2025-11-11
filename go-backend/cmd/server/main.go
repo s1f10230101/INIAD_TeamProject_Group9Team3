@@ -10,6 +10,11 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/handler"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/repository"
 	"github.com/s1f10230101/INIAD_Team_Project_Group9Team3/internal/usecase"
@@ -41,7 +46,7 @@ func main() {
 	if !ok {
 		slog.Error("環境変数", "OPENAI_API_KEY", OPENAI_API_KEY)
 	}
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=enable",
 		POSTGRES_USER,
 		POSTGRES_PASSWORD,
 		DBHOST,
@@ -51,6 +56,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
+	m, err := migrate.New(
+		"file:///./app/db/migration", dbURL,
+	)
+	if err != nil {
+		slog.Error("migration", "migration err", err.Error())
+	}
+	if err := m.Up(); err != nil {
+		slog.Error("migration", "migration err", err.Error())
+	}
+	defer m.Close()
 	defer pool.Close()
 
 	// 1. レポジトリの初期化 (Postgres版を使用)
@@ -79,7 +94,7 @@ func main() {
 	// 5. ハンドラをサーバーに登録
 	log.Println("Server is running on http://localhost:8080/v1")
 	//if err := http.ListenAndServe(":8080", server); err != nil {
-	if err := http.ListenAndServe(":8080", handler.CorsMiddleware(server)); err != nil {
+	if err := http.ListenAndServe("0.0.0.0:8080", handler.CorsMiddleware(server)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

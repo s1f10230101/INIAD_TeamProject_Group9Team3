@@ -2,6 +2,20 @@
 # 運用ドキュメント (Operations)
 
 ## 1. デプロイフロー
+### 1. Google Artifact Registryにdocker imageを保存
+  1. まずgloudをインストールする`mise use gcloud`
+  2. googleに認証する`gcloud auth login`
+  3. ブラウザで設定したリージョンasia-northeast1に設定`gcloud auth configure-docker asia-northeast1-docker.pkg.dev`
+  4. Dokerイメージをgoogleのコンソールに入力した名前やリージョンの設定通りに名前をつけてビルド
+  ```bash
+  docker build -t "asia-northeast1-docker.pkg.dev/iniadteamprojectgroup9team3/iniad-team-project/iniad-go-api" .
+  ```
+  5. GCPのArtifactにpush
+  ```bash
+  docker push "asia-northeast1-docker.pkg.dev/iniadteamprojectgroup9team3/iniad-team-project/iniad-go-api"
+  ```
+### 2. Cloud Runでimageを起動
+  1. ブラウザ上でボタンを見つけて押す
 
 | ブランチ名 | マージ先 | デプロイ先環境 | URL                                | 備考                               |
 | :--------- | :------- | :------------- | :--------------------------------- | :--------------------------------- |
