@@ -52,8 +52,9 @@ jobs:
         run: pnpm lint --error-on-warnings
 
       - name: playwriteインストール
-        run: pnpm exec playwright install
-
+        run: |
+          sudo pnpm exec playwright install-deps
+          pnpm exec playwright install
       - name: E2Eテストを実行
         run: pnpm test:e2e
 
