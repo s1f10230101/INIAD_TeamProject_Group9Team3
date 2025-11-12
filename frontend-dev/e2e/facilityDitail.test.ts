@@ -8,7 +8,7 @@ test("施設詳細ページにモックデータが表示されることを確�
   await page.goto(`/facilities/${facilityId}`);
 
   // 同様に「浅草寺」も表示されることを確認します
-  const facility2 = page.getByText("浅草寺");
+  const facility2 = page.getByText("浅草寺").first();
   await expect(facility2).toBeVisible();
 
   // 住所の一部が表示されているかも確認できます
