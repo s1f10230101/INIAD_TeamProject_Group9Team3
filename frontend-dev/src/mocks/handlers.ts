@@ -93,7 +93,7 @@ export const handlers = [
   // レビュー投稿のモックAPI
   http.post(
     "/spots/{spotId}/reviews",
-    async ({ request, params, response }) => {
+    async ({ request, response }) => {
       const newReviewd = await request.json();
       reviews.push({
         ...newReviewd,

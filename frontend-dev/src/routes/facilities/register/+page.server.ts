@@ -13,7 +13,7 @@ export const actions: Actions = {
     const description = formData.get("description");
 
     if (facilityName && location && description) {
-      const { response } = await client.POST("/spots", {
+      await client.POST("/spots", {
         body: {
           name: facilityName.toString(),
           address: location.toString(),
