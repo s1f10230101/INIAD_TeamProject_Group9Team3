@@ -33,7 +33,7 @@ if (reviewsPromise) {
     class="flex justify-between items-center flex-col rounded-xl py-6 px-4 m-4 text-[#5c4033] font-bold text-xl space-y-2 w-full"
   >
     {#await spotPromise}
-      <FacilityLoading />
+      <p>loading</p>
     {:then spotValue}
       {#if spotValue.data !== undefined}
         <Facility spot={spotValue.data} {averageRating} {commentCount} />
