@@ -1,5 +1,4 @@
 <script>
-import backgroundImage from "$lib/assets/back10.png";
 
 // SvelteKitのナビゲーション機能をインポート
 import { goto } from "$app/navigation";
@@ -24,7 +23,6 @@ function handleSignup() {
     goto("/auth/signup");
 }
 </script>
-
 <div class="full-screen-background" style="--background-url: url('{backgroundImage}')" >
     <main class="center-content">
         <h1>ログイン画面</h1>
@@ -51,21 +49,20 @@ function handleSignup() {
             <button on:click={handleSignup} type="submit" class="btn-submit">新規登録</button>
         </div>
 
+        <div class="button-group">
+            <button on:click={handleSignup} type="submit" class="btn-submit">新規登録</button>
+        </div>
     </main>
-</div>
+</div> 
+
 
 <style>
     .full-screen-background{
-        background-size: cover;
-        background-position: center center; 
-        background-attachment: fixed;
-        background-image: var(--background-url); 
         display: flex;
         justify-content: center; /* 横方向の中央寄せ */
         align-items: center;   /* 縦方向の中央寄せ */
         padding-bottom: 5vw;
     }
-
     .center-content {
         padding: 5vw;
         padding-top: 15vw;
