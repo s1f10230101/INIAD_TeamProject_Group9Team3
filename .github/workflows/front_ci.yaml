@@ -53,7 +53,7 @@ jobs:
 
       - name: playwriteインストール
         run: |
-          sudo pnpm exec playwright install-deps
+          pnpm dlx playwright install-deps
           pnpm exec playwright install
       - name: E2Eテストを実行
         run: pnpm test:e2e
