@@ -61,7 +61,7 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: test-results/
+          path: "./frontend-dev/test-results/"
 
       - name: ユニットテストを実行
         run: pnpm test:unit run --browser.headless
