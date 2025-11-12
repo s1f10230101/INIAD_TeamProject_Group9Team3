@@ -53,9 +53,15 @@ jobs:
 
       - name: playwriteインストール
         run: pnpm exec playwright install
-
       - name: E2Eテストを実行
         run: pnpm test:e2e
+
+      - name: テストログ保存
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: "./frontend-dev/test-results/"
 
       - name: ユニットテストを実行
         run: pnpm test:unit run --browser.headless
