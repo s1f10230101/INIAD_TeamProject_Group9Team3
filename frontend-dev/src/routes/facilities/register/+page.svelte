@@ -11,7 +11,7 @@ let { form }: PageProps = $props();
   <hr class="border-gray-300 border-t-2 my-4" />
   <form method="POST" use:enhance>
     <Input
-      id="facility-name"
+      id="facilityName"
       label="施設名"
       name="facilityName"
       placeholder="施設名を入力"
@@ -40,7 +40,7 @@ let { form }: PageProps = $props();
 
     <Input
       type="text"
-      id="price-range"
+      id="priceRange"
       name="priceRange"
       placeholder="例: ¥1,000〜¥3,000"
       label="価格帯"

@@ -20,7 +20,7 @@ let facility: Prop = $props();
   class="p-3 rounded-3xl text-[#5c4033] font-bold text-xl w-full bg-gray-50/85"
 >
   <a
-    href="/facilities/{facility.spot.id}/reviews/register"
+    href="/facilities/{facility.spot.id}/reviews"
     aria-label="{facility.spot.name}のレビューを見る"
   >
     <div class="flex justify-between flex-col items-center space-y-3">
