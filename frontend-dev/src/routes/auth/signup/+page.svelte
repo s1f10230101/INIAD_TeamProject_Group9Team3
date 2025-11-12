@@ -1,5 +1,43 @@
-<script>
-import backgroundImage from "$lib/assets/back10.png";
+<script lang="ts">
+import { onMount } from "svelte";
+
+import back10 from "$lib/assets/back10.png";
+import back11 from "$lib/assets/back11.png";
+import back12 from "$lib/assets/back12.png";
+import back13 from "$lib/assets/back13.png";
+
+import "../app.css";
+import favicon from "$lib/assets/icon4.png";
+import Header from "$lib/components/Header.svelte";
+import Footer from "$lib/components/Footer.svelte";
+
+let { children } = $props();
+
+const backgroundImages = [back10, back11, back12, back13];
+
+// 3. 状態変数を定義
+let currentImage = $state(backgroundImages[0]);
+let nextImage = $state(backgroundImages[1 % backgroundImages.length]);
+let currentIndex = 0; // これはHTMLで使わないので `let` のままでOK
+let isFadingOut = $state(false);
+
+// 4. onMountでタイマーをセット
+onMount(() => {
+    const interval = setInterval(() => {
+        isFadingOut = true;
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % backgroundImages.length;
+            currentImage = backgroundImages[currentIndex];
+            nextImage =
+                backgroundImages[(currentIndex + 1) % backgroundImages.length];
+            isFadingOut = false;
+        }, 1500); // CSSのアニメーション時間
+    }, 7000); // 切り替え間隔
+
+    return () => {
+        clearInterval(interval);
+    };
+});
 
 // SvelteKitのナビゲーション機能をインポート
 import { goto } from "$app/navigation";
