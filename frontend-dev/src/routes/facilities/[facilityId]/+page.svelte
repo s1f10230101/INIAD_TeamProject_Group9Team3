@@ -6,25 +6,25 @@ import FacilityLoading from "./FacilityLoading.svelte";
 let { params, data }: PageProps = $props();
 const facilityId: string = params.facilityId;
 const spotPromise = data.spotPromise;
-const reviewsPromise = data.reviewPromise;
+// const reviewsPromise = data.reviewPromise;
 
 // レビュー平均値を通信が終わり次第thenメソッドチェーンで代入する
 let [averageRating, commentCount] = $state([0, 0]);
-if (reviewsPromise) {
-  reviewsPromise
-    .then((res) => res.data)
-    .then((data) => {
-      if (!data || data.length === 0) return;
-      else {
-        averageRating = parseFloat(
-          (
-            data.reduce((acc, review) => acc + review.rating, 0) / data.length
-          ).toFixed(1),
-        );
-        commentCount = data.length;
-      }
-    });
-}
+// if (reviewsPromise) {
+//   reviewsPromise
+//     .then((res) => res.data)
+//     .then((data) => {
+//       if (!data || data.length === 0) return;
+//       else {
+//         averageRating = parseFloat(
+//           (
+//             data.reduce((acc, review) => acc + review.rating, 0) / data.length
+//           ).toFixed(1),
+//         );
+//         commentCount = data.length;
+//       }
+//     });
+// }
 </script>
 
 <div class="p-2 flex justify-center items-center flex-col w-full">
