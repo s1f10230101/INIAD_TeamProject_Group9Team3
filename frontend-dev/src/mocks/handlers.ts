@@ -106,8 +106,6 @@ export const handlers = [
   // 単一の施設情報を返すモックAPI
   http.get("/spots/{spotId}", ({ params, response }) => {
     const { spotId } = params;
-    // テストが期待しているデータを返すためにIDを書き換えて特定の返答しかしません
-    // spotId = "c1b5c1c8-0b8f-4b1a-8b1a-0b8f4b1a8b1a"
     const resp = spots.find((e) => e.id === spotId);
     if (resp) return response(200).json(resp);
     else return response(404).json({ message: "Not Found" });
