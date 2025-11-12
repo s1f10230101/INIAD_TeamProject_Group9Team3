@@ -31,7 +31,9 @@ const enhanceOption: SubmitFunction = async ({
     body: { prompt: prompt },
     parseAs: "stream",
   });
-  await streamingRecvHelper(response, (recvText) => {aiResponse += recvText});
+  await streamingRecvHelper(response, (recvText) => {
+    aiResponse += recvText;
+  });
 
   isLoading = false;
 };

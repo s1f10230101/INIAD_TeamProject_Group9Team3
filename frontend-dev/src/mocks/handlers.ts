@@ -91,21 +91,18 @@ export const handlers = [
     return response(200).json(reviews.filter((e) => e.spotId === spotId));
   }),
   // レビュー投稿のモックAPI
-  http.post(
-    "/spots/{spotId}/reviews",
-    async ({ request, response }) => {
-      const newReviewd = await request.json();
-      reviews.push({
-        ...newReviewd,
-        createdAt: "0",
-      });
+  http.post("/spots/{spotId}/reviews", async ({ request, response }) => {
+    const newReviewd = await request.json();
+    reviews.push({
+      ...newReviewd,
+      createdAt: "0",
+    });
 
-      return response(201).json({
-        ...newReviewd,
-        createdAt: "0",
-      });
-    },
-  ),
+    return response(201).json({
+      ...newReviewd,
+      createdAt: "0",
+    });
+  }),
   // 単一の施設情報を返すモックAPI
   http.get("/spots/{spotId}", ({ params, response }) => {
     const { spotId } = params;
