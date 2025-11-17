@@ -39,7 +39,7 @@ const enhanceOption: SubmitFunction = async ({
 };
 </script>
 
-<div class="p-2 flex flex-col space-y-7">
+<div class="p-10 flex flex-col space-y-7">
   <h1
     class="font-bold text-[#5c4033] text-[1.75rem] flex"
   >
