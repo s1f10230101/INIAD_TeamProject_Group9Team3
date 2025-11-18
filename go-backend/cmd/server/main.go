@@ -46,7 +46,7 @@ func main() {
 	if !ok {
 		slog.Error("環境変数", "OPENAI_API_KEY", OPENAI_API_KEY)
 	}
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=enable",
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=require",
 		POSTGRES_USER,
 		POSTGRES_PASSWORD,
 		DBHOST,
@@ -87,14 +87,12 @@ func main() {
 		BaseRouter: http.NewServeMux(),
 		Middlewares: []oapi.MiddlewareFunc{
 			handler.LoggingMiddleware,
-			//handler.CorsMiddleware,
 		},
 	})
 
 	// 5. ハンドラをサーバーに登録
 	log.Println("Server is running on http://localhost:8080/v1")
-	//if err := http.ListenAndServe(":8080", server); err != nil {
-	if err := http.ListenAndServe("0.0.0.0:8080", handler.CorsMiddleware(server)); err != nil {
+	if err := http.ListenAndServe(":8080", server); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
