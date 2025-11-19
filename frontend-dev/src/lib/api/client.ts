@@ -1,6 +1,7 @@
 import createClient from "openapi-fetch";
 import type { paths } from "$lib/types/api";
-const baseUrl = import.meta.env.PUBLIC_API_BASE_URL || "http://localhost:8080/v1";
+const baseUrl =
+  import.meta.env.PUBLIC_API_BASE_URL || "http://localhost:8080/v1";
 //const client = createClient<paths>({ baseUrl: "http://localhost:8080/v1" }); // バックエンドのURL
 const client = createClient<paths>({ baseUrl });
 /**
