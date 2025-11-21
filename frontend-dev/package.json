@@ -18,42 +18,24 @@
     "gen:type": "openapi-typescript ../openapi.1.0.yaml --output src/lib/types/api.ts"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.4",
+    "@biomejs/biome": "^2.3.6",
     "@playwright/test": "^1.56.1",
-    "@sveltejs/adapter-auto": "^6.1.1",
-    "@sveltejs/kit": "^2.48.4",
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.47.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.1.16",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/svelte": "^5.2.8",
-    "@vitest/browser": "^3.2.4",
-    "msw": "^2.12.0",
-    "openapi-msw": "^2.0.0",
+    "@tailwindcss/vite": "^4.1.14",
+    "@testing-library/svelte": "^5.2.9",
+    "@vitest/browser-playwright": "^4.0.5",
     "openapi-typescript": "^7.10.1",
     "playwright": "^1.56.1",
-    "svelte": "^5.43.3",
+    "svelte": "^5.41.0",
     "svelte-check": "^4.3.3",
-    "tailwindcss": "^4.1.16",
+    "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3",
-    "vite": "^7.2.1",
-    "vite-plugin-devtools-json": "^1.0.0",
-    "vitest": "^3.2.4",
-    "vitest-browser-svelte": "^0.1.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@tailwindcss/oxide",
-      "esbuild",
-      "msw",
-      "sharp"
-    ],
-    "ignoredBuiltDependencies": [
-      "@parcel/watcher",
-      "@tailwindcss/oxide",
-      "msw",
-      "sharp"
-    ]
+    "vite": "^7.1.10",
+    "vitest": "^4.0.5",
+    "vitest-browser-svelte": "^2.0.1"
   },
   "dependencies": {
     "openapi-fetch": "^0.15.0"

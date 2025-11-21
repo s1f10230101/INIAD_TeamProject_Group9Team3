@@ -1,9 +1,9 @@
 import createClient from "openapi-fetch";
 import type { paths } from "$lib/types/api";
-const baseUrl =
-  import.meta.env.PUBLIC_API_BASE_URL || "http://localhost:8080/v1";
-//const client = createClient<paths>({ baseUrl: "http://localhost:8080/v1" }); // バックエンドのURL
-const client = createClient<paths>({ baseUrl });
+import { PUBLIC_API } from "$env/static/public";
+
+const client = createClient<paths>({ baseUrl: PUBLIC_API }); // バックエンドのURL
+
 /**
  * ストリーム送信を受け取るためのヘルパー関数
  * @param response SSE fetchのResponse
