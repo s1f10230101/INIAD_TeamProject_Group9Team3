@@ -15,7 +15,7 @@
     "test:unit": "vitest",
     "test": "pnpm run test:unit -- --run && pnpm run test:e2e",
     "test:e2e": "playwright test",
-    "gen:type": "openapi-typescript ../openapi.1.0.yaml --output src/lib/types/api.ts"
+    "gen:type": "openapi-typescript ../openapi.1.0.yaml --output src/lib/api/types.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.6",
@@ -27,6 +27,8 @@
     "@tailwindcss/vite": "^4.1.14",
     "@testing-library/svelte": "^5.2.9",
     "@vitest/browser-playwright": "^4.0.5",
+    "msw": "^2.12.2",
+    "openapi-msw": "^2.0.0",
     "openapi-typescript": "^7.10.1",
     "playwright": "^1.56.1",
     "svelte": "^5.41.0",
@@ -39,5 +41,10 @@
   },
   "dependencies": {
     "openapi-fetch": "^0.15.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "static"
+    ]
   }
 }

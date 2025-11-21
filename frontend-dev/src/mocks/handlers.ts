@@ -1,9 +1,10 @@
 import { HttpResponse } from "msw";
 import { createOpenApiHttp } from "openapi-msw";
-import type { components, paths } from "$lib/types/api";
+import type { components, paths } from "$lib/api/types";
+import { PUBLIC_BACKEND_API } from "$env/static/public";
 
 const http = createOpenApiHttp<paths>({
-  baseUrl: "http://localhost:8080/v1",
+  baseUrl: PUBLIC_BACKEND_API,
 });
 
 const spots: components["schemas"]["SpotResponse"][] = [

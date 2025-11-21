@@ -1,8 +1,8 @@
 import createClient from "openapi-fetch";
-import type { paths } from "$lib/types/api";
-import { PUBLIC_API } from "$env/static/public";
+import type { paths } from "$lib/api/types";
+import { PUBLIC_BACKEND_API } from "$env/static/public";
 
-const client = createClient<paths>({ baseUrl: PUBLIC_API }); // バックエンドのURL
+const client = createClient<paths>({ baseUrl: PUBLIC_BACKEND_API }); // バックエンドのURL
 
 /**
  * ストリーム送信を受け取るためのヘルパー関数
