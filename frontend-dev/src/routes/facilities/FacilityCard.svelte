@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { components } from "$lib/types/api";
+import type { components } from "$lib/api/types";
 import StarsRate from "$lib/components/StarsRate.svelte";
 
 interface Prop {

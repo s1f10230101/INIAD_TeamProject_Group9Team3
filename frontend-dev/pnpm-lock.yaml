@@ -36,6 +36,9 @@ importers:
       '@testing-library/svelte':
         specifier: ^5.2.9
         version: 5.2.9(svelte@5.43.3)(vite@7.2.1(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3))(vitest@4.0.14)
+      '@vitest/browser':
+        specifier: ^4.0.14
+        version: 4.0.14(msw@2.12.3(typescript@5.9.3))(vite@7.2.1(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3))(vitest@4.0.14)
       '@vitest/browser-playwright':
         specifier: ^4.0.5
         version: 4.0.14(msw@2.12.3(typescript@5.9.3))(playwright@1.56.1)(vite@7.2.1(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3))(vitest@4.0.14)

@@ -1,6 +1,6 @@
 <script lang="ts">
 import StarsRate from "$lib/components/StarsRate.svelte";
-import type { components } from "$lib/types/api";
+import type { components } from "$lib/api/types";
 
 interface Props {
   userId: components["schemas"]["uuid"];
