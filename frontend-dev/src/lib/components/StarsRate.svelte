@@ -20,7 +20,15 @@ let { star }: { star: number } = $props();
 </div>
 
 <style>
+  .star-clips::before {
+    z-index: 1; /* 黄色の星の下に配置 */
+    top: 0;
+    left: 0;
+  }
   .star-clips::after {
     width: var(--starWidth);
+    z-index: 2; /* グレーの星の上に配置 */
+    top: 0;
+    left: 0;
   }
 </style>
