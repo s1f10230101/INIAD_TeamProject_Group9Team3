@@ -39,7 +39,7 @@ const enhanceOption: SubmitFunction = async ({
 };
 </script>
 
-<div class="p-2 flex flex-col space-y-7">
+<div class="p-10 flex flex-col space-y-7">
   <h1
     class="font-bold text-[#5c4033] text-[1.75rem] flex"
   >
@@ -59,7 +59,7 @@ const enhanceOption: SubmitFunction = async ({
     <div>
       <button
         type="submit"
-        class="w-full text-white bg-blue-500 rounded-3xl p-3 disabled:bg-blue-300 hover:bg-blue-800"
+        class="w-full text-white bg-[#5c4033] rounded-3xl p-3 disabled:bg-[#9c877f] hover:bg-[#5c4033] hover:shadow-lg hover:translate-y-[-2px]"
         disabled={isLoading || !prompt}
       >
         {isLoading ? "生成中..." : "送信"}
@@ -68,7 +68,7 @@ const enhanceOption: SubmitFunction = async ({
   </form>
   <div class="mt-1 w-full">
     <div
-      class="p-5 min-h-96 bg-white/95 text-base text-[#5c4033] whitespace-pre-wrap rounded-4xl bg-linear-to-r from-pink-300 via-pink-100 to-pink-50"
+      class="p-5 min-h-96 bg-[#FFF7E6] text-base text-[#5c4033] whitespace-pre-wrap rounded-4xl"
     >
       {#if form}
         <!-- JS無効の環境ではこちらが実行される -->
