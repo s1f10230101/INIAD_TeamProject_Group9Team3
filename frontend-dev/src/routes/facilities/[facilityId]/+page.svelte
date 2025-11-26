@@ -30,7 +30,7 @@ if (reviewsPromise) {
 <div class="p-2 flex justify-center items-center flex-col w-full">
   <h1 class="text-[#5c4033] text-4xl font-bold py-2">詳細ページ</h1>
   <div
-    class="flex justify-between items-center flex-col rounded-xl py-6 px-4 m-4 text-[#5c4033] font-bold text-xl space-y-2 w-full"
+    class="flex justify-between items-center flex-col rounded-xl py-6 px-4 m-4 text-[#5c4033] font-bold text-xl space-y-2 w-full hover:shadow-[#5c4033] hover:translate-y-[-2px]"
   >
     {#await spotPromise}
       <FacilityLoading />
@@ -48,5 +48,5 @@ if (reviewsPromise) {
   </div>
 
   <hr class="mb-4 border-[#5c4033]/50 w-full" />
-  <a href="/facilities">施設一覧に戻る</a>
+  <a href="/facilities" class="text-[#5c4033] font-bold hover:shadow-[#5c4033] hover:translate-y-[-2px]">施設一覧に戻る</a>
 </div>
