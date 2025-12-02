@@ -9,14 +9,13 @@ let menuOpen = false;
 // $effectを使用するとSvelte 5の記法としてより簡潔になります。
 // ここでは簡易的にmenuOpenを切り替える関数を定義します。
 function toggleMenu() {
-    menuOpen = !menuOpen;
+  menuOpen = !menuOpen;
 }
 
 // ナビゲーションリンクがクリックされたらメニューを閉じる関数
 function closeMenu() {
-    menuOpen = false;
+  menuOpen = false;
 }
-
 </script>
 
 <header
