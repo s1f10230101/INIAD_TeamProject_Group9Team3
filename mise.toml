@@ -8,6 +8,8 @@ lazygit = "latest"
 "go:github.com/air-verse/air" = "latest"
 "go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "latest"
 pnpm = "latest"
+node = "24"
+gcloud = "latest"
 
 [tasks.dockerComposeUp]
 alias = "dcup"

@@ -1,5 +1,4 @@
 name: SvelteKit Ci
-# もしmainブランチのgo-backendディレクトリ内のファイル、またはこのワークフローファイル自体が変更された場合にトリガーされます。
 on:
   push:
     branches: [ main ]
@@ -16,12 +15,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: ./frontend-dev
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: pnpm setup
         uses: pnpm/action-setup@v4
@@ -37,19 +40,43 @@ jobs:
           cache-dependency-path: './frontend-dev/pnpm-lock.yaml'
 
       - name: pnpm installs
-        run: |
-          pnpm install
-          pnpm exec playwright install
+        run: pnpm install
 
-      - name: build
+      - name: Svelteの整合性check
+        run: pnpm check --fail-on-warnings
+
+      - name: buildが通るかチェック
         run: pnpm build
 
-      - name: unit e2e test
-        run: |
-          pnpm test:unit run --browser.headless
-          pnpm test:e2e
+      - name: lintを実行 (自動的な修正は`pnpm lint --fix --unsafe`)
+        run: pnpm lint --error-on-warnings
 
-      - name: lint and format
+      - name: playwriteインストール
+        run: pnpm exec playwright install
+      - name: E2Eテストを実行
+        run: pnpm test:e2e
+
+      - name: テストログ保存
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: "./frontend-dev/test-results/"
+
+      - name: ユニットテストを実行
+        run: pnpm test:unit run --browser.headless
+
+      - name: Gitのボットユーザーをセットアップ
+        shell: bash
         run: |
-          pnpm lint
-          pnpm format
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+
+      - name: Github CI上で自動的にフォーマットを修正
+        run: |
+          pnpm format --fix
+          git add .
+          git diff --staged --exit-code || (git commit -m 'bot: フォーマットを修正' && git push)
+
+      - name: formatを実行(自動修正は`pnpm format --fix`)
+        run: pnpm format
