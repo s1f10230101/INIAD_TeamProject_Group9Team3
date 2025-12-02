@@ -26,7 +26,7 @@ let dialog: HTMLDialogElement;
 
     <button
       type="button"
-      class="text-center w-full bg-blue-500/95 rounded-3xl p-4 hover:bg-blue-800/95"
+      class="text-white font-bold text-center w-full bg-[#5c4033] rounded-3xl p-4 hover:bg-[#5c4033] hover:shadow-lg hover:translate-y-[-2px]"
       onclick={() => dialog.showModal()}>確認</button
     >
 
@@ -53,13 +53,13 @@ let dialog: HTMLDialogElement;
         </p>
       </div>
 
-      <div class="flex justify-center flex-col space-4 gap-4">
-        <button type="submit" class=" bg-green-700 rounded-2xl p-2 hover:bg-green-900"
+      <div class="flex justify-center flex-col space-4 gap-4 pt-4">
+        <button type="submit" class="text-white font-bold bg-green-700 rounded-2xl p-2 hover:bg-green-900"
           >投稿する</button
         >
         <button
           type="button"
-          class="bg-red-700 rounded-2xl p-2 hover:bg-red-900"
+          class="text-white font-bold bg-red-700 rounded-2xl p-2 hover:bg-red-900"
           onclick={() => dialog.close()}>修正する</button
         >
       </div>
