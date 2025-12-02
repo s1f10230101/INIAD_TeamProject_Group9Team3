@@ -26,7 +26,7 @@
 </div>
 
 <div class="flex items-center justify-center pb-6 px-3 text-shadow-white">
-  <h1 class="text-xl mb-4 font-bold text-[#5c4033] text-shadow-white">
+  <h1 class="text-base sm:text-xl mb-4 font-bold text-[#5c4033] text-shadow-white min-w-0">
     Trip-Canvasで、あなただけの新しい旅の物語を始めましょう
   </h1>
 </div>
