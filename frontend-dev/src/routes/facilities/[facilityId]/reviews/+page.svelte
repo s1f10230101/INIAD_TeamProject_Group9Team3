@@ -6,7 +6,7 @@ const { reviewPromise } = data;
 </script>
 
 <div class="container mx-auto p2 flex justify-center items-center flex-col">
-  <h1 class="text-[#5c4033] text-4xl font-bold py-2">レビュー</h1>
+  <h1 class="text-[#5c4033] text-4xl font-bold py-2 dark:text-gray-100">レビュー</h1>
   <hr class="mb-4 border-[#5c4033]/50 w-full" />
   <a href="./reviews/register" class="bg-[#5c4033] w-full text-center p-3 rounded-2xl text-white hover:bg-[#5c4033] hover:shadow-lg hover:translate-y-[-2px]"
     >+コメントを書き込む</a
