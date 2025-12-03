@@ -7,3 +7,7 @@ body {
   /* メインのフォント 日本語に適したGoogle fonts */
   font-family: "Noto Sans JP", "Quicksand", sans-serif;
 }
+
+.facility-register-page label {
+  color: #5c4033;
+}
