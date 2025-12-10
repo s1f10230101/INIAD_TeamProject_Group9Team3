@@ -6,7 +6,8 @@ import type { PageProps } from "./$types";
 let { form }: PageProps = $props();
 </script>
 
-<div class="rounded-2xl bg-white/90 p-4 space-y-3 w-2/3 mt-6 mb-6 facility-register-page">
+<div class="rounded-2xl bg-white/90 p-4 space-y-3 w-full sm:w-5/6 lg:w-2/3 mt-6 mb-6 facility-register-page">
+
   <h1 class="text-center font-bold text-4xl text-[#5c4033]">施設情報登録</h1>
   <hr class="border-gray-300 border-t-2 my-4" />
   <form method="POST" use:enhance>
@@ -60,7 +61,7 @@ let { form }: PageProps = $props();
     <div class="mt-2">
       <button
         type="submit"
-        class="block w-full bg-[#6d4c41] rounded-4xl text-xl p-3 text-white hover:bg-[#5d4037]"
+        class="block w-full bg-[#6d4c41] rounded-4xl text-xl p-3 text-white hover:bg-[#5d4037] dark:text-gray-100" 
         >施設情報を登録する</button
       >
     </div>

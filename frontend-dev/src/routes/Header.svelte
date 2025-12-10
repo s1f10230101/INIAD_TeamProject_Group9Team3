@@ -1,18 +1,11 @@
 <script>
 import logo from "$lib/assets/icon4.png";
 
-// 🍔 モバイルメニューの開閉状態を管理する変数
 let menuOpen = false;
-
-// 画面サイズが変わったときにメニューを閉じる処理（Svelte 5のイベントハンドリング）
-// window:resizeイベントはSvelteKitのSSRと互換性を持たせるため、onMountで囲む方が安全ですが、
-// $effectを使用するとSvelte 5の記法としてより簡潔になります。
-// ここでは簡易的にmenuOpenを切り替える関数を定義します。
 function toggleMenu() {
   menuOpen = !menuOpen;
 }
 
-// ナビゲーションリンクがクリックされたらメニューを閉じる関数
 function closeMenu() {
   menuOpen = false;
 }
