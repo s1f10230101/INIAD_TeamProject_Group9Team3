@@ -19,3 +19,4 @@ let { children } = $props();
 <svelte:head>
   <link rel="icon" href="/favicon.png" />
 </svelte:head>
+
