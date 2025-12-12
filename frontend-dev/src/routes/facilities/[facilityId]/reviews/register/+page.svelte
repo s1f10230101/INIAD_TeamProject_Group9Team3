@@ -26,7 +26,7 @@ let dialog: HTMLDialogElement;
 
     <button
       type="button"
-      class="text-white font-bold text-center w-full bg-[#5c4033] rounded-3xl p-4 hover:bg-[#5c4033] hover:shadow-lg hover:translate-y-[-2px]"
+      class="text-white font-bold text-center w-full bg-primary-light-500 rounded-3xl p-4 hover:bg-primary-light-500 hover:shadow-lg hover:-translate-y-0.5"
       onclick={() => dialog.showModal()}>確認</button
     >
 
@@ -34,11 +34,13 @@ let dialog: HTMLDialogElement;
     <dialog
       bind:this={dialog}
       closedby="any"
-      class="fixed m-auto p-10 rounded-3xl backdrop:bg-gray-500/80"
+      class="fixed m-auto p-10 rounded-3xl backdrop:bg-gray-500/80
+      text-primary-light-500
+      dark:text-gray-100 dark:bg-gray-800"
     >
       <h2>以下の内容で投稿します。よろしいですか？</h2>
 
-      <div class="confirmation-detail">
+      <div>
         {#if !data.spotData}
           <p class="text-red-600">{data.errorMsg}</p>
         {:else}

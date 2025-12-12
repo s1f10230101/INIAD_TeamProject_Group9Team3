@@ -18,8 +18,10 @@ let {
 </script>
 
 <div class="mb-6">
-  <label for={id} class="block mb-2 font-bold text-[#5c4033] text-2xl leading-7 dark:text-gray-100">{label}</label>
-  <textarea class="w-full resize-none p-3 h-auto rounded-2xl border box-border border-gray-300 text-base bg-gray-50" {id} {name} {placeholder} bind:value aria-invalid={!!error} rows="15" >{value}</textarea>
+  <label for={id} class="block mb-2 font-bold text-2xl leading-7">{label}</label>
+  <textarea class="w-full resize-none p-3 rounded-2xl border box-border border-gray-300 text-base bg-gray-50 field-sizing-content min-h-80
+  dark:bg-gray-800 dark:border-gray-600
+  focus:outline-0" {id} {name} {placeholder} bind:value aria-invalid={!!error} rows="15" >{value}</textarea>
 
   {#if error}
     <p class="text-red-600">{error}</p>

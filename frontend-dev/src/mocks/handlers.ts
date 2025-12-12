@@ -1,9 +1,10 @@
 import { HttpResponse } from "msw";
 import { createOpenApiHttp } from "openapi-msw";
-import type { components, paths } from "$lib/types/api";
+import type { components, paths } from "$lib/api/types";
+import { PUBLIC_BACKEND_API } from "$env/static/public";
 
 const http = createOpenApiHttp<paths>({
-  baseUrl: "http://localhost:8080/v1",
+  baseUrl: PUBLIC_BACKEND_API,
 });
 
 const spots: components["schemas"]["SpotResponse"][] = [
@@ -54,7 +55,29 @@ export const handlers = [
         await new Promise((r) => setTimeout(r, 100));
 
         const chunk3 = {
-          text: "のプランです。東京の魅力を満喫する3日間... ",
+          text: `のプランです。東京の魅力を満喫する3日間...
+
+
+# タイトル: 東京喫満満満満満満満満満プランです。
+
+
+**のプランです。東京の魅力を満喫する3日間**
+\`\`\`c
+#include <stdio.h>
+
+void main() {
+  scanf("%s\\n")
+  printf("%s\\n", "helloworld")
+}
+\`\`\`
+
+### ああああああああああああああ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+<h1>AAAAAAAAAAAAAAAAAAAAAAAAAAAA</h1>
+<script>
+alert("Hacked!!!!!!!!");console.log("HACKED!!!!!!!!!!!!!!!!!!")
+</script>
+
+          `,
         };
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify(chunk3)}\n\n`),
