@@ -7,7 +7,7 @@ test("プロポーザルページでフォームを送信し、AIの応答が表
 
   // フォームの要素を取得します
   const textarea = page.getByPlaceholder("例：家族で温泉旅行");
-  const submitButton = page.getByRole("button", { name: "送信" });
+  const submitButton = page.getByRole("button", { name: "AIに送信" });
 
   // ユーザーの入力をシミュレートします
   await textarea.fill("家族で楽しめる温泉旅行");

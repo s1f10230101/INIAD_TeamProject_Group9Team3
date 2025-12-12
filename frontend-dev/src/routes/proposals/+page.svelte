@@ -82,6 +82,7 @@ const enhanceOption: SubmitFunction = async ({
           bg-primary-light-500 hover:shadow-lg hover:-translate-y-0.5
           rounded-full w-10 h-10 justify-end"
           disabled={isLoading || !prompt}
+          aria-label="AIに送信"
         >
           ↑
         </button>
