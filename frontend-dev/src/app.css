@@ -6,3 +6,7 @@
   /* カスタムで使用できるrobotoフォント */
   --font-roboto: "Roboto", sans-serif;
 }
+
+.facility-register-page label {
+  color: #5c4033;
+}

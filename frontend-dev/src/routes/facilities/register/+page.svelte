@@ -6,7 +6,7 @@ import type { PageProps } from "./$types";
 let { form }: PageProps = $props();
 </script>
 
-<div class="rounded-2xl bg-white/90 p-4 space-y-3 w-2/3 mt-6 mb-6">
+<div class="rounded-2xl bg-white/90 p-4 space-y-3 w-2/3 mt-6 mb-6 facility-register-page">
   <h1 class="text-center font-bold text-4xl text-[#5c4033]">施設情報登録</h1>
   <hr class="border-gray-300 border-t-2 my-4" />
   <form method="POST" use:enhance>
