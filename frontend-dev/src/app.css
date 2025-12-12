@@ -1,12 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
-  /* カスタムで使用できるrobotoフォント */
-  --font-roboto: "Roboto", sans-serif;
-}
-
-.facility-register-page label {
-  color: #5c4033;
+  --color-primary-light-300: #9c877f;
+  --color-primary-light-500: #5c4023;
+  --color-primary-light-700: #967259;
 }

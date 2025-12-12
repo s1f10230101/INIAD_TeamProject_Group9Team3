@@ -1,7 +1,9 @@
 <script lang="ts">
 import client, { streamingRecvHelper } from "$lib/api/client";
+import { escapeHtml } from "$lib/index";
 import { type PageProps, type SubmitFunction } from "./$types";
 import { enhance } from "$app/forms";
+import { marked } from "marked";
 
 let { form }: PageProps = $props();
 
@@ -39,44 +41,52 @@ const enhanceOption: SubmitFunction = async ({
 };
 </script>
 
-<div class="p-10 flex flex-col space-y-7">
-  <h1
-    class="font-bold text-[#5c4033] text-[1.75rem] flex dark:text-gray-100"
-  >
+<div class="pt-5 space-y-7 w-full">
+  <h1 class="font-bold text-3xl text-center">
     体験したい旅行体験をご自由にお書きください
   </h1>
-  <form method="POST" use:enhance={enhanceOption}>
-    <div class="pb-4">
+  <div class="p-5 min-h-96 bg-amber-50/90 rounded-4xl dark:bg-gray-900/90">
+    <!-- prose lg:prose-xlは、tailwindのリセットcssを部分的に無効化;MarkDownを正しく表示するため -->
+    <!-- TODO: サニタイズ -->
+    <article class="prose wrap-break-word lg:prose dark:prose-invert">
+      {#if form}
+        <!-- JS無効の環境ではこちらが実行される -->
+        {@html marked.parse(form.res!)}
+      {:else}
+        <!-- JS有効ならこちらがストリーム更新される -->
+        {@html marked.parse(escapeHtml(aiResponse))}
+      {/if}
+    </article>
+  </div>
+  <form
+    method="POST"
+    class="fixed bottom-0 right-0 left-0 pb-10 z-2 flex flex-wrap container p-2 m-auto w-full justify-end"
+    use:enhance={enhanceOption}
+  >
+    <div
+      class="bg-white/95 flex-12 rounded-xl py-1
+      dark:bg-gray-700/95 flex flex-col justify-center"
+    >
       <input
         type="text"
         bind:value={prompt}
-        class="bg-white/90 p-3 rounded-xl w-full"
+        class="p-2 w-full m-auto wrap-break-word border-none
+          row-span-1 col-span-12 focus:outline-0"
         name="prompt"
         placeholder="例：家族で温泉旅行"
       />
-    </div>
-    <p>{errorMsg}</p>
-    <div>
-      <button
-        type="submit"
-        class="w-full text-white bg-[#5c4033] rounded-3xl p-3 disabled:bg-[#9c877f] hover:bg-[#5c4033] hover:shadow-lg hover:translate-y-[-2px]"
-        disabled={isLoading || !prompt}
-      >
-        {isLoading ? "生成中..." : "送信"}
-      </button>
+      <div class="justify-end w-full flex p-1 pr-2">
+        <button
+          type="submit"
+          class="text-white text-xl mt-2 disabled:bg-primary-light-300
+          bg-primary-light-500 hover:shadow-lg hover:-translate-y-0.5
+          rounded-full w-10 h-10 justify-end"
+          disabled={isLoading || !prompt}
+        >
+          ↑
+        </button>
+      </div>
+      <p class="text-red-700">{errorMsg}</p>
     </div>
   </form>
-  <div class="mt-1 w-full">
-    <div
-      class="p-5 min-h-96 bg-[#FFF7E6] text-base text-[#5c4033] whitespace-pre-wrap rounded-4xl"
-    >
-      {#if form}
-        <!-- JS無効の環境ではこちらが実行される -->
-        {form.res}
-      {:else}
-        <!-- JS有効ならこちらがストリーム更新される -->
-        {aiResponse}
-      {/if}
-    </div>
-  </div>
 </div>

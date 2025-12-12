@@ -55,7 +55,29 @@ export const handlers = [
         await new Promise((r) => setTimeout(r, 100));
 
         const chunk3 = {
-          text: "のプランです。東京の魅力を満喫する3日間... ",
+          text: `のプランです。東京の魅力を満喫する3日間...
+
+
+# タイトル: 東京喫満満満満満満満満満プランです。
+
+
+**のプランです。東京の魅力を満喫する3日間**
+\`\`\`c
+#include <stdio.h>
+
+void main() {
+  scanf("%s\\n")
+  printf("%s\\n", "helloworld")
+}
+\`\`\`
+
+### ああああああああああああああ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+<h1>AAAAAAAAAAAAAAAAAAAAAAAAAAAA</h1>
+<script>
+alert("Hacked!!!!!!!!");console.log("HACKED!!!!!!!!!!!!!!!!!!")
+</script>
+
+          `,
         };
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify(chunk3)}\n\n`),
