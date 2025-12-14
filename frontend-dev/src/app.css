@@ -6,3 +6,5 @@
   --color-primary-light-500: #5c4023;
   --color-primary-light-700: #967259;
 }
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

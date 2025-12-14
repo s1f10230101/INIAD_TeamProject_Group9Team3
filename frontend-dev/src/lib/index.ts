@@ -1,4 +1,4 @@
-// /home/iniad/Documents/INIAD2025/winter/INIAD_TeamProject_Group9Team3/frontend-dev/src/lib/index.ts
+import { browser } from "$app/environment";
 
 /*
  * AIにサニタイズ関数書かせた
