@@ -1,5 +1,6 @@
 <div
   class="p-2 m-4 bg-gray-50/90 rounded-2xl shadow-sm font-bold text-xl hover:shadow-primary-light-500 dark:bg-gray-900/85"
+  data-testid="loading"
 >
   <div>
     <div class="flex justify-between flex-col items-center space-y-3">
