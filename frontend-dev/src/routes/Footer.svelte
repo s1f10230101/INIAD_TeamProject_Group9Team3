@@ -1,13 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+import { onMount } from "svelte";
 
-  let theme: string|undefined = $state(undefined)
-  onMount(() => {theme = document.documentElement.dataset.theme})
+let theme: string | undefined = $state(undefined);
+onMount(() => {
+  theme = document.documentElement.dataset.theme;
+});
 
-  $effect(() =>
-    {if(theme !== undefined) {
-    document.documentElement.dataset.theme = theme
-  }})
+$effect(() => {
+  if (theme !== undefined) {
+    document.documentElement.dataset.theme = theme;
+  }
+});
 </script>
 
 <footer

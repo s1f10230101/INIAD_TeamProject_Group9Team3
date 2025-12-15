@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-      // OSテーマに基づいて、<html data-theme="dark"|"light">を設定する
-      ((() => {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          document.documentElement.dataset.theme = "dark"
-        }else {
-          document.documentElement.dataset.theme = "light"
-        }
-      })())
+    // OSテーマに基づいて、<html data-theme="dark"|"light">を設定する
+    (() => {
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.dataset.theme = "dark";
+      } else {
+        document.documentElement.dataset.theme = "light";
+      }
+    })();
     </script>
     %sveltekit.head%
   </head>
