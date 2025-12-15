@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   let theme: string|undefined = $state(undefined)
-  onMount(() => theme = document.documentElement.dataset.theme)
+  onMount(() => {theme = document.documentElement.dataset.theme})
 
   $effect(() =>
     {if(theme !== undefined) {
