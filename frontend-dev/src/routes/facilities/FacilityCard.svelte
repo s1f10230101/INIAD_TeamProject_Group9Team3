@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { components } from "$lib/types/api";
+import type { components } from "$lib/api/types";
 import StarsRate from "$lib/components/StarsRate.svelte";
 
 interface Prop {
@@ -17,7 +17,8 @@ let facility: Prop = $props();
 </script>
 
 <div
-  class="p-2 m-4 bg-gray-50/85 rounded-2xl shadow-sm text-[#5c4033] font-bold text-xl hover:shadow-[#5c4033]"
+  class="p-2 m-4 bg-gray-50/85 rounded-2xl font-bold text-xl
+  dark:bg-gray-900/85"
 >
   <a
     href={`facilities/${facility.spot.id}`}

@@ -10,6 +10,7 @@ lazygit = "latest"
 pnpm = "latest"
 node = "24"
 gcloud = "latest"
+cloud-sql-proxy = "latest"
 
 [tasks.dockerComposeUp]
 alias = "dcup"

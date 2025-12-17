@@ -21,10 +21,10 @@ let { star = $bindable(1), name }: { star: number; name: string } = $props();
       id={i.toString()}
       value={i + 1}
       bind:group={star}
-    /><label class="dark:text-gray-100" for={i.toString()}>★</label>
+    /><label class="dark:text-gray-100/80 text-gray-300/80" for={i.toString()}>★</label>
     {/if}
   {/each}
-  <span class="pl-3 font-bold text-[#5c4033] dark:text-gray-100">
+  <span class="pl-3 font-bold text-primary-light-500 dark:text-gray-100">
     星:{star}
   </span>
 </div>
