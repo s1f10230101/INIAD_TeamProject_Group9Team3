@@ -67,7 +67,7 @@ function closeMenu() {
   >
     <ul
       class="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 sm:p-0 
-             bg-[#fdfaf4] sm:bg-transparent border border-[#e0ddd7] sm:border-none rounded-md"
+             bg-[#fdfaf4] sm:bg-transparent border border-[#e0ddd7] sm:border-none rounded-md dark:bg-gray-800/90 dark:border-gray-700"
     >
       {@render a("/proposals", "旅行プラン生成", closeMenu)}
       {@render a("/facilities", "こだわりの施設一覧", closeMenu)}
