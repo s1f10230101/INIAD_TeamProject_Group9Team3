@@ -1,13 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&family=Quicksand:wght@300..700&family=Sawarabi+Gothic&display=swap'); */
-
-body {
-  /* メインのフォント 日本語に適したGoogle fonts */
-  font-family: "Noto Sans JP", "Quicksand", sans-serif;
-}
-
-.facility-register-page label {
-  color: #5c4033;
+@theme {
+  --color-primary-light-300: #9c877f;
+  --color-primary-light-500: #5c4023;
+  --color-primary-light-700: #967259;
 }

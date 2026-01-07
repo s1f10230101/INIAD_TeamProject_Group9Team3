@@ -41,13 +41,17 @@ func main() {
 	if !ok {
 		slog.Error("環境変数", "OPENAI_API_KEY", OPENAI_API_KEY)
 	}
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+	dbURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+		DBHOST,
 		POSTGRES_USER,
 		POSTGRES_PASSWORD,
-		DBHOST,
-		5432,
-		POSTGRES_DB)
-	pool, err := pgxpool.New(context.Background(), dbURL)
+		POSTGRES_DB,
+		5432)
+	cfg, err := pgxpool.ParseConfig(dbURL)
+	if err != nil {
+		slog.Error("DBURL変換エラー", "pgxのkey=value形式->URL形式にエラー", err.Error())
+	}
+	pool, err := pgxpool.NewWithConfig(context.Background(), cfg)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v", err)
 	}
@@ -72,13 +76,11 @@ func main() {
 		BaseRouter: http.NewServeMux(),
 		Middlewares: []oapi.MiddlewareFunc{
 			handler.LoggingMiddleware,
-			//handler.CorsMiddleware,
 		},
 	})
 
 	// 5. ハンドラをサーバーに登録
 	log.Println("Server is running on http://localhost:8080/v1")
-	//if err := http.ListenAndServe(":8080", server); err != nil {
 	if err := http.ListenAndServe(":8080", handler.CorsMiddleware(server)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

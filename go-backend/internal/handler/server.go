@@ -34,7 +34,7 @@ func (s *server) HealthCheckOpenAPI(ctx context.Context, request oapi.HealthChec
 // ミドルウェアアクセスログ
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		slog.Info("Received request", "method", r.Method, "path", r.URL.Path, "body", r.Body)
+		slog.Info("Received request", "method", r.Method, "path", r.URL.Path)
 		next.ServeHTTP(w, r)
 	})
 }

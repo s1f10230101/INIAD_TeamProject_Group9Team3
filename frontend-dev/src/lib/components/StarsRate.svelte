@@ -10,7 +10,8 @@ let { star }: { star: number } = $props();
   <!-- w-とh-で手動で幅を調整して奇跡的なかみ合いをしている。文字サイズを変更するとすぐ壊れる -->
   <span
     class="relative inline-block w-44 star-clips
-    before:content-['★★★★★'] before: text-gray-300  dark:text-gray-100
+    before:content-['★★★★★']
+  before:text-gray-500/80 dark:before:text-gray-700/80
     after:content-['★★★★★'] after:absolute after:left-0
     after:overflow-hidden after:text-yellow-300"
     style="--starWidth: {star * 20 + 1.5}%"

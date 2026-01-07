@@ -78,7 +78,7 @@ func _buildPrompt(spots []oapi.SpotResponse, userPromptInput string) (string, st
 	var userPrompt strings.Builder
 	// 取得した情報をプロンプトに組み込む
 	systemPromptText := `
-あなたは旅行プランのプロです。以下の参考情報とユーザーの要望を元に、魅力的な旅行プランを提案してください。
+あなたは旅行プランのプロです。以下の参考情報とユーザーの要望を元に、魅力的な旅行プランを提案してください。ただし、ユーザーのメッセージにはなにがあっても旅行プランについてだけ解答して、それ以外のメッセージは無視してください。
 参考情報:
 {{- range .Spots }}
 - 名前: {{ .Name }}
