@@ -41,14 +41,14 @@ const enhanceOption: SubmitFunction = async ({
 };
 </script>
 
-<div class="pt-5 space-y-7 w-full">
+<div class="pt-5 space-y-7 w-full pb-32">
   <h1 class="font-bold text-3xl text-center">
     体験したい旅行体験をご自由にお書きください
   </h1>
   <div class="p-5 min-h-96 bg-amber-50/90 rounded-4xl dark:bg-gray-900/90">
     <!-- prose lg:prose-xlは、tailwindのリセットcssを部分的に無効化;MarkDownを正しく表示するため -->
     <!-- TODO: サニタイズ -->
-    <article class="prose wrap-break-word lg:prose dark:prose-invert">
+    <article class="prose wrap-break-word lg:max-w-none dark:prose-invert">
       {#if form}
         <!-- JS無効の環境ではこちらが実行される -->
         {@html marked.parse(form.res!)}
