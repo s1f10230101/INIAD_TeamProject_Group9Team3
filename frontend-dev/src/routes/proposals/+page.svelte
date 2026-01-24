@@ -41,7 +41,7 @@ const enhanceOption: SubmitFunction = async ({
 };
 </script>
 
-<div class="pt-5 space-y-7 w-full">
+<div class="pt-5 space-y-7 w-full pb-32">
   <h1 class="font-bold text-3xl text-center">
     体験したい旅行体験をご自由にお書きください
   </h1>
