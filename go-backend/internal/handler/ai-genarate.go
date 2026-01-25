@@ -3,6 +3,7 @@ package handler
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
@@ -24,7 +25,10 @@ func (s *server) GeneratePlan(ctx context.Context, request oapi.GeneratePlanRequ
 		for scanner.Scan() {
 			line := scanner.Text()
 			// SSEの "data: " プレフィックスを付与して書き込む
-			_, err := fmt.Fprintf(pw, "data: {\"text\": \"%s\"}\n\n", line)
+			textWithNewline := line + "\n"
+			jsonBytes, _ := json.Marshal(map[string]string{"text": textWithNewline})
+
+			_, err := fmt.Fprintf(pw, "data: %s\n\n", jsonBytes)
 			if err != nil {
 				slog.Error("Error writing to pipe", slog.String("error", err.Error()))
 				break
